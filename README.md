@@ -1,2 +1,2 @@
 # scoutinator
-Team 8234 Scouting App
+The upcoming scouting app developed by FRC Team 8234
