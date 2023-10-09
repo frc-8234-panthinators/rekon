@@ -2,19 +2,25 @@ import Strategy from './Modes/Strategy/Pages/home';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import * as NavigationBar from 'expo-navigation-bar';
+
 
 const Stack = createStackNavigator();
+
+function ModeStack()  {
+  return(
+    <Stack.Navigator initialRouteName="Tabs" /*screenOptions={{headerShown: false}}*/>
+
+      <Stack.Screen name="Test" component={Strategy} options={{headerShown:false}}/>
+
+    </Stack.Navigator>
+  )
+}
 
 export default function App(){
   return(
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Tabs" /*screenOptions={{headerShown: false}}*/>
-
-        <Stack.Screen name="Test" component={Strategy} />
-
-    </Stack.Navigator>
-  </NavigationContainer>
+      <ModeStack />
+    </NavigationContainer>
   )
 }
 

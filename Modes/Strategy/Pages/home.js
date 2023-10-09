@@ -3,7 +3,7 @@ import { Text, View, Button, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Colors from 'C:\Users\Jonas\Documents\scoutinator\colors.js';
+import Colors from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
 /*import Home from './Modes/Strategy/Pages/home';*/
@@ -141,7 +141,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/ tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={Home} />
+			<Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SettingsScreen} />
 			<Tab.Screen name="Settings" component={SettingsScreen} />
 		</Tab.Navigator>
@@ -152,12 +152,12 @@ const Stack = createStackNavigator();
 
 export default function Strategy() {
 	return (
-		<NavigationContainer>
-			<Stack.Navigator initialRouteName="Tabs" /*screenOptions={{headerShown: false}}*/>
+		
+			<Stack.Navigator initialRouteName="Tabs" independant={true} /*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
       	        <Stack.Screen name="Test" component={TestScreen} />
 			</Stack.Navigator>
-		</NavigationContainer>
+		
 	);
 }
 
