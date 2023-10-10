@@ -8,6 +8,8 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 /*import Home from './Modes/Strategy/Pages/home';*/
 
+import matchForm from '../../Admin/Components/matchForm';
+
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
@@ -144,7 +146,7 @@ function MyTabs() {
 			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
-            <Tab.Screen name="Search" component={SettingsScreen} />
+            <Tab.Screen name="Search" component={matchForm} />
 			<Tab.Screen name="Settings" component={SettingsScreen} />
 		</Tab.Navigator>
 	);
