@@ -39,7 +39,7 @@ function HomeScreen(props) {
 		props.navigation.navigate('Test');
 	};
 	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
 			<Text>Home!</Text>
 			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
 		</View>
@@ -59,7 +59,7 @@ function MyTabBar({ state, descriptors, navigation }) {
   NavigationBar.setBehaviorAsync('overlay-swipe').then(() => {}).catch(() => {});
   NavigationBar.setBackgroundColorAsync(Colors.background).then(() => {}).catch(() => {});
   return (
-    <View style={{ flexDirection: 'row',backgroundColor: 'rgba(62, 71, 88, 0.8)' ,height:65,borderRadius:10, margin: 12, justifyContent:"center",alignItems:"center" }}>
+    <View style={{ flexDirection: 'row',backgroundColor: (Colors.tab) ,height:65,borderRadius:10, margin: 12, justifyContent:"center",alignItems:"center" }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -140,9 +140,11 @@ const Tab = createBottomTabNavigator();
 
 function MyTabs() {
 	return (
-		<Tab.Navigator /*screenOptions={{headerShown: false}}*/ tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Search" component={SettingsScreen} />
+		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
+			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
+              backgroundColor: (Colors.tab)
+           }}}/>
+            <Tab.Screen name="Search" component={SettingsScreen} />
 			<Tab.Screen name="Settings" component={SettingsScreen} />
 		</Tab.Navigator>
 	);
@@ -153,7 +155,9 @@ const Stack = createStackNavigator();
 export default function Strategy() {
 	return (
 		
-			<Stack.Navigator initialRouteName="Tabs" independant={true} /*screenOptions={{headerShown: false}}*/>
+			<Stack.Navigator initialRouteName="Tabs" independant={true}   screenOptions={{
+                cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
+              }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
       	        <Stack.Screen name="Test" component={TestScreen} />
 			</Stack.Navigator>
