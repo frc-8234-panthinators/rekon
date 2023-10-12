@@ -1,4 +1,6 @@
 import Strategy from './Modes/Strategy/Pages/home';
+import Admin from './Modes/Admin/Pages/adminhome';
+import Scouting from './Modes/Scouting/Pages/scoutingHome';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -10,7 +12,9 @@ function ModeStack()  {
   return(
     <Stack.Navigator initialRouteName="Tabs" /*screenOptions={{headerShown: false}}*/>
 
-      <Stack.Screen name="Test" component={Strategy} options={{headerShown:false}}/>
+      <Stack.Screen name="StratMode" component={Strategy} options={{headerShown:false}}/>
+      <Stack.Screen name="AdminMode" component={Admin} options={{headerShown:false}}/>
+      <Stack.Screen name="ScoutMode" component={Scouting} options={{headerShown:false}}/>
 
     </Stack.Navigator>
   )

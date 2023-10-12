@@ -6,10 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Colors from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
-import StratSettings from './stratSettings';
-
-/*import Home from './Modes/Strategy/Pages/home';*/
-
+import AdminSettings from './adminSettings'; 
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
@@ -48,22 +45,11 @@ function HomeScreen(props) {
 	);
 }
 
-function SettingsScreen(props) {
-    const gotoTestStackScreen = () => {
-		props.navigation.navigate('AdminMode');
-	};
-
-    return (
-
-
-
-
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
-            <Text>Home!</Text>
-            <Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
-        </View>
-
-
+function SettingsScreen() {
+	return (
+		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+			<Text>Settings!</Text>
+		</View>
 	);
 }
 
@@ -105,7 +91,7 @@ function MyTabBar({ state, descriptors, navigation }) {
 
 
         let iconName;
-        if (route.name === "Home") {
+        if (route.name === "Admin") {
           iconName = isFocused ? "home" : "home";
         } else if (route.name === "Settings") {
           iconName = isFocused ? "settings" : "settings";
@@ -154,18 +140,18 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
+			<Tab.Screen name="Admin" component={SettingsScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={SettingsScreen} />
-			<Tab.Screen name="Settings" component={StratSettings} />
+			<Tab.Screen name="Settings" component={AdminSettings} />
 		</Tab.Navigator>
 	);
 }
 
 const Stack = createStackNavigator();
 
-export default function Strategy() {
+export default function Admin() {
 	return (
 		
 			<Stack.Navigator initialRouteName="Tabs" independant={true}   screenOptions={{
@@ -177,22 +163,3 @@ export default function Strategy() {
 		
 	);
 }
-
-
-
-
-/* import { Text, View, Button, TouchableOpacity } from 'react-native';
-
-
-export default function Home(props) {
-
-    const gotoTestStackScreen = () => {
-		props.navigation.navigate('Test');
-	};
-	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-			<Text>Home!</Text>
-			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
-		</View>
-	);
-}*/
