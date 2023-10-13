@@ -10,7 +10,7 @@ import ModeSwitch from '../../CommonComponents/modeSwitch';
 
 export default function StratSettings(props) {
 	return(
-        <ModeSwitch page='StratMode'> </ModeSwitch>
+        <ModeSwitch page='StratMode' navigation={props.navigation}> </ModeSwitch>
     )
 }
 

@@ -3,7 +3,6 @@ import { Text, View, Button, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Colors from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
 
@@ -14,19 +13,19 @@ export default function ModeSwitch(props) {
     const page = props.page;
 
     const goToAdminMode = () => {
-		props.navigation.navigate('AdminMode');
+		props.navigation.navigate('AdminMode', {screen: 'Tabs', params: {screen: 'AdminHome'}});
 	};
     const goToScoutMode = () => {
-		props.navigation.navigate('ScoutMode');
+		props.navigation.navigate('ScoutMode', {screen: 'Tabs', params: {screen: 'ScoutHome'}});
 	};
     const goToStratMode = () => {
-		props.navigation.navigate('StratMode');
+		props.navigation.navigate('StratMode', {screen: 'Tabs', params: {screen: 'StratHome'}});
 	};
 
     if (page == 'AdminMode') {
         return(
 
-            <View> 
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}> 
                 <Button title="Scouting" onPress={goToScoutMode} />  
                 <Button title="Strategy" onPress={goToStratMode} />
             </View>
@@ -36,7 +35,7 @@ export default function ModeSwitch(props) {
     else if(page == 'StratMode') {
         return(
 
-            <View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                 <Button title="Admin" onPress={goToAdminMode} />
                 <Button title="Scouting" onPress={goToScoutMode} />
             </View>
@@ -46,7 +45,7 @@ export default function ModeSwitch(props) {
 
     else if(page == 'ScoutMode') {
         return(
-            <View> 
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}> 
                 <Button title="Admin" onPress={goToAdminMode} />
                 <Button title="Strategy" onPress={goToStratMode} />
             </View>

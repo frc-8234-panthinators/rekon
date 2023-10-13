@@ -105,9 +105,9 @@ function MyTabBar({ state, descriptors, navigation }) {
 
 
         let iconName;
-        if (route.name === "Home") {
+        if (route.name === "StratHome") {
           iconName = isFocused ? "home" : "home";
-        } else if (route.name === "Settings") {
+        } else if (route.name === "StratSettings") {
           iconName = isFocused ? "settings" : "settings";
         } else if (route.name === "Search") {
           iconName = isFocused ? "search" : "search";
@@ -154,11 +154,11 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
+			<Tab.Screen name="StratHome" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={SettingsScreen} />
-			<Tab.Screen name="Settings" component={StratSettings} />
+			<Tab.Screen name="StratSettings" component={StratSettings} />
 		</Tab.Navigator>
 	);
 }

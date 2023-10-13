@@ -10,6 +10,6 @@ import ModeSwitch from '../../CommonComponents/modeSwitch';
 
 export default function AdminSettings(props) {
     return(
-        <ModeSwitch page='AdminMode'></ModeSwitch>
+        <ModeSwitch page='AdminMode' navigation={props.navigation}></ModeSwitch>
     )
 }

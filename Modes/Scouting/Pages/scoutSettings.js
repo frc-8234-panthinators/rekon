@@ -10,6 +10,6 @@ import ModeSwitch from '../../CommonComponents/modeSwitch';
 
 export default function ScoutSettings(props) {
     return(
-        <ModeSwitch page='ScoutMode'></ModeSwitch>
+        <ModeSwitch page='ScoutMode' navigation={props.navigation}></ModeSwitch>
     )
 }

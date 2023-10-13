@@ -91,9 +91,9 @@ function MyTabBar({ state, descriptors, navigation }) {
 
 
         let iconName;
-        if (route.name === "Admin") {
+        if (route.name === "AdminHome") {
           iconName = isFocused ? "home" : "home";
-        } else if (route.name === "Settings") {
+        } else if (route.name === "AdminSettings") {
           iconName = isFocused ? "settings" : "settings";
         } else if (route.name === "Search") {
           iconName = isFocused ? "search" : "search";
@@ -140,11 +140,11 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Admin" component={SettingsScreen}  options={{ headerStyle: {
+			<Tab.Screen name="AdminHome" component={SettingsScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={SettingsScreen} />
-			<Tab.Screen name="Settings" component={AdminSettings} />
+			<Tab.Screen name="AdminSettings" component={AdminSettings} />
 		</Tab.Navigator>
 	);
 }
