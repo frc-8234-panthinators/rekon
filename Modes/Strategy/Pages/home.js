@@ -8,6 +8,8 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 import StratSettings from './stratSettings';
 
+
+
 /*import Home from './Modes/Strategy/Pages/home';*/
 
 
@@ -127,7 +129,7 @@ function MyTabBar({ state, descriptors, navigation }) {
               flex: 1, 
               alignItems:"center",
 
-              backgroundColor: isFocused ? '#1a1b1e' : 'transparent',
+              backgroundColor: isFocused ? Colors.tabSelected : 'transparent',
               borderRadius: 100, 
               padding: 5, 
               margin: 20 }}
@@ -136,7 +138,7 @@ function MyTabBar({ state, descriptors, navigation }) {
            <MaterialIcons
               name={iconName}
               size={35} // Adjust the icon size as needed
-              color={isFocused ? '#e3e2e6' : '#e3e2e6'}
+              color={isFocused ? Colors.tabIcons : Colors.tabIcons}
               style={{ height: 35 }}
             />
 
@@ -148,6 +150,8 @@ function MyTabBar({ state, descriptors, navigation }) {
     </View>
   );
 }
+
+
 
 const Tab = createBottomTabNavigator();
 
