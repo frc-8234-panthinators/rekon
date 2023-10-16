@@ -7,11 +7,8 @@ import Colors from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
 import AdminSettings from './adminSettings'; 
+import MyTabBar from '../Components/AdminTabBar';
 
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
-
-const background = '#1a1b1e'
 
 function TestScreen() {
 	return (
@@ -51,88 +48,6 @@ function SettingsScreen() {
 			<Text>Settings!</Text>
 		</View>
 	);
-}
-
-function MyTabBar({ state, descriptors, navigation }) {
-  NavigationBar.setVisibilityAsync(false).then(() => {}).catch(() => {});
-  NavigationBar.setBehaviorAsync('overlay-swipe').then(() => {}).catch(() => {});
-  NavigationBar.setBackgroundColorAsync(Colors.background).then(() => {}).catch(() => {});
-  return (
-    <View style={{ flexDirection: 'row',backgroundColor: (Colors.tab) ,height:65,borderRadius:10, margin: 12, justifyContent:"center",alignItems:"center" }}>
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
-
-
-        const isFocused = state.index === index;
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
-        };
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
-
-
-        let iconName;
-        if (route.name === "AdminHome") {
-          iconName = isFocused ? "home" : "home";
-        } else if (route.name === "AdminSettings") {
-          iconName = isFocused ? "settings" : "settings";
-        } else if (route.name === "Search") {
-          iconName = isFocused ? "search" : "search";
-        }
-
-
-        return (
-          <TouchableOpacity
-            accessibilityRole="button"
-            accessibilityStates={isFocused ? ['selected'] : []}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            style={{ 
-              
-              flex: 1, 
-              alignItems:"center",
-
-              backgroundColor: isFocused ? Colors.background : 'transparent',
-              borderRadius: 100, 
-              padding: 5, 
-              margin: 20 }}
-          >
-
-           <MaterialIcons
-              name={iconName}
-              size={35} // Adjust the icon size as needed
-              color={isFocused ? Colors.tabIcons : Colors.tabIcons}
-              style={{ height: 35 }}
-            />
-
-
-            
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
 }
 
 const Tab = createBottomTabNavigator();

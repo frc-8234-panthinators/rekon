@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 
 function ModeStack()  {
   return(
-    <Stack.Navigator initialRouteName="Tabs" /*screenOptions={{headerShown: false}}*/>
+    <Stack.Navigator initialRouteName="Tabs" >
 
       <Stack.Screen name="StratMode" component={Strategy} options={{animationEnabled: false, headerShown:false}}/>
       <Stack.Screen name="AdminMode" component={Admin} options={{animationEnabled: false, headerShown:false}}/>
