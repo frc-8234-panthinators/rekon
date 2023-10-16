@@ -8,15 +8,17 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 import RedBlueCards from '../Components/RedBlueAlliences';
 import StratHomePageVars from '../../../StratHomePageVars';
+import CurrentNextLoad from '../Components/CurrentNextLoad';
 
 
 export default function StratHome(props){
     return(
         <View style={styles.container}>
-
+                
+                <CurrentNextLoad />
                 <RedBlueCards Title='Red' Color={Colors.blue} RBnum='R' Team1={StratHomePageVars.RedOne} Team2={StratHomePageVars.RedTwo} Team3={StratHomePageVars.RedThree}/>
                 <RedBlueCards Title='Blue' Color={Colors.red} RBnum='B'Team1={StratHomePageVars.BlueOne} Team2={StratHomePageVars.BlueTwo} Team3={StratHomePageVars.BlueThree}/>
-
+                
         </View>
         
     )
@@ -27,7 +29,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: -50, 
+        //marginBottom: -50, 
         backgroundColor: Colors.background,
         
     },

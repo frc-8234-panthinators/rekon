@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     
     //justifyContent: 'center',
-    alignItems: 'center',
+    //alignItems: 'center',
     
   },
   card: {
@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   },
 
   text:{
-    left: -99,
     fontWeight: 'bold',
     fontSize: 20,
     color: Colors.mainText,

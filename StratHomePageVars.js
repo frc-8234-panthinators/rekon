@@ -6,4 +6,8 @@ export default StratHomeVars = {
     BlueOne: 'Pantinators | 8234',
     BlueTwo: 'Pantinators | 8234',
     BlueThree: 'Pantinators | 8234',
+
+    CurrentNum: '#5',
+    NextNum: '#12',
+    LoadNum: '#10',
 }
