@@ -1,6 +1,6 @@
-import Strategy from './Modes/Strategy/Pages/home';
-import Admin from './Modes/Admin/Pages/adminhome';
-import Scouting from './Modes/Scouting/Pages/scoutingHome';
+import Strategy from './Modes/Strategy/Pages/StategyPage';
+import Admin from './Modes/Admin/Pages/AdminPage';
+import Scouting from './Modes/Scouting/Pages/ScoutPage';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
