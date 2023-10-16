@@ -9,6 +9,7 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 import StratSettings from './stratSettings';
 import MyTabBar from '../Components/StratTabBar';
+import StratHome from './StratHome';
 
 
 
@@ -58,7 +59,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="StratHome" component={HomeScreen}  options={{ headerStyle: {
+			<Tab.Screen name="StratHome" component={StratHome}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={SettingsScreen} />
