@@ -21,19 +21,6 @@ function TestScreen() {
 	);
 }
 
-
-function HomeScreen(props) {
-	const gotoTestStackScreen = () => {
-		props.navigation.navigate('Test');
-	};
-	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
-			<Text>Home!</Text>
-			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
-		</View>
-	);
-}
-
 function SettingsScreen(props) {
     const gotoTestStackScreen = () => {
 		props.navigation.navigate('AdminMode');
@@ -59,7 +46,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="StratHome" component={StratHome}  options={{ headerStyle: {
+			<Tab.Screen name="StratHome" component={StratHome}  options={{headerShown:false, headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={SettingsScreen} />

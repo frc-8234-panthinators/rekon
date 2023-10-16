@@ -1,4 +1,4 @@
-import Colors from '../../../colors';
+import Colors from '../../../../colors';
 import * as React from 'react';
 import { StyleSheet, Text, View, Pressable, Dimensions } from 'react-native';
 
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
    // paddingVertical: '40px', // Adjust the height by changing this value
    // paddingHorizontal: '20px',
     width: windowWidth * 0.9, // Adjust the width as a percentage of the screen width
-    height: windowHeight * 0.2,
+    height: windowHeight * 0.23,
     marginBottom: 5,
   },
 
@@ -84,8 +84,9 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10, // Bottom-right corner rounded
     //paddingVertical: '40px', // Adjust the height by changing this value
    // paddingHorizontal: '20px',
-    width: 250, // Adjust the width as a percentage of the screen width
-    height: 35,
+    //width: 250, // Adjust the width as a percentage of the screen width
+    width: windowWidth * 0.7,
+    height: windowHeight * 0.065,
     //right: 10,
     //marginBottom: 10,
     
@@ -103,8 +104,9 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 0, // Bottom-right corner rounded
     //paddingVertical: '40px', // Adjust the height by changing this value
    // paddingHorizontal: '20px',
-    width: 45, // Adjust the width as a percentage of the screen width
-    height: 35,
+    //width: 45, // Adjust the width as a percentage of the screen width
+    width: windowWidth * 0.13,
+    height: windowHeight * 0.065,
     //left: 10,
   },
   both: {

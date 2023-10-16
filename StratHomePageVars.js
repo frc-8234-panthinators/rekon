@@ -10,4 +10,7 @@ export default StratHomeVars = {
     CurrentNum: '#5',
     NextNum: '#12',
     LoadNum: '#10',
+
+    BlueWinPercent: '50%',
+    RedWinPercent: '50%',
 }

@@ -1,7 +1,7 @@
-import Colors from '../../../colors';
+import Colors from '../../../../colors';
 import * as React from 'react';
 import { StyleSheet, Text, View, Pressable, Dimensions } from 'react-native';
-import StratHomePageVars from '../../../StratHomePageVars';
+import StratHomePageVars from '../../../../StratHomePageVars';
 
 
 function Parts(props) {
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
        
 
         //marginBottom: 25,
+        marginTop: 15,
     },
     test: {
         borderRadius: 10,
@@ -77,11 +78,13 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
         marginBottom: -5,
         
+        
     },
     CurrentBox: {
         backgroundColor: Colors.component,
-        width: 100,
-        height: 60,
+        //width: 100,
+        width: windowWidth * 0.279,
+        height: windowHeight * 0.085,
         marginRight: 10,
         marginLeft: 10,
 
@@ -92,16 +95,16 @@ const styles = StyleSheet.create({
     },
     NextBox: {
         backgroundColor: Colors.component,
-        width: 100,
-        height: 60,
+        width: windowWidth * 0.279,
+        height: windowHeight * 0.085,
         marginRight: 10,
         marginLeft: 10,
         borderradious: 0,
     },
     LoadBox: {
         backgroundColor: Colors.component,
-        width: 100,
-        height: 60,
+        width: windowWidth * 0.279,
+        height: windowHeight * 0.085,
         marginRight: 10,
         marginLeft: 10,
 
