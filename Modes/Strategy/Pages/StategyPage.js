@@ -20,17 +20,6 @@ function TestScreen() {
 	);
 }
 
-/*function HomeScreen() {
-  
-	return (
-    
- 
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.background }}>
-			<Text>Home!</Text>
-      <FontAwesome name="search" size={24} color="black" />
-		</View>
-	);
-}*/
 
 function HomeScreen(props) {
 	const gotoTestStackScreen = () => {
