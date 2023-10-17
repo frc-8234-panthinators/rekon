@@ -92,6 +92,9 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 0, // Top-right corner not rounded
         borderBottomLeftRadius: 10, // Bottom-left corner not rounded
         borderBottomRightRadius: 0, 
+
+        flex: 1,
+        justifyContent: 'center',
     },
     NextBox: {
         backgroundColor: Colors.component,
@@ -100,6 +103,9 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginLeft: 10,
         borderradious: 0,
+
+        flex: 1,
+        justifyContent: 'center',
     },
     LoadBox: {
         backgroundColor: Colors.component,
@@ -112,6 +118,9 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10, // Top-right corner not rounded
         borderBottomLeftRadius: 0, // Bottom-left corner not rounded
         borderBottomRightRadius: 10, 
+
+        flex: 1,
+        justifyContent: 'center',
     },
     titleText: {
 

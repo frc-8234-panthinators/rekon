@@ -110,10 +110,12 @@ const styles = StyleSheet.create({
     //left: 10,
   },
   both: {
-    flex: 1,
+    //flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignItems: 'center'
+    alignItems: 'center',
+    //marginBottom: 3,
+    marginTop: 6,
   },
   altText: {
 

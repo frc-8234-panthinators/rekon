@@ -16,7 +16,7 @@ export default function MyTabBar({ state, descriptors, navigation }) {
     NavigationBar.setBehaviorAsync('overlay-swipe').then(() => {}).catch(() => {});
     NavigationBar.setBackgroundColorAsync(Colors.background).then(() => {}).catch(() => {});
     return (
-      <View style={{flexDirection: 'row',backgroundColor: (Colors.tab) ,height: windowWidth * 0.17,borderRadius:10, marginBottom: 0, marginLeft:18, width: windowWidth * 0.9,alignItems:"center" }}>
+      <View style={{flexDirection: 'row',backgroundColor: (Colors.tab) ,height: windowWidth * 0.17,borderRadius:10, marginLeft: 29, marginRight: 29, alignItems:"center" }}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label =
