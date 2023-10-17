@@ -10,14 +10,30 @@ import * as NavigationBar from 'expo-navigation-bar';
 import SearchBar from '../Components/SearchComponents.js/SearchBar';
 import YourStats from '../Components/SearchComponents.js/YourTeamStats';
 import MatchViewWidget from '../Components/SearchComponents.js/MatchViewWidget';
+import CompareAndQuickpick from '../Components/SearchComponents.js/Compare-QuickWids';
 
 export default function StratSearch(props){
     return(
         <View style={styles.container}>
             
-            <YourStats />
-            <MatchViewWidget />
-            <SearchBar />
+            <View style={styles.space}>
+                <YourStats />
+            </View>
+
+            <View style={styles.space}>
+                <CompareAndQuickpick />
+            </View>
+
+            <View style={styles.space}>
+                <MatchViewWidget />     
+            </View>
+
+            <View style={styles.space}>
+                <SearchBar />
+            </View>
+            
+
+            
 
         </View>
         
@@ -33,6 +49,9 @@ const styles = StyleSheet.create({
         //marginBottom: -50, 
         backgroundColor: Colors.background,
         
+    },
+    space: {
+        marginBottom: 'auto',
     },
 
 

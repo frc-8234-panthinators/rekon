@@ -15,7 +15,7 @@ function MatchViewButton(){
                 <View style={styles.iconBox} >
                     <MaterialIcons
                         name="arrow-back"
-                        size={40}
+                        size={35}
                         color="white"
                         style={styles.icon}
                     />
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 
     //paddingHorizontal: 10, // Add some horizontal padding
     
-    //justifyContent: 'center',
+    justifyContent: 'center',
     
     width: windowWidth * .85, // Adjust the width as a percentage of the screen width
     height: windowHeight * 0.07,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   title: {
     color: Colors.subText,
     fontWeight: 'bold',
-    fontSize: 25,
+    fontSize: 20,
     
   },
   icon: {
@@ -119,17 +119,17 @@ const styles = StyleSheet.create({
     
   },
   iconBox: {
-    flex: 1,
+    //flex: 1,
     marginTop: 'auto',
     marginBottom: 'auto',
-    marginRight: 10,
-    alignItems: 'flex-end',
+    //marginRight: 10,
+    //alignItems: 'flex-end',
   },
   textBox: {
     
     marginTop: 'auto',
     marginBottom: 'auto',
-    marginLeft: 10,
+    //marginLeft: 10,
     
     
   },
