@@ -21,13 +21,19 @@ export default function Analyze(props){
     return(
         <View>
             <TouchableOpacity title='Analyze' style={styles.button} onPress={Test}> 
-                <Text style={styles.text}>Analyze</Text>
-                <MaterialIcons
-                    name="arrow-back"
-                    size={40}
-                    color="white"
-                    style={styles.icon}
-                />
+                <View style={styles.textBox}>
+                    <Text style={styles.text}>Analyze</Text>
+                </View>
+                <View style={styles.iconBox}>
+                    <MaterialIcons
+                        name="arrow-back"
+                        size={40}
+                        color="white"
+                        style={styles.icon}
+                    />
+                </View>
+                
+                
             </TouchableOpacity>
         </View>
         
@@ -47,7 +53,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
 
         flexDirection: 'row', // Arrange text and icon horizontally
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginTop: 5,
         
@@ -63,6 +69,19 @@ const styles = StyleSheet.create({
     icon: {
         transform: [{ rotate: '145deg' }], // Rsotate the icon 45 degrees
         color: Colors.subText,
+
+      },
+    
+    iconBox: {
+        marginRight: 10,
+
+        
+      },
+    textBox: {
+
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        
       },
 
 });

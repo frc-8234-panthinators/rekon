@@ -27,7 +27,7 @@ function SearchInput(props) {
     <View>
       <TextInput
         style={styles.input}
-        placeholder="Search Teams..."
+        placeholder="Search..."
         placeholderTextColor={Colors.subText} // Set the placeholder text color
         color={Colors.subText}
         onChangeText={handleTextChange}

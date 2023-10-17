@@ -47,7 +47,7 @@ function MyTabs() {
 			<Tab.Screen name="ScoutHome" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
-            <Tab.Screen name="Search" component={StratSearch} />
+            <Tab.Screen name="Search" component={StratSearch} options={{headerShown:false}}/>
 			<Tab.Screen name="ScoutSettings" component={ScoutSettings} />
 		</Tab.Navigator>
 	);
