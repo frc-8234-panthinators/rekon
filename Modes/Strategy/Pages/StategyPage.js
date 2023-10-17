@@ -22,7 +22,7 @@ function TestScreen() {
 }
 
 function SettingsScreen(props) {
-    const gotoTestStackScreen = () => {
+    const gotoTestStackScreen = (props) => {
 		props.navigation.navigate('AdminMode');
 	};
 
@@ -39,6 +39,7 @@ function SettingsScreen(props) {
 
 	);
 }
+
 
 
 const Tab = createBottomTabNavigator();

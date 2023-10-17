@@ -1,6 +1,6 @@
 import Colors from '../../../../colors';
 import * as React from 'react';
-import { StyleSheet, Text, View, Pressable, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity } from 'react-native';
 
 
 function Both(props){
@@ -13,12 +13,12 @@ function Both(props){
                 </View>
                 
             </View>
-            <View style={styles.teams}>
+            <TouchableOpacity style={styles.teams} /*function goes here or rather the variable for the function depending on team...ahhh*/ >
                 <View style={styles.textCont}>
                     <Text style={styles.altText}>{props.teamText}</Text>
                 </View>
                 
-            </View>
+            </TouchableOpacity>
 
         </View>
         

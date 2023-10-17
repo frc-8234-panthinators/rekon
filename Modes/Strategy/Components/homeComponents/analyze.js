@@ -7,12 +7,20 @@ import React, { useState, useEffect} from 'react';
 
 
 
+import { useNavigation } from '@react-navigation/native'; /*ask Jonas if is ok*/
+
 
 export default function Analyze(props){
 
+    /*this is different than other pages ask Jonas*/ const navigation = useNavigation();
+
+    const Test = () => {
+		/* most have props.*/ navigation.navigate('Test');
+	};
+    
     return(
         <View>
-            <TouchableOpacity title='Analyze' style={styles.button}> 
+            <TouchableOpacity title='Analyze' style={styles.button} onPress={Test}> 
                 <Text style={styles.text}>Analyze</Text>
                 <MaterialIcons
                     name="arrow-back"
