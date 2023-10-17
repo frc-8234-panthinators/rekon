@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
        
 
         //marginBottom: 25,
-        marginTop: 15,
+        marginTop: 20,
     },
     test: {
         borderRadius: 10,
