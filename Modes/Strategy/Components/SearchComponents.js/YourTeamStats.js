@@ -95,7 +95,7 @@ export default function YourStats(props) {
     <View style={styles.container}>
         <Text style={styles.YourStatsText}>Your Teams Stats:</Text>
         <AutoTeleEndTotal />
-        <Text style={styles.encourageText}>Keep up the good work!</Text>
+        
     </View>
   );
 }
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     //backgroundColor: 'blue',
     width: windowWidth * 0.9,
-    height: windowHeight * 0.2,
+    height: windowHeight * 0.17,
     justifyContent: 'space-between',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -120,9 +120,10 @@ const styles = StyleSheet.create({
 
   },
   wrap:{
-    width: windowWidth * 0.9,
-    height: windowHeight * 0.05,
-    marginTop: -25,
+    //width: windowWidth * 0.9,
+    //height: windowHeight * 0.05,
+    //marginTop: 20,
+    marginBottom: 50,
     
   },
 
