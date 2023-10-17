@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Dimensions } from 'react-native';
 import Colors from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
@@ -8,14 +8,15 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 
-
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function MyTabBar({ state, descriptors, navigation }) {
     NavigationBar.setVisibilityAsync(false).then(() => {}).catch(() => {});
     NavigationBar.setBehaviorAsync('overlay-swipe').then(() => {}).catch(() => {});
     NavigationBar.setBackgroundColorAsync(Colors.background).then(() => {}).catch(() => {});
     return (
-      <View style={{ flexDirection: 'row',backgroundColor: (Colors.tab) ,height:65,borderRadius:10, margin: 12, justifyContent:"center",alignItems:"center" }}>
+      <View style={{ flexDirection: 'row',backgroundColor: (Colors.tab) ,height:windowHeight * 0.095,width: windowWidth * 0.9,borderRadius:10, marginLeft: 'auto', marginRight: 'auto', justifyContent:"center",alignItems:"center" }}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label =

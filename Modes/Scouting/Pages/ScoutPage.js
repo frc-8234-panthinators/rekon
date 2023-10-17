@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Button, TouchableOpacity } from 'react-native';
+import { Text, View, Button, TouchableOpacity, Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -40,16 +40,22 @@ function SettingsScreen() {
 }
 
 const Tab = createBottomTabNavigator();
+const { width, height } = Dimensions.get("window")
 
 function MyTabs() {
 	return (
-		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="ScoutHome" component={HomeScreen}  options={{ headerStyle: {
-              backgroundColor: (Colors.tab)
-           }}}/>
-            <Tab.Screen name="Search" component={StratSearch} options={{headerShown:false}}/>
-			<Tab.Screen name="ScoutSettings" component={ScoutSettings} />
-		</Tab.Navigator>
+		<View style={{
+            width,
+            height,
+        }}>
+			<Tab.Navigator /*screenOptions={{headerShown: false}}*/ tabBar={props => <MyTabBar {...props} />}>
+				<Tab.Screen name="ScoutHome" component={HomeScreen}  options={{ headerStyle: {
+				backgroundColor: (Colors.tab)
+			}}}/>
+				<Tab.Screen name="Search" component={StratSearch} options={{headerShown:false}}/>
+				<Tab.Screen name="ScoutSettings" component={ScoutSettings} />
+			</Tab.Navigator>
+		</View>
 	);
 }
 

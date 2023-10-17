@@ -46,7 +46,7 @@ const Tab = createBottomTabNavigator();
 
 function MyTabs() {
 	return (
-		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
+		<Tab.Navigator /*screenOptions={{headerShown: false}}*/keyboardHandlingEnabled={false}   tabBar={props => <MyTabBar {...props} />}>
 			<Tab.Screen name="StratHome" component={StratHome}  options={{headerShown:false, headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
