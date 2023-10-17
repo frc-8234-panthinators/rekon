@@ -9,6 +9,7 @@ export default Colors = {
     tabIcons: '#e3e2e6',
     tabSelected: '#1a1b1e',
     blue: '#235292',
-    red: '#b2262d'  
+    red: '#b2262d',  
+    innerComponent: '#888e9b',
     
 }

@@ -7,7 +7,6 @@ import * as NavigationBar from 'expo-navigation-bar';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -16,7 +15,7 @@ export default function MyTabBar({ state, descriptors, navigation }) {
     NavigationBar.setBehaviorAsync('overlay-swipe').then(() => {}).catch(() => {});
     NavigationBar.setBackgroundColorAsync(Colors.background).then(() => {}).catch(() => {});
     return (
-      <View style={{flexDirection: 'row',backgroundColor: (Colors.tab) ,height: windowWidth * 0.17,borderRadius:10, marginLeft: 29, marginRight: 29, alignItems:"center" }}>
+      <View style={{flexDirection: 'row',backgroundColor: (Colors.tab) ,height: windowHeight * 0.095,  borderRadius:10, marginLeft: 'auto', marginRight: 'auto',justifyContent: 'center', alignItems:"center", width: windowWidth * 0.9, }}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const label =

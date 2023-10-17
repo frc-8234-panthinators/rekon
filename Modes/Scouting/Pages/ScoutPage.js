@@ -9,7 +9,7 @@ import * as NavigationBar from 'expo-navigation-bar';
 import ScoutSettings from './scoutSettings';
 import MyTabBar from '../Components/ScoutTabBar';
 
-
+/*get rid of this later/ re map the page*/ import StratSearch from '../../Strategy/Pages/StratSearch';
 
 function TestScreen() {
 	return (
@@ -47,7 +47,7 @@ function MyTabs() {
 			<Tab.Screen name="ScoutHome" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
-            <Tab.Screen name="Search" component={SettingsScreen} />
+            <Tab.Screen name="Search" component={StratSearch} />
 			<Tab.Screen name="ScoutSettings" component={ScoutSettings} />
 		</Tab.Navigator>
 	);

@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     },
     test: {
         borderRadius: 10,
-        width: windowWidth * 0.9, // Adjust the width as a percentage of the screen width
+        width: windowWidth * .9, // Adjust the width as a percentage of the screen width
         height: windowHeight * 0.1,
         //flex: 1,
         flexDirection: 'row',
@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 10, // Bottom-left corner not rounded
         borderBottomRightRadius: 0, 
 
-        flex: 1,
-        justifyContent: 'center',
+        //flex: 1,
+        //justifyContent: 'center',
     },
     NextBox: {
         backgroundColor: Colors.component,
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         borderradious: 0,
 
-        flex: 1,
-        justifyContent: 'center',
+        //flex: 1,
+        //justifyContent: 'center',
     },
     LoadBox: {
         backgroundColor: Colors.component,
@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 0, // Bottom-left corner not rounded
         borderBottomRightRadius: 10, 
 
-        flex: 1,
-        justifyContent: 'center',
+        //flex: 1,
+        //justifyContent: 'center',
     },
     titleText: {
 
