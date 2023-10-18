@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Dimensions, KeyboardAvoidingView, } from 'react-native';
+import { View, TextInput, StyleSheet, Dimensions, KeyboardAvoidingView, InputAccessoryView, } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Colors from '../../../../colors';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 function SearchIcon(props) {
   return (
@@ -39,10 +41,10 @@ function SearchInput(props) {
 
 export default function SearchBar(props) {
   return (
-    <KeyboardAvoidingView behavior="padding"  style={styles.container}>
+    <View style={styles.container}>
       <SearchIcon />
       <SearchInput />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -59,6 +61,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 'auto',
     marginRight: 'auto',
+    
+  
 
     //marginTop: 15,
   },
