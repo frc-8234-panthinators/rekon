@@ -10,6 +10,10 @@ import AdminSettings from './adminSettings';
 import MyTabBar from '../Components/AdminTabBar';
 
 
+import PitScouting from '../../Scouting/Pages/PitScouting';// get rid of this later
+//import TeamAssignmnetWidget  from '../../Scouting/Components/PitScoutComponents/TeamAssignmnetsWidget'; //get rid of this too
+
+
 function TestScreen() {
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -58,7 +62,7 @@ function MyTabs() {
 			<Tab.Screen name="AdminHome" component={SettingsScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
-            <Tab.Screen name="Search" component={SettingsScreen} />
+            <Tab.Screen name="Search" component={PitScouting} options={{headerShown:false}}/>
 			<Tab.Screen name="AdminSettings" component={AdminSettings} />
 		</Tab.Navigator>
 	);
