@@ -1,3 +1,5 @@
 export default ScoutingModeVars = {
-    teamNames: ['Pantinators', 'Team A', 'Team B', 'Team C', 'Team D'],
+    teamNames: ['Pantinators', 'Team A', 'Team B', 'Team C', 'Team D', 'Team E', 'Team F'],
+
+    percentCompleted: 80,
 }

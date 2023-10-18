@@ -8,10 +8,13 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 
 import TeamAssignmnetWidget from '../Components/PitScoutComponents/TeamAssignmnetsWidget';
+import TopWidget from '../Components/PitScoutComponents/numCompletedWidget';
+
 
 export default function PitScouting(props){
   return(
     <View style={styles.container}>
+      <TopWidget />
       <TeamAssignmnetWidget />
     </View>
     

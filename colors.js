@@ -11,5 +11,8 @@ export default Colors = {
     blue: '#235292',
     red: '#b2262d',  
     innerComponent: '#888e9b',
+    PieGreen: '#58ba6d',
+    PieRed: '#9a5c5c',
+
     
 }
