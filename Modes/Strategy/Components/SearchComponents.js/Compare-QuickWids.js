@@ -78,6 +78,10 @@ function QuickPickWidget() {
                         style={styles.icon}
                     />
             </TouchableOpacity>
+            <Text style={styles.listText}>List 1 Title</Text>
+            <TextInputBar placeHolder='QuickPick...'/>
+            <Text style={styles.listText}>List 2 Title</Text>
+            <TextInputBar placeHolder='QuickPick...'/>
             
         </View>
     )
@@ -184,6 +188,18 @@ const styles = StyleSheet.create({
 
     //marginLeft: 'auto',
     //marginRight: 'auto',
+  },
+  listText: {
+    color: Colors.subText,
+    fontSize: 15,
+    fontWeight: 'bold',
+    
+    
+    marginTop: 5,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+
+
   },
 
   
