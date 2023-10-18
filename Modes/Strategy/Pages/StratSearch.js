@@ -10,29 +10,30 @@ import YourStats from '../Components/SearchComponents.js/YourTeamStats';
 import MatchViewWidget from '../Components/SearchComponents.js/MatchViewWidget';
 import CompareAndQuickpick from '../Components/SearchComponents.js/Compare-QuickWids';
 
+
 export default function StratSearch(props) {
-  const [isKeyboardActive, setIsKeyboardActive] = React.useState(false);
+    const [isKeyboardActive, setIsKeyboardActive] = React.useState(false);
 
-  React.useEffect(() => {
-    // Add event listeners to detect keyboard changes
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow);
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
-
-    return () => {
-      // Remove event listeners when the component unmounts
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
+    React.useEffect(() => {
+      // Add event listeners to detect keyboard changes
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+  
+      return () => {
+        // Remove event listeners when the component unmounts
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
+  
+    const keyboardDidShow = () => {
+      setIsKeyboardActive(true);
     };
-  }, []);
-
-  const keyboardDidShow = () => {
-    setIsKeyboardActive(true);
-  };
-
-  const keyboardDidHide = () => {
-    setIsKeyboardActive(false);
-  };
-
+  
+    const keyboardDidHide = () => {
+      setIsKeyboardActive(false);
+    };
+  
   return (
     <View style={styles.container}>
       {isKeyboardActive && <View style={styles.overlay} />}
@@ -48,7 +49,7 @@ export default function StratSearch(props) {
         <MatchViewWidget />
       </View>
 
-      <View style={isKeyboardActive ? styles.CoolSearch : styles.space}>
+      <View style={styles.space}>
         <SearchBar />
       </View>
     </View>
@@ -64,12 +65,6 @@ const styles = StyleSheet.create({
   },
   space: {
     marginBottom: 'auto',
-  },
-  CoolSearch: {
-    position: 'absolute',
-    marginTop: 100,
-    marginBottom: 'auto',
-    zIndex: 2,
   },
   overlay: {
     position: 'absolute',

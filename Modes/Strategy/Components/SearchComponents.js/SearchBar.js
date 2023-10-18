@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Dimensions, KeyboardAvoidingView, InputAccessoryView, } from 'react-native';
+import { View, TextInput, StyleSheet, Dimensions, Keyboard, KeyboardAvoidingView, InputAccessoryView, } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Colors from '../../../../colors';
 
@@ -40,6 +40,7 @@ function SearchInput(props) {
 }
 
 export default function SearchBar(props) {
+
   return (
     <View style={styles.container}>
       <SearchIcon />
