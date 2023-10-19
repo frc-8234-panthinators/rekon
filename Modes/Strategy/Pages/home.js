@@ -8,7 +8,8 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 /*import Home from './Modes/Strategy/Pages/home';*/
 
-import matchForm from '../../Admin/Components/matchForm';
+import MatchForm from '../../Admin/Components/matchForm';
+import DotBackground from '../../Admin/Components/test';
 
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -146,8 +147,8 @@ function MyTabs() {
 			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
-            <Tab.Screen name="Search" component={matchForm} />
-			<Tab.Screen name="Settings" component={SettingsScreen} />
+            <Tab.Screen name="Search" component={MatchForm} />
+			<Tab.Screen name="Settings" component={DotBackground}  options={{headerShown:false}}/>
 		</Tab.Navigator>
 	);
 }
@@ -161,7 +162,7 @@ export default function Strategy() {
                 cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
-      	        <Stack.Screen name="Test" component={TestScreen} />
+      	        <Stack.Screen name="Test" component={DotBackground} />
 			</Stack.Navigator>
 		
 	);
