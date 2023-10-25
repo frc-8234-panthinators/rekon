@@ -1,18 +1,33 @@
-import React, {useRef} from 'react';
-import {Animated, View, StyleSheet, PanResponder, Text, Dimensions} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Animated, View, StyleSheet, PanResponder, Text, Dimensions, Button, TouchableOpacity,} from 'react-native';
 import DotBackground from './test';
+//import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
 export default function MatchForm(){
   const pan = useRef(new Animated.ValueXY()).current;
   const isClicked = true; //adds borders and dots used to drag to resize, make this active on click
+  //const [isClicked, setIsClicked] = useState(false);
+  //const toggleSwitch = () => setIsClicked(previousState => !previousState);
+
+  
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+
+  
 
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: Animated.event([null, {dx: pan.x, dy: pan.y}]),
-      onPanResponderRelease: () => {
+      onPanResponderRelease: (evt, gestureState) => {
+
+        const snappedX = Math.round(gestureState.dx / 40) * 40;
+        const snappedY = Math.round(gestureState.dy / 40) * 40;
+
+        pan.setValue({ x: snappedX, y: snappedY });
+
         pan.extractOffset();
       },
     }),
@@ -22,8 +37,9 @@ export default function MatchForm(){
 
 
 
-  const boxHeight = 100;
-  const boxWidth = 100;
+
+  const boxHeight = 100; //change the height of the box
+  const boxWidth = 100; //change the width of the box
   
   const outBoxHeight = boxHeight + 15;
   const outBoxWidth = boxWidth + 15;
@@ -33,7 +49,7 @@ export default function MatchForm(){
     <View>
         
         <View style={styles.container}>
-            <Animated.View style={{transform: [{translateX: pan.x}, {translateY: pan.y}],}}{...panResponder.panHandlers}>
+            <Animated.View style={{transform: [{translateX: pan.x}, {translateY: pan.y}],}} {...panResponder.panHandlers}>
                 
                 <View style={[styles.outBox, {height: outBoxHeight, width: outBoxWidth}]}>
                     

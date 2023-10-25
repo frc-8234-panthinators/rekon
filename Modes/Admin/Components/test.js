@@ -21,11 +21,11 @@ function DotGrid({ numRows, numCols, dotSize, spacing}) {
   return <View style={styles.dotGrid}>{rows}</View>;
 }
 
-export default function Test() {
+export default function DotBackground() {
   return (
     <View style={styles.ContContainer}>
             <View style={styles.container}>
-                <DotGrid numRows={12} numCols={15} dotSize={10} spacing={20} />
+                <DotGrid numRows={12} numCols={7} dotSize={10} spacing={20} />
             </View>
     </View>
 
@@ -38,12 +38,13 @@ const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
 
-    //backgroundColor: 'yellow',
+    backgroundColor: 'yellow',
     justifyContent: 'center',
     alignItems: 'center',
     width: windowWidth * 0.9,
     height: windowHeight * 0.8,
     borderRadius: 10,
+    //overflow: 'hidden',
   },
   ContContainer: {
     //flex:  1,

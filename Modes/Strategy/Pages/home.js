@@ -12,6 +12,9 @@ import MatchForm from '../../Admin/Components/matchForm';
 import DotBackground from '../../Admin/Components/test';
 
 
+import AHH from '../../Admin/Components/ahhh'; //delete after
+
+
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
@@ -148,7 +151,7 @@ function MyTabs() {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={MatchForm} />
-			<Tab.Screen name="Settings" component={DotBackground}  options={{headerShown:false}}/>
+			<Tab.Screen name="Settings" component={AHH}  options={{headerShown:false}}/>
 		</Tab.Navigator>
 	);
 }
