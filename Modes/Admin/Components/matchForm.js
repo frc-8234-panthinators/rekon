@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Animated, View, StyleSheet, PanResponder, Text, Dimensions, Button, TouchableOpacity,} from 'react-native';
+import {Alert, Animated, View, StyleSheet, PanResponder, Text, Dimensions, Button, TouchableOpacity,} from 'react-native';
 import DotBackground from './test';
 //import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -10,7 +10,6 @@ export default function MatchForm(){
   const isClicked = true; //adds borders and dots used to drag to resize, make this active on click
   //const [isClicked, setIsClicked] = useState(false);
   //const toggleSwitch = () => setIsClicked(previousState => !previousState);
-
   
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
@@ -52,11 +51,10 @@ export default function MatchForm(){
             <Animated.View style={{transform: [{translateX: pan.x}, {translateY: pan.y}],}} {...panResponder.panHandlers}>
                 
                 <View style={[styles.outBox, {height: outBoxHeight, width: outBoxWidth}]}>
-                    
+                 
                     <View style={[isClicked && styles.dot, styles.topRightDot]}/>
                     <View style={[isClicked && styles.dot, styles.topLeftDot]}/>
                     
-
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                             <View style={[styles.box, {height: boxHeight, width: boxWidth}, isClicked && styles.borderChange]} />
                         </View>
