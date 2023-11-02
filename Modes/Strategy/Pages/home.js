@@ -13,6 +13,7 @@ import DotBackground from '../../Admin/Components/test';
 
 
 import AHH from '../../Admin/Components/ahhh'; //delete after
+import AnotherTest from '../../Admin/Components/anotherTest';
 
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -147,7 +148,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
+			<Tab.Screen name="Home" component={AnotherTest}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={MatchForm} />

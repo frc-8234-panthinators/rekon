@@ -30,9 +30,7 @@ function Test() {
   //const setIsClickedFalse = () => {
   //  setIsClicked(false);
   //}
-  const logDotClick = (dotName) => {
-    console.log("dot");
-  }
+
 
 
   const translateX = useSharedValue(0);
@@ -70,28 +68,38 @@ function Test() {
     },
   });
 
-  const boxHeight = 120;
-  const boxWidth = 150;
-  const outBoxHeight = boxHeight +15;
-  const outBoxWidth = boxWidth + 15;
+  
+const [boxHeight, setBoxHeight] = useState(200);
+const [boxWidth, setBoxWidth] = useState(100);
 
+
+ const logDotClick = (event) => {
+    console.log("dot");
+
+
+  }
+
+
+ 
+  
   return (
     
     <View style={{ flex: 1 }}>
       <PanGestureHandler onGestureEvent={gestureHandler}>
-        <Animated.View style={[animatedStyle,]}>
-          <View style={[styles.outBox, {height: outBoxHeight, width: outBoxWidth}]}>
+        <Animated.View style={[animatedStyle]}>
+          <View style={[styles.outBox, {height: boxHeight + 15, width: boxWidth + 15},]}>
 
-
-            <Pressable onPress={logDotClick} style={[isClicked && styles.dot, styles.topLeftDot]} />
+            <PanGestureHandler onGestureEvent={logDotClick}>
+              <View style={[isClicked && styles.dot, styles.topLeftDot]} />
+            </PanGestureHandler>
             <View style={[isClicked && styles.dot, styles.topRightDot]} />
 
             <TapGestureHandler onGestureEvent={onClick} numberOfTaps={1}>
               <Animated.View style={[styles.userBox, {height: boxHeight, width: boxWidth}, isClicked && styles.borderChange]}/>
             </TapGestureHandler>
 
-              <View style={[isClicked && styles.dot, styles.bottomLeftDot]} />
-              <View style={[isClicked && styles.dot, styles.bottomRightDot]} />
+            <View style={[isClicked && styles.dot, styles.bottomLeftDot]} />
+            <View style={[isClicked && styles.dot, styles.bottomRightDot]} />
 
 
 
@@ -105,7 +113,7 @@ function Test() {
 
 
 
-export default function AHH(){
+export default function AnotherTest(){
 
 
   return(
