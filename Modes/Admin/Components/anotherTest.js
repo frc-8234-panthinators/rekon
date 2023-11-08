@@ -69,6 +69,15 @@ function Test() {
   });
 
   
+
+
+
+
+
+
+
+
+
 const [boxHeight, setBoxHeight] = useState(200);
 const [boxWidth, setBoxWidth] = useState(100);
 
@@ -79,6 +88,54 @@ const [boxWidth, setBoxWidth] = useState(100);
 
   }
 
+  const growGesture = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
+      ctx.startHeight = height.value;
+    },
+    onActive: (event, ctx) => {
+      let newHeight = ctx.startHeight - event.translationY;
+      newHeight = Math.max(50, newHeight); // minimum height
+      newHeight = Math.min(300, newHeight); // maximum height
+      height.value = newHeight;
+    },
+  });
+
+  const animatedGrowStyle = useAnimatedStyle(() => {
+    return {
+      height: height.value,
+    };
+  });
+
+  const topLeftDotGestureHandler = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
+      ctx.startHeight = boxHeight;
+      ctx.startY = translateY.value;
+    },
+    onActive: (event, ctx) => {
+      let newHeight = ctx.startHeight - event.translationY;
+      newHeight = Math.max(50, newHeight); // minimum height
+      newHeight = Math.min(300, newHeight); // maximum height
+  
+      if (newHeight !== 50 && newHeight !== 300) {
+        translateY.value = ctx.startY + event.translationY / 2; // move up at half the speed
+      }
+  
+      if (event.translationY > 0) { // if dragging down
+        translateY.value = ctx.startY + event.translationY; // move down at the same speed
+      }
+  
+      setBoxHeight(newHeight);
+    },
+  });
+  
+
+
+
+
+
+
+
+
 
  
   
@@ -86,11 +143,11 @@ const [boxWidth, setBoxWidth] = useState(100);
     
     <View style={{ flex: 1 }}>
       <PanGestureHandler onGestureEvent={gestureHandler}>
-        <Animated.View style={[animatedStyle]}>
+        <Animated.View style={[animatedStyle, ]}>
           <View style={[styles.outBox, {height: boxHeight + 15, width: boxWidth + 15},]}>
 
             <PanGestureHandler onGestureEvent={logDotClick}>
-              <View style={[isClicked && styles.dot, styles.topLeftDot]} />
+              <Animated.View style={[isClicked && styles.dot, styles.topLeftDot]} />
             </PanGestureHandler>
             <View style={[isClicked && styles.dot, styles.topRightDot]} />
 

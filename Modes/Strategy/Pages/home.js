@@ -14,6 +14,7 @@ import DotBackground from '../../Admin/Components/test';
 
 import AHH from '../../Admin/Components/ahhh'; //delete after
 import AnotherTest from '../../Admin/Components/anotherTest';
+import Resize from '../../Admin/Components/moveableBox';
 
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -152,7 +153,7 @@ function MyTabs() {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={MatchForm} />
-			<Tab.Screen name="Settings" component={AHH}  options={{headerShown:false}}/>
+			<Tab.Screen name="Settings" component={Resize}  options={{headerShown:false}}/>
 		</Tab.Navigator>
 	);
 }
