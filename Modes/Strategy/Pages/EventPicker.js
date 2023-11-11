@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     event: {
         backgroundColor: Colors.tab,
         borderRadius: 10,
-        height: Dimensions.get('window').height * 0.3,
+        minHeight: Dimensions.get('window').height * 0.3,
         width: '100%',
         padding: 10,
         paddingTop: 0,
