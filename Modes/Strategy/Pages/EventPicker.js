@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, TextInput, View, ScrollView, Button, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import Colors from '../../../colors';
 import { useState, useEffect } from 'react';
 import ky from 'ky';
@@ -32,7 +32,11 @@ export default function EventPicker({ route, navigation }) {
     });
 
     if (isLoading) {
-        return <Text style={styles.buttonText}>Loading...</Text>; // Or your custom spinner
+        return (
+            <View style={styles.center}>
+                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.subText} />
+            </View>
+        ) 
     }
 
     return (
@@ -57,6 +61,14 @@ const styles = StyleSheet.create({
         width: '100%',
         display: 'flex',
         alignItems: 'center',
+    },
+    center: {
+        backgroundColor: Colors.background,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     padding: {
         width: '90%',
