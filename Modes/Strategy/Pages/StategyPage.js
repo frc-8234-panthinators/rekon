@@ -9,6 +9,11 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 import StratSettings from './stratSettings';
 import MyTabBar from '../Components/StratTabBar';
+import VisualView from '../Components/DataVis';
+import Search from './Search';
+import EventPicker from './EventPicker';
+import YearPicker from './YearPicker';
+import ErrorPage from '../../CommonComponents/ErrorPage';
 
 
 
@@ -50,16 +55,7 @@ function SettingsScreen(props) {
 	};
 
     return (
-
-
-
-
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
-            <Text>Home!</Text>
-            <Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
-        </View>
-
-
+        <Search navigation={props.navigation}/>
 	);
 }
 
@@ -87,6 +83,10 @@ export default function Strategy() {
                 cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
+				<Stack.Screen name="EventPicker" component={EventPicker} />
+				<Stack.Screen name="YearPicker" component={YearPicker} />
+				<Stack.Screen name="VisualView" component={VisualView} />
+				<Stack.Screen name="ErrorPage" component={ErrorPage} />
       	        <Stack.Screen name="Test" component={TestScreen} />
 			</Stack.Navigator>
 		
