@@ -12,7 +12,7 @@ export default function Search(props) {
     }
     return (
         <View style={styles.rootView}>
-            <TextInput style={styles.search} placeholder="Search" placeholderTextColor={Colors.subText} onSubmitEditing={navigateToYearPick}></TextInput>
+            <TextInput keyboardType="numeric" style={styles.search} placeholder="Search" placeholderTextColor={Colors.subText} onSubmitEditing={navigateToYearPick}></TextInput>
         </View>
     )
 }
