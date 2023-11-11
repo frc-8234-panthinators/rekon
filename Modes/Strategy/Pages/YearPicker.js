@@ -15,6 +15,7 @@ export default function YearPicker({ route, navigation }) {
     const [yearImages, setYearImages] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [doesTeamExist, setDoesTeamExist] = useState(true);
+    const [serverMessage, setServerMessage] = useState('');
 
     function navigateToEventPick(year) {
         navigation.navigate('EventPicker', {teamId: team, year: year});
@@ -30,8 +31,11 @@ export default function YearPicker({ route, navigation }) {
                     let imageList = [];
                     for (const year of data) {
                         const images = await ky.get(`${Constants.API_URL}/getTeamMedia?team=${team}&year=${year}`).json();
-                        if (images != 'no_media') {
-                            imageList.push(images);
+                        if (images.message == 'build_cache') {
+                            setServerMessage('Building cache, please wait...');
+                        }
+                        if (images.media != 'no_media') {
+                            imageList.push(images.media);
                         } else {
                             imageList.push('no_media');
                         }
@@ -62,6 +66,7 @@ export default function YearPicker({ route, navigation }) {
     if (isLoading) {
         return (
             <View style={styles.center}>
+                <Text style={styles.messageText}>{serverMessage}</Text>
                 <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.subText} />
             </View>
         ) 
@@ -135,6 +140,11 @@ const styles = StyleSheet.create({
         color: Colors.subText,
         padding: 5,
         fontSize: normalize(30),
+    },
+    messageText: {
+        color: Colors.subText,
+        padding: 5,
+        fontSize: normalize(24),
     },
     cardImage: {
         width: '100%',
