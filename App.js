@@ -5,6 +5,8 @@ import Scouting from './Modes/Scouting/Pages/ScoutPage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { StatusBar } from 'expo-status-bar'
+
 
 const Stack = createStackNavigator();
 
@@ -20,10 +22,11 @@ function ModeStack()  {
   )
 }
 
-export default function App(){
+export default function App() {
   return(
     <NavigationContainer>
       <ModeStack />
+      <StatusBar style="light" translucent={true}/>
     </NavigationContainer>
   )
 }

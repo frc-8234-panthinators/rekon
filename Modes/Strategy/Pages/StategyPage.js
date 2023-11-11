@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Button, TouchableOpacity } from 'react-native';
+import { Text, View, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -49,13 +49,11 @@ function HomeScreen(props) {
 	);
 }
 
-function SettingsScreen(props) {
-    const gotoTestStackScreen = () => {
-		props.navigation.navigate('AdminMode');
-	};
-
+function SearchScreen(props) {
     return (
-        <Search navigation={props.navigation}/>
+		<View style={styles.padding}>
+        	<Search navigation={props.navigation}/>
+		</View>
 	);
 }
 
@@ -68,7 +66,7 @@ function MyTabs() {
 			<Tab.Screen name="StratHome" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
-            <Tab.Screen name="Search" component={SettingsScreen} />
+            <Tab.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
 			<Tab.Screen name="StratSettings" component={StratSettings} />
 		</Tab.Navigator>
 	);
@@ -80,7 +78,7 @@ export default function Strategy() {
 	return (
 		
 			<Stack.Navigator initialRouteName="Tabs" independant={true}   screenOptions={{
-                cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
+                cardStyle: { backgroundColor: (Colors.background)} // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
 				<Stack.Screen name="EventPicker" component={EventPicker} />
@@ -93,21 +91,9 @@ export default function Strategy() {
 	);
 }
 
-
-
-
-/* import { Text, View, Button, TouchableOpacity } from 'react-native';
-
-
-export default function Home(props) {
-
-    const gotoTestStackScreen = () => {
-		props.navigation.navigate('Test');
-	};
-	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-			<Text>Home!</Text>
-			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
-		</View>
-	);
-}*/
+const styles = StyleSheet.create({
+	padding: {
+		backgroundColor: Colors.background,
+		paddingTop: 50,
+	},
+});
