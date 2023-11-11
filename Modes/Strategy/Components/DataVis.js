@@ -63,10 +63,12 @@ export default function VisualView({ route, navigation }) {
                                             {
                                                 data: graphData.data,
                                             }
+                                            
                                         ],
                                     }}
                                     width={Dimensions.get("window").width*0.86}
                                     height={Dimensions.get("window").height * 0.4}
+                                    fromZero={true}
                                     yAxisSuffix="pts"
                                     yAxisInterval={1} // optional, defaults to 1
                                     chartConfig={{
