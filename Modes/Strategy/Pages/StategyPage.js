@@ -14,6 +14,7 @@ import Search from './Search';
 import EventPicker from './EventPicker';
 import YearPicker from './YearPicker';
 import ErrorPage from '../../CommonComponents/ErrorPage';
+import TemplateBuilder from './TemplateBuilder';
 
 
 
@@ -84,6 +85,7 @@ export default function Strategy() {
 				<Stack.Screen name="EventPicker" component={EventPicker} />
 				<Stack.Screen name="YearPicker" component={YearPicker} />
 				<Stack.Screen name="VisualView" component={VisualView} />
+				<Stack.Screen name="TemplateBuilder" component={TemplateBuilder} />
 				<Stack.Screen name="ErrorPage" component={ErrorPage} />
       	        <Stack.Screen name="Test" component={TestScreen} />
 			</Stack.Navigator>

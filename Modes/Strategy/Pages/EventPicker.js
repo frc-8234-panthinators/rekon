@@ -15,7 +15,7 @@ export default function EventPicker({ route, navigation }) {
     const [isLoading, setIsLoading] = useState(true);
 
     function navigateToVisualization(event) {
-        navigation.navigate('VisualView', {teamId: team, event: event});
+        navigation.navigate('VisualView', {teamId: team, event: event, year: year});
     }
 
     useEffect(() => {
@@ -24,7 +24,11 @@ export default function EventPicker({ route, navigation }) {
                 const data = await ky.get(`${Constants.API_URL}/getTeamEvents?team=${team}&year=${year}`).json();
                 setEventData(data);
             } catch (error) {
-                navigation.navigate('ErrorPage', {error: error.message});
+                if (error.name == 'TypeError') {
+                    navigation.navigate('ErrorPage', {error: 'Lost connection to server'});
+                } else {
+                    navigation.navigate('ErrorPage', {error: error.name + '\n' + error.message});
+                }
             }
             setIsLoading(false);
         };

@@ -1,18 +1,39 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, ScrollView, Button, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator, Pressable } from 'react-native';
 import Colors from '../../../colors';
 import {LineChart, PieChart} from "react-native-chart-kit";
 import { useState } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
 import { normalize } from '../../CommonComponents/fontScaler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const storeData = async (key, value) => {
+    try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+        navigation.navigate('ErrorPage', {error: e.name + '\n' + e.message});
+    }
+};
+
+const getData = async (key) => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(key);
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+        navigation.navigate('ErrorPage', {error: e.name + '\n' + e.message});
+    }
+  };
 
 export default function VisualView({ route, navigation }) {
-    let [data, setData] = useState({graphs: []});
+    let [tbaData, setTbaData] = useState({graphs: []});
     let [isLoading, setIsLoading] = useState(true);
     let [noData, setNoData] = useState(false);
+    let [noTemplate, setNoTemplate] = useState(false);
     const team = route.params.teamId;
     const event = route.params.event;
+    const year = route.params.year;
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -25,14 +46,31 @@ export default function VisualView({ route, navigation }) {
                     setNoData(true);
                     return;
                 }
-                setData(data);
+                setTbaData(data);
             } catch (error) {
-                navigation.navigate('ErrorPage', {error: error.message});
+                if (error.name == 'TypeError') {
+                    navigation.navigate('ErrorPage', {error: 'Lost connection to server'});
+                } else {
+                    navigation.navigate('ErrorPage', {error: error.name + '\n' + error.message});
+                }
             }
-            setIsLoading(false);
+            if (await getData(`visTemplate${year}`) == null) {
+                setNoTemplate(true);
+            } else {
+                setIsLoading(false);
+            }
         }
         fetchData();
     }, []);
+
+    if (noTemplate) {
+        return (
+            <View style={styles.center}>
+                <Text style={styles.text}>No visualization template for this year</Text>
+                <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year})}}><Text style={styles.text}>Create New Template</Text></Pressable>
+            </View>
+        )
+    }
 
     if (noData) {
         return (
@@ -165,5 +203,15 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         borderRadius: 10,
+    },
+    button: {
+        backgroundColor: Colors.tab,
+        borderRadius: 10,
+        padding: 10,
+    },
+    text: {
+        color: Colors.subText,
+        fontSize: normalize(18),
+        padding: 10,
     }
   });
