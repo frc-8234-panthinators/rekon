@@ -67,7 +67,7 @@ export default function VisualView({ route, navigation }) {
         return (
             <View style={styles.center}>
                 <Text style={styles.text}>No visualization template for this year</Text>
-                <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year})}}><Text style={styles.text}>Create New Template</Text></Pressable>
+                <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Create New Template</Text></Pressable>
             </View>
         )
     }
