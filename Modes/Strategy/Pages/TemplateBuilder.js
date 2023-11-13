@@ -11,7 +11,13 @@ import { Picker } from '@react-native-picker/picker';
 
 
 export default function TemplateBuilder({ route, navigation }) {
-    const [selected, setSelected] = useState("");
+    const [selectedSource, setSelectedSource] = useState("");
+    const [selectedData, setSelectedData] = useState("");
+    const [dataPoints, setDataPoints] = useState([]);
+    const [dataLoaded, setDataLoaded] = useState("");
+    const team = route.params.team;
+    const event = route.params.event;
+
     const sources = [
         {label: "(Select a source)", value: ""},
         {label: "The Blue Alliance", value: "tba"},
@@ -19,12 +25,29 @@ export default function TemplateBuilder({ route, navigation }) {
         {label: "Match Forms", value: "match"},
     ]
 
+    if (selectedSource == "tba" && dataLoaded != "tba") {
+        const fetchData = async () => {
+            try {
+                const data = await ky.get(`${Constants.API_URL}/getTeamMatchData?team=${team}&event=${event}`).json();
+                setDataPoints(data);
+                setDataLoaded('tba');
+            } catch (error) {
+                if (error.name == 'TypeError') {
+                    navigation.navigate('ErrorPage', {error: 'Lost connection to server'});
+                } else {
+                    navigation.navigate('ErrorPage', {error: error.name + '\n' + error.message});
+                }
+            }
+        };
+        fetchData();
+    }
+
     return(
         <View style={styles.rootView}>
-            <Text style={styles.text}>Selected: {selected}</Text>
+            <Text style={styles.text}>Selected: {selectedSource}</Text>
             <Picker
-                selectedValue={selected}
-                onValueChange={(itemValue, itemIndex) => setSelected(itemValue)}
+                selectedValue={selectedSource}
+                onValueChange={(itemValue, itemIndex) => setSelectedSource(itemValue)}
                 dropdownIconColor={Colors.subText}
                 style={styles.picker}
             >
@@ -32,6 +55,17 @@ export default function TemplateBuilder({ route, navigation }) {
                     return (<Picker.Item label={item.label} value={item.value} key={index}/>) 
                 })}
             </Picker>
+            {<Picker
+                selectedValue={selectedData}
+                onValueChange={(itemValue, itemIndex) => setSelectedData(itemValue)}
+                dropdownIconColor={Colors.subText}
+                style={styles.picker}
+            >
+                {dataPoints.map((item, index) => {
+                    return (<Picker.Item label={item.label} value={item.value} key={index}/>)
+                })}
+            </Picker>
+            }
         </View>
       )
 }
