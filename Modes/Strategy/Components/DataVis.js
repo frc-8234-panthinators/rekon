@@ -24,16 +24,22 @@ const getData = async (key) => {
     } catch (e) {
         navigation.navigate('ErrorPage', {error: e.name + '\n' + e.message});
     }
-  };
+};
 
 export default function VisualView({ route, navigation }) {
     let [tbaData, setTbaData] = useState({graphs: []});
     let [isLoading, setIsLoading] = useState(true);
     let [noData, setNoData] = useState(false);
     let [noTemplate, setNoTemplate] = useState(false);
+    let [template, setTemplate] = useState([]);
     const team = route.params.teamId;
     const event = route.params.event;
     const year = route.params.year;
+
+    function resetTemplate() {
+        storeData(`visTemplate${year}`, []);
+        setTemplate([]);
+    }
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -56,18 +62,35 @@ export default function VisualView({ route, navigation }) {
             }
             if (await getData(`visTemplate${year}`) == null) {
                 setNoTemplate(true);
+                setTemplate([]);
             } else {
-                setIsLoading(false);
+                //setIsLoading(false);
+                setNoTemplate(false);
+                const template = await getData(`visTemplate${year}`);
+                setTemplate(template);
             }
         }
-        fetchData();
-    }, []);
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchData();
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     if (noTemplate) {
         return (
             <View style={styles.center}>
                 <Text style={styles.text}>No visualization template for this year</Text>
                 <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Create New Template</Text></Pressable>
+            </View>
+        )
+    } else if (!noTemplate) {
+        return (
+            <View style={styles.center}>
+                {template.map((data, index) => {
+                    return (<Text style={styles.text}>{data.source} {"->"} {data.dataPoint} {"->"} {data.dataType}</Text>)
+                })}
+                <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Add more data points</Text></Pressable>
+                <Pressable style={styles.button} onPress={resetTemplate}><Text style={styles.text}>Reset</Text></Pressable>
             </View>
         )
     }
