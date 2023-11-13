@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { normalize } from '../../CommonComponents/fontScaler';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EmbeddedView from '../Components/EmbeddedVis';
 
 const storeData = async (key, value) => {
     try {
@@ -30,8 +31,11 @@ const getData = async (key) => {
 export default function TemplateBuilder({ route, navigation }) {
     const [selectedSource, setSelectedSource] = useState("");
     const [selectedData, setSelectedData] = useState("");
+    const [previewLoaded, setPreviewLoaded] = useState(false);
     const [dataPoints, setDataPoints] = useState([{label: "(Select a data point)", value: ""}]);
     const [dataLoaded, setDataLoaded] = useState("");
+    const [matchData, setMatchData] = useState([]);
+    const [previewData, setPreviewData] = useState(null);
     const team = route.params.team;
     const event = route.params.event;
     const year = route.params.year;
@@ -65,6 +69,7 @@ export default function TemplateBuilder({ route, navigation }) {
         const fetchData = async () => {
             try {
                 const data = await ky.get(`${Constants.API_URL}/getTeamMatchData?team=${team}&event=${event}`).json();
+                setMatchData(data);
                 const dataPoints = [{label: "(Select a data point)", value: ""}];
                 const dataTracker = [];
                 for (const match of data) {
@@ -99,6 +104,30 @@ export default function TemplateBuilder({ route, navigation }) {
         fetchData();
     }
 
+    if (selectedData != "" && !previewLoaded) {
+        const graphData = {
+            "title": selectedData.label,
+            "type": "line",
+            "labels": [],
+            "data": []
+        }
+        for (const match of matchData) {
+            let tempMatch = [];
+            let tempSelected = [];
+            if (selectedData.value.includes('/')) {
+                tempMatch = match.score_breakdown;
+                tempSelected = selectedData.value.split('/')[1];
+            } else {
+                tempMatch = match;
+                tempSelected = selectedData.value;
+            }
+            graphData.labels.push("Qual " + match.match_number);
+            graphData.data.push(tempMatch[tempSelected])
+        }
+        setPreviewData({graphs: [graphData]})
+        setPreviewLoaded(true);
+    }
+
     return(
         <View style={styles.rootView}>
             <Text style={styles.text}>Selected: {selectedSource}</Text>
@@ -114,7 +143,7 @@ export default function TemplateBuilder({ route, navigation }) {
             </Picker>
             <Picker
                 selectedValue={selectedData}
-                onValueChange={(itemValue, itemIndex) => setSelectedData(itemValue)}
+                onValueChange={(itemValue, itemIndex) => {setSelectedData(itemValue); setPreviewLoaded(false);}}
                 dropdownIconColor={Colors.subText}
                 style={styles.picker}
             >
@@ -122,7 +151,7 @@ export default function TemplateBuilder({ route, navigation }) {
                     return (<Picker.Item label={item.label + ' -> ' + item.type} value={item} key={index}/>)
                 })}
             </Picker>
-            {}
+            <EmbeddedView data={previewData}/>
             <Pressable style={styles.button} onPress={saveAndReturn}><Text style={styles.text}>Add Data Point</Text></Pressable>
         </View>
       )
