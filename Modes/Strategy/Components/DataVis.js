@@ -7,6 +7,7 @@ import ky from 'ky';
 import Constants from '../../../constants'
 import { normalize } from '../../CommonComponents/fontScaler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import WidgetCarousel from './WidgetCarousel';
 
 const storeData = async (key, value) => {
     try {
@@ -27,11 +28,14 @@ const getData = async (key) => {
 };
 
 export default function VisualView({ route, navigation }) {
-    let [tbaData, setTbaData] = useState({graphs: []});
+    let [tbaData, setTbaData] = useState({});
     let [isLoading, setIsLoading] = useState(true);
     let [noData, setNoData] = useState(false);
     let [noTemplate, setNoTemplate] = useState(false);
     let [template, setTemplate] = useState([]);
+    let [visLoaded, setVisLoaded] = useState(false);
+    let [visData, setVisData] = useState([]);
+    let [carouselVisible, setCarouselVisible] = useState(false);
     const team = route.params.teamId;
     const event = route.params.event;
     const year = route.params.year;
@@ -41,8 +45,13 @@ export default function VisualView({ route, navigation }) {
         setTemplate([]);
     }
 
+    function toggleWYSIWYGcarousel() {
+        setCarouselVisible(!carouselVisible);
+    }
+
     React.useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
             try {
                 const data = await ky.get(`${Constants.API_URL}/getTeamMatchData?team=${team}&event=${event}`).json();
                 if (data.error) {
@@ -60,14 +69,15 @@ export default function VisualView({ route, navigation }) {
                     navigation.navigate('ErrorPage', {error: error.name + '\n' + error.message});
                 }
             }
-            if (await getData(`visTemplate${year}`) == null) {
+            const template = await getData(`visTemplate${year}`);
+            if (template == null || template.length == 0) {
                 setNoTemplate(true);
-                setTemplate([]);
+                console.log('no template');
             } else {
-                //setIsLoading(false);
+                setIsLoading(false);
                 setNoTemplate(false);
-                const template = await getData(`visTemplate${year}`);
                 setTemplate(template);
+                setVisLoaded(false);
             }
         }
         const unsubscribe = navigation.addListener('focus', () => {
@@ -76,21 +86,61 @@ export default function VisualView({ route, navigation }) {
         return unsubscribe;
     }, [navigation]);
 
+    if (!visLoaded && template.length != 0) {
+        let graphs = [];
+        for (const dataPoint of template) {
+            if (dataPoint.widget = "line") {
+                const graphData = {
+                    "title": dataPoint.label,
+                    "type": "line",
+                    "labels": [],
+                    "data": []
+                }
+                for (const match of tbaData) {
+                    let tempMatch = [];
+                    let tempSelected = [];
+                    let currentAlliance = '';
+                    if (match.alliances.blue.team_keys.includes(`frc${team}`)) {
+                        currentAlliance = 'blue';
+                    } else {
+                        currentAlliance = 'red';
+                    }
+                    if (dataPoint.value.includes('/')) {
+                        tempMatch = match.score_breakdown[currentAlliance];
+                        tempSelected = dataPoint.value.split('/')[1];
+                    } else { 
+                        tempMatch = match;
+                        tempSelected = dataPoint.value;
+                    }
+                    let prefix;
+                    if (match.comp_level == "qm") {
+                        prefix = "Qual ";
+                    } else if (match.comp_level == "qf") {
+                        prefix = "Quarter-Final ";
+                    } else if (match.comp_level == "sf") {
+                        prefix = "Semi-Final ";
+                    } else if (match.comp_level == "f") {
+                        prefix = "Final ";
+                    }
+                    graphData.labels.push(prefix + match.match_number);
+                    if (tempMatch[tempSelected] == null) {
+                        graphData.data.push(0);
+                    } else {
+                        graphData.data.push(tempMatch[tempSelected])
+                    }
+                }
+                graphs.push(graphData);
+            }
+        }
+        setVisData({graphs: graphs})
+        setVisLoaded(true);
+    }
+
     if (noTemplate) {
         return (
             <View style={styles.center}>
                 <Text style={styles.text}>No visualization template for this year</Text>
-                <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Create New Template</Text></Pressable>
-            </View>
-        )
-    } else if (!noTemplate) {
-        return (
-            <View style={styles.center}>
-                {template.map((data, index) => {
-                    return (<Text style={styles.text}>{data.source} {"->"} {data.dataPoint} {"->"} {data.dataType}</Text>)
-                })}
-                <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Add more data points</Text></Pressable>
-                <Pressable style={styles.button} onPress={resetTemplate}><Text style={styles.text}>Reset</Text></Pressable>
+                <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Create New Template</Text></Pressable>Edit Template
             </View>
         )
     }
@@ -109,11 +159,22 @@ export default function VisualView({ route, navigation }) {
                 <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.subText} />
             </View>
         ) 
-    } else {
+    } else if (template.length != 0 && visLoaded) {
         return (
+            <View style={styles.flexFooter}>
+                <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
+                    <View style={styles.subRootView}>
+                        <Pressable style={styles.button} onPress={toggleWYSIWYGcarousel}><Text style={styles.text}>Edit Template</Text></Pressable>
+                    </View>
+                </ScrollView>
+                {carouselVisible ? <WidgetCarousel/> : null}
+            </View>
+        )
+        /*return (
             <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
                 <View style={styles.subRootView}>
-                    {data.graphs.map((graphData, index) => {
+                    {visData.graphs.map((graphData, index) => {
+                        console.log(graphData)
                         if (graphData.type == "line") {
                             return(
                                 <View style={styles.viewWrapper} horizontal={true}>
@@ -178,19 +239,26 @@ export default function VisualView({ route, navigation }) {
                             )
                         }
                     })}
+                    <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Add new data point</Text></Pressable>
+                    <Pressable style={styles.button} onPress={resetTemplate}><Text style={styles.text}>Reset Template</Text></Pressable>
                 </View>
             </ScrollView>
-        );
+        );*/
     }
 }
 
 const styles = StyleSheet.create({
+    flexFooter: {
+        flex: 1,
+        backgroundColor: Colors.background,
+        height: Dimensions.get('window').height
+    },
     rootView: {
         backgroundColor: Colors.background,
         width: '100%',
+        flexGrow: 1,
         display: 'flex',
         alignItems: 'center',
-        gap: 10,
     },
     center: {
         backgroundColor: Colors.background,
@@ -231,6 +299,9 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.tab,
         borderRadius: 10,
         padding: 10,
+        width: '90%',
+        display: 'flex',
+        alignItems: 'center',
     },
     text: {
         color: Colors.subText,

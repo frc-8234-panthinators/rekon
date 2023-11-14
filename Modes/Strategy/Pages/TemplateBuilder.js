@@ -47,7 +47,7 @@ export default function TemplateBuilder({ route, navigation }) {
         const dataPoint = selectedData.value;
         const dataType = selectedData.type;
         const dataLabel = selectedData.label;
-        const data = {source: selectedSource, dataPoint: dataPoint, dataType: dataType, dataLabel: dataLabel};
+        const data = {source: selectedSource, value: dataPoint, type: dataType, label: dataLabel, widget: selectedData.widget};
         if (await getData(`visTemplate${year}`) == null) {
             await storeData(`visTemplate${year}`, [data]);
         } else {
@@ -81,12 +81,24 @@ export default function TemplateBuilder({ route, navigation }) {
                                 for (const scoreKey of scoreKeys) {
                                     if (!dataTracker.includes(scoreKey)) {
                                         dataTracker.push(scoreKey);
-                                        dataPoints.push({label: scoreKey, value: `scoreBreakdown/${scoreKey}`, type: typeof match[key].blue[scoreKey]});
+                                        let widget;
+                                        if (typeof match[key].blue[scoreKey] == "string" || typeof match[key].blue[scoreKey] == "boolean") {
+                                            widget = "text";
+                                        } else {
+                                            widget = "line";
+                                        }
+                                        dataPoints.push({label: scoreKey, value: `scoreBreakdown/${scoreKey}`, type: typeof match[key].blue[scoreKey], widget: widget});
                                     }
                                 }
                             } else {
                                 dataTracker.push(key);
-                                dataPoints.push({label: key, value: key, type: typeof match[key]});
+                                let widget;
+                                if (typeof match[key] == "string" || typeof match[key] == "boolean") {
+                                    widget = "text";
+                                } else {
+                                    widget = "line";
+                                }
+                                dataPoints.push({label: key, value: key, type: typeof match[key], widget: widget});
                             }
                         }
                     }
@@ -94,11 +106,7 @@ export default function TemplateBuilder({ route, navigation }) {
                 setDataPoints(dataPoints);
                 setDataLoaded('tba');
             } catch (error) {
-                if (error.name == 'TypeError') {
-                    navigation.navigate('ErrorPage', {error: 'Lost connection to server'});
-                } else {
-                    navigation.navigate('ErrorPage', {error: error.name + '\n' + error.message});
-                }
+                navigation.navigate('ErrorPage', {error: error.name + '\n' + error.message});
             }
         };
         fetchData();
@@ -114,8 +122,14 @@ export default function TemplateBuilder({ route, navigation }) {
         for (const match of matchData) {
             let tempMatch = [];
             let tempSelected = [];
+            let currentAlliance = '';
+            if (match.alliances.blue.team_keys.includes(`frc${team}`)) {
+                currentAlliance = 'blue';
+            } else {
+                currentAlliance = 'red';
+            }
             if (selectedData.value.includes('/')) {
-                tempMatch = match.score_breakdown;
+                tempMatch = match.score_breakdown[currentAlliance];
                 tempSelected = selectedData.value.split('/')[1];
             } else {
                 tempMatch = match;
@@ -161,7 +175,7 @@ const styles = StyleSheet.create({
     rootView: {
         backgroundColor: Colors.background,
         width: '100%',
-        minHeight: '100%',
+        height: '100%',
         display: 'flex',
         padding: 10,
         alignItems: 'center',
@@ -182,6 +196,8 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '90%',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 20
     }
 });
