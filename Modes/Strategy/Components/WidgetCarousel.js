@@ -5,32 +5,49 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle} from 'react-nat
 import { useState } from 'react';
 import * as Haptics from 'expo-haptics';
 
-export default function WidgetCarousel() {
+export default function WidgetCarousel(props) {
   const [floatingWidgetVisible, setFloatingWidgetVisible] = useState(false);
-  const [floatingWidgetPosition, setFloatingWidgetPosition] = useState({ x: 0, y: 0 });
+  const floatingWidgetPosition = useSharedValue({ x: 0, y: 0 });
+  const [hasHeld, setHasHeld] = useState(false);
+
+  const widgetPositions = props.widgetPositions;
 
   const longPressGesture = Gesture.LongPress({ minDurationMs: 1000 })
+    .runOnJS(true)
+    .shouldCancelWhenOutside(false)
+    .maxDistance(100000)
+    .onStart((event) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      setFloatingWidgetVisible(true);
+      floatingWidgetPosition.value = { x: event.x, y: event.y };
+      setHasHeld(true);
+    })
+    .onTouchesMove((event) => {
+      if (!hasHeld) return;
+      floatingWidgetPosition.value = { x: event.allTouches[0].x, y: event.allTouches[0].y };
+      
+      for (const widget of widgetPositions) {
+        if (widget.x < event.allTouches[0].y ) {
+          break;
+        }
+      }
+    })
+    .onEnd(() => {
+      setHasHeld(false);
+    });
 
   const floatingWidgetStyle = useAnimatedStyle(() => {
     return {
-      transform: [
-        { translateX: withTiming(floatingWidgetPosition.x) },
-        { translateY: withTiming(floatingWidgetPosition.y) },
-      ],
+      left: floatingWidgetPosition.value.x - 100,
+      top: floatingWidgetPosition.value.y - 100,
     };
   });
-
-  const panGesture = Gesture.Pan()
-    .onUpdate(({ translationX, translationY }) => {
-      setFloatingWidgetPosition({ x: translationX, y: translationY });
-    }
-  );
 
   return (
     <View style={styles.container}>
       <ScrollView horizontal={true}>
-        <GestureDetector>
-          <View style={styles.widget}>
+        <GestureDetector gesture={longPressGesture}>
+          <View style={[styles.widget,]}>
             <Text>Widget 1</Text>
           </View>
         </GestureDetector>
@@ -48,11 +65,9 @@ export default function WidgetCarousel() {
         </View>
       </ScrollView>
       {floatingWidgetVisible && (
-        <GestureDetector gesture={panGesture}>
-          <Animated.View style={[styles.floatingWidget, floatingWidgetStyle]}>
-            <Text>Floating Widget</Text>
-          </Animated.View>
-        </GestureDetector>
+        <Animated.View style={[styles.floatingWidget, floatingWidgetStyle]}>
+          <Text>Floating Widget</Text>
+        </Animated.View>
       )}
     </View>
   );

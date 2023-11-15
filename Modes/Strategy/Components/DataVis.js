@@ -36,6 +36,7 @@ export default function VisualView({ route, navigation }) {
     let [visLoaded, setVisLoaded] = useState(false);
     let [visData, setVisData] = useState([]);
     let [carouselVisible, setCarouselVisible] = useState(false);
+    let [widgetPositions, setWidgetPositions] = useState([]); // [x, y, width, height]
     const team = route.params.teamId;
     const event = route.params.event;
     const year = route.params.year;
@@ -138,9 +139,15 @@ export default function VisualView({ route, navigation }) {
 
     if (noTemplate) {
         return (
-            <View style={styles.center}>
-                <Text style={styles.text}>No visualization template for this year</Text>
-                <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Create New Template</Text></Pressable>Edit Template
+            <View style={styles.flexFooter}>
+                <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
+                    <View style={styles.subRootView}>
+                        <Text style={styles.visText} onLayout={(event => {
+                            setWidgetPositions([{x: event.nativeEvent.layout.x, y: event.nativeEvent.layout.y, w: event.nativeEvent.layout.width, h: event.nativeEvent.layout.height}]);
+                        })}>Drag a widget to begin</Text>
+                    </View>
+                </ScrollView>
+                <WidgetCarousel widgetPositions={widgetPositions}/>
             </View>
         )
     }
@@ -164,6 +171,7 @@ export default function VisualView({ route, navigation }) {
             <View style={styles.flexFooter}>
                 <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
                     <View style={styles.subRootView}>
+                        {noTemplate ? <Text style={styles.visText}>No template for this year</Text> : null}
                         <Pressable style={styles.button} onPress={toggleWYSIWYGcarousel}><Text style={styles.text}>Edit Template</Text></Pressable>
                     </View>
                 </ScrollView>
