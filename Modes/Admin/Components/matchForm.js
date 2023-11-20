@@ -1,144 +1,175 @@
-import React, {useRef} from 'react';
-import {Animated, View, StyleSheet, PanResponder, Text, Dimensions} from 'react-native';
-import DotBackground from './test';
+import React, { useState } from 'react';
+import { ScrollView, Pressable, Text, Modal, Button, View, StyleSheet, Dimensions } from 'react-native';
 
-
+import TextSection from './SurveyComponents/TextSection';
+import NumberSection from './SurveyComponents/NumberSection';
+import MultipleChoiceSection from './SurveyComponents/MultipleChoiceSection';
+import CheckboxSection from './SurveyComponents/CheckboxSection';
 
 export default function MatchForm(){
-  const pan = useRef(new Animated.ValueXY()).current;
-  const isClicked = true; //adds borders and dots used to drag to resize, make this active on click
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event([null, {dx: pan.x, dy: pan.y}]),
-      onPanResponderRelease: () => {
-        pan.extractOffset();
-      },
-    }),
-  ).current;
+  const [sections, setSections] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const addSection = (sectionType, sectionOptions = []) => {
+    setSections([...sections, { type: sectionType, options: sectionOptions }]);
+    setModalVisible(false);
+  };
 
+  const deleteSection = (index) => {
+    const newSections = [...sections];
+    newSections.splice(index, 1);
+    setSections(newSections);
+  };
 
+  const updateOptions = (index, newOptions) => {
+    const newSections = [...sections];
+    newSections[index].options = newOptions;
+    setSections(newSections);
+  };
 
+  return(
+    <View style={styles.container}>
+      <ScrollView>
 
-  const boxHeight = 100;
-  const boxWidth = 100;
-  
-  const outBoxHeight = boxHeight + 15;
-  const outBoxWidth = boxWidth + 15;
-
-  return (
-
-    <View>
-        
-        <View style={styles.container}>
-            <Animated.View style={{transform: [{translateX: pan.x}, {translateY: pan.y}],}}{...panResponder.panHandlers}>
-                
-                <View style={[styles.outBox, {height: outBoxHeight, width: outBoxWidth}]}>
-                    
-                    <View style={[isClicked && styles.dot, styles.topRightDot]}/>
-                    <View style={[isClicked && styles.dot, styles.topLeftDot]}/>
-                    
-
-                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                            <View style={[styles.box, {height: boxHeight, width: boxWidth}, isClicked && styles.borderChange]} />
-                        </View>
-
-                    <View style={[isClicked && styles.dot, styles.bottomRightDot]}/>
-                    <View style={[isClicked && styles.dot, styles.bottomLeftDot]}/>
-                    
-                    
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Pressable style={styles.modalPressables} onPress={() => addSection('text')}>
+                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+                  <Text>Add Text Section</Text>
                 </View>
-                
-            
-                
-            </Animated.View>
-        </View>
-        <DotBackground />
-    </View>
+              </Pressable>
+              <Pressable style={styles.modalPressables} onPress={() => addSection('multiple-choice', ['Option 1', 'Option 2'])}>
+                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+                  <Text>Add Multiple Choice Section</Text>
+                </View>
+              </Pressable>
+              <Pressable style={styles.modalPressables} onPress={() => addSection('checkbox', ['Option 1', 'Option 2'])}>
+                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+                  <Text>Add Checkbox Section</Text>
+                </View>
+              </Pressable>
+              <Pressable style={styles.modalPressables} onPress={() => addSection('number')}>
+                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+                  <Text>Add Number Section</Text>
+                </View>
+              </Pressable>
+              <Pressable style={[styles.modalPressables, {marginTop: 20}]} onPress={() => setModalVisible(false)}>
+                <Text>Cancel</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
 
-  );
-};
+        {sections.map((section, index) => (
+          <View key={index} style={styles.sections}>
+            {section.type === 'text' && (
+              <TextSection
+                content={section.content}
+                onChangeQuestion={(textQuestion) => {
+                  console.log('Text Question: ', textQuestion);
+                  const newSections = [...sections];
+                  newSections[index].content = textQuestion;
+                  setSections(newSections);
+                }}
+                onDelete={() => deleteSection(index)}
+              />
+            )}
+            {section.type === 'multiple-choice' && (
+              <MultipleChoiceSection
+                options={section.options}
+                onUpdateOptions={(newOptions) => updateOptions(index, newOptions)}
+                onDelete={() => deleteSection(index)}
+              />
+            )}
+            {section.type === 'number' && (
+              <NumberSection
+                content={section.content}
+                onChangeQuestion={(numberQuestion) => {
+                  console.log('Number Question: ', numberQuestion)
+                  const newSections = [...sections];
+                  newSections[index].content = numberQuestion;
+                  setSections(newSections);
+                }}
+                onDelete={() => deleteSection(index)}
+              />
+            )}
+            {section.type === 'checkbox' && (
+              <CheckboxSection
+                options={section.options}
+                onUpdateOptions={(newOptions) => updateOptions(index, newOptions)}
+                onDelete={() => deleteSection(index)}
+              />
+            )}
+            
+          </View>
+        ))}
+      </ScrollView>
+      <Pressable style={styles.addSectionPressable} onPress={() => setModalVisible(true)}>
+        <Text style={{color: 'white', fontSize: 20}}>Add New Section</Text>
+      </Pressable>
+    </View>
+  ); 
+}
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1,
-      
+  container: {
+    flex: 1,
+  },
+  sections: {
+    borderWidth: 1,
+    backgroundColor: '#8E9099',
+    margin: 10,
+    borderRadius: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-
-    outBox: {
-        height: 115,
-        width: 115,
-        //backgroundColor: 'red',
-        position: 'absolute',
-        //flex: 1,
-        //justifyContent: 'center',
-        //alignItems: 'center',
-    },
-    box: {
-      height: 100,
-      width: 100,
-      backgroundColor: 'red',
-      borderRadius: 5,
-      //position: 'relative',
-      //marginLeft: 'auto',
-      //marginRight: 'auto',
-      //marginTop: 'auto',
-      //marginBottom: 'auto',
-      justifyContent: 'center',
-      alignItems: 'center',
- 
-    },
-
-
-
-
-
-
-    dot: {
-        width: 20,
-        height: 20,
-        borderRadius: 100,
-        color: 'black',
-        backgroundColor: 'black',
-        position: 'relative',
-        //top: 0,
-        //right: 0,
-        zIndex: 1,
-        //flexDirection: 'row',
-        //transform: [{translateX: 0}, {translateY: 0}],
-    },
-    topRightDot: {
-        top: 0,
-        right: 0,
-        position: 'absolute',
-      },
-    topLeftDot: {
-        top: 0,
-        left: 0,
-        position: 'absolute',
-      },
-    bottomLeftDot: {
-        bottom: 0,
-        left: 0,
-        position: 'absolute',
-      },
-    bottomRightDot: {
-        bottom: 0,
-        right: 0,
-        position: 'absolute',
-      },
-      borderChange: {
-        borderColor: 'black',
-        borderWidth: 5,
-      },
-
-  });
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  addSectionPressable: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+    backgroundColor: 'blue',
+    margin: 10,
+    borderRadius: 10,
+  },
+  modalPressables: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+});

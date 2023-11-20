@@ -6,10 +6,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Colors from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
-/*import Home from './Modes/Strategy/Pages/home';*/
+//import Home from './Modes/Strategy/Pages/home';
 
 import MatchForm from '../../Admin/Components/matchForm';
-import DotBackground from '../../Admin/Components/test';
 
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -148,7 +147,6 @@ function MyTabs() {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={MatchForm} />
-			<Tab.Screen name="Settings" component={DotBackground}  options={{headerShown:false}}/>
 		</Tab.Navigator>
 	);
 }
@@ -162,7 +160,6 @@ export default function Strategy() {
                 cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
-      	        <Stack.Screen name="Test" component={DotBackground} />
 			</Stack.Navigator>
 		
 	);
