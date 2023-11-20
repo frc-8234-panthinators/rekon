@@ -12,14 +12,14 @@ export default function Search(props) {
     }
     return (
         <View style={styles.rootView}>
-            <TextInput keyboardType="numeric" style={styles.search} placeholder="Search" placeholderTextColor={Colors.subText} onSubmitEditing={navigateToYearPick}></TextInput>
+            <TextInput keyboardType="numeric" style={styles.search} placeholder="Search" placeholderTextColor={Colors.text} onSubmitEditing={navigateToYearPick}></TextInput>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     rootView: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         minHeight: '100%',
         display: 'flex',
@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     search: {
-        backgroundColor: Colors.tab,
-        color: Colors.subText,
+        backgroundColor: Colors.secondary,
+        color: Colors.text,
         padding: 10,
         height: '10%',
         width: '100%',

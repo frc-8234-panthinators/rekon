@@ -46,8 +46,8 @@ export default function VisualView({ route, navigation }) {
         setTemplate([]);
     }
 
-    function toggleWYSIWYGcarousel() {
-        setCarouselVisible(!carouselVisible);
+    function openTemplateBuilder() {
+        navigation.navigate('TemplateBuilder', {year: year, event: event, team: team});
     }
 
     React.useEffect(() => {
@@ -142,12 +142,10 @@ export default function VisualView({ route, navigation }) {
             <View style={styles.flexFooter}>
                 <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
                     <View style={styles.subRootView}>
-                        <Text style={styles.visText} onLayout={(event => {
-                            setWidgetPositions([{x: event.nativeEvent.layout.x, y: event.nativeEvent.layout.y, w: event.nativeEvent.layout.width, h: event.nativeEvent.layout.height}]);
-                        })}>Drag a widget to begin</Text>
+                        <Text style={styles.visText}>No template for this year</Text>
+                        <Pressable style={styles.button} onPress={openTemplateBuilder}><Text style={styles.text}>Create Template</Text></Pressable>
                     </View>
                 </ScrollView>
-                <WidgetCarousel widgetPositions={widgetPositions}/>
             </View>
         )
     }
@@ -163,22 +161,11 @@ export default function VisualView({ route, navigation }) {
     if (isLoading) {
         return (
             <View style={styles.center}>
-                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.subText} />
-            </View>
-        ) 
-    } else if (template.length != 0 && visLoaded) {
-        return (
-            <View style={styles.flexFooter}>
-                <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
-                    <View style={styles.subRootView}>
-                        {noTemplate ? <Text style={styles.visText}>No template for this year</Text> : null}
-                        <Pressable style={styles.button} onPress={toggleWYSIWYGcarousel}><Text style={styles.text}>Edit Template</Text></Pressable>
-                    </View>
-                </ScrollView>
-                {carouselVisible ? <WidgetCarousel/> : null}
+                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.text} />
             </View>
         )
-        /*return (
+    } else if (template.length != 0 && visLoaded) {
+        return (
             <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
                 <View style={styles.subRootView}>
                     {visData.graphs.map((graphData, index) => {
@@ -203,8 +190,8 @@ export default function VisualView({ route, navigation }) {
                                     yAxisInterval={1} // optional, defaults to 1
                                     chartConfig={{
                                     backgroundColor: "#e26a00",
-                                    backgroundGradientFrom: Colors.tab,
-                                    backgroundGradientTo: Colors.tab,
+                                    backgroundGradientFrom: Colors.secondary,
+                                    backgroundGradientTo: Colors.secondary,
                                     propsForBackgroundLines: {
                                         strokeWidth: 1,
                                         stroke: Colors.border,
@@ -240,7 +227,7 @@ export default function VisualView({ route, navigation }) {
                                         borderRadius: 10
                                     }}
                                     accessor={"population"}
-                                    backgroundColor={Colors.tab}
+                                    backgroundColor={Colors.secondary}
                                     paddingLeft={"15"}
                                     />
                                 </View>
@@ -251,25 +238,25 @@ export default function VisualView({ route, navigation }) {
                     <Pressable style={styles.button} onPress={resetTemplate}><Text style={styles.text}>Reset Template</Text></Pressable>
                 </View>
             </ScrollView>
-        );*/
+        );
     }
 }
 
 const styles = StyleSheet.create({
     flexFooter: {
         flex: 1,
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         height: Dimensions.get('window').height
     },
     rootView: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         flexGrow: 1,
         display: 'flex',
         alignItems: 'center',
     },
     center: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -277,7 +264,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     subRootView: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -287,24 +274,24 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     visText: {
-        color: Colors.subText,
+        color: Colors.text,
         fontSize: 20,
     },
     errorText: {
-        color: Colors.subText,
+        color: Colors.text,
         padding: 5,
         fontSize: normalize(30),
     },
     viewWrapper: {
         width: "90%",
         minHeight: 240,
-        backgroundColor: Colors.tab,
+        backgroundColor: Colors.secondary,
         display: 'flex',
         alignItems: 'center',
         borderRadius: 10,
     },
     button: {
-        backgroundColor: Colors.tab,
+        backgroundColor: Colors.accent,
         borderRadius: 10,
         padding: 10,
         width: '90%',
@@ -312,7 +299,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     text: {
-        color: Colors.subText,
+        color: Colors.text,
         fontSize: normalize(18),
         padding: 10,
     }

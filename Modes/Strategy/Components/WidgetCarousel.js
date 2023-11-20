@@ -12,37 +12,6 @@ export default function WidgetCarousel(props) {
 
   const widgetPositions = props.widgetPositions;
 
-  const longPressGesture = Gesture.LongPress({ minDurationMs: 1000 })
-    .runOnJS(true)
-    .shouldCancelWhenOutside(false)
-    .maxDistance(100000)
-    .onStart((event) => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      setFloatingWidgetVisible(true);
-      floatingWidgetPosition.value = { x: event.x, y: event.y };
-      setHasHeld(true);
-    })
-    .onTouchesMove((event) => {
-      if (!hasHeld) return;
-      floatingWidgetPosition.value = { x: event.allTouches[0].x, y: event.allTouches[0].y };
-      
-      for (const widget of widgetPositions) {
-        if (widget.x < event.allTouches[0].y ) {
-          break;
-        }
-      }
-    })
-    .onEnd(() => {
-      setHasHeld(false);
-    });
-
-  const floatingWidgetStyle = useAnimatedStyle(() => {
-    return {
-      left: floatingWidgetPosition.value.x - 100,
-      top: floatingWidgetPosition.value.y - 100,
-    };
-  });
-
   return (
     <View style={styles.container}>
       <ScrollView horizontal={true}>
@@ -64,11 +33,6 @@ export default function WidgetCarousel(props) {
           <Text>Widget 5</Text>
         </View>
       </ScrollView>
-      {floatingWidgetVisible && (
-        <Animated.View style={[styles.floatingWidget, floatingWidgetStyle]}>
-          <Text>Floating Widget</Text>
-        </Animated.View>
-      )}
     </View>
   );
 };

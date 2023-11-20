@@ -43,7 +43,7 @@ function HomeScreen(props) {
 		props.navigation.navigate('Test');
 	};
 	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
+		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.primary)}}>
 			<Text>Home!</Text>
 			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
 		</View>
@@ -65,7 +65,7 @@ function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
 			<Tab.Screen name="StratHome" component={HomeScreen}  options={{ headerStyle: {
-              backgroundColor: (Colors.tab)
+              backgroundColor: (Colors.secondary)
            }}}/>
             <Tab.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
 			<Tab.Screen name="StratSettings" component={StratSettings} />
@@ -79,7 +79,7 @@ export default function Strategy() {
 	return (
 		
 			<Stack.Navigator initialRouteName="Tabs" independant={true}   screenOptions={{
-                cardStyle: { backgroundColor: (Colors.background)} // Set the background color to blue
+                cardStyle: { backgroundColor: (Colors.primary)} // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
 				<Stack.Screen name="EventPicker" component={EventPicker} />
@@ -95,7 +95,7 @@ export default function Strategy() {
 
 const styles = StyleSheet.create({
 	padding: {
-		backgroundColor: Colors.background,
+		backgroundColor: Colors.primary,
 		paddingTop: 50,
 	},
 });

@@ -42,8 +42,8 @@ export default function EmbeddedView(props) {
                                     yAxisInterval={1} // optional, defaults to 1
                                     chartConfig={{
                                     backgroundColor: "#e26a00",
-                                    backgroundGradientFrom: Colors.tab,
-                                    backgroundGradientTo: Colors.tab,
+                                    backgroundGradientFrom: Colors.secondary,
+                                    backgroundGradientTo: Colors.secondary,
                                     propsForBackgroundLines: {
                                         strokeWidth: 1,
                                         stroke: Colors.border,
@@ -79,7 +79,7 @@ export default function EmbeddedView(props) {
                                         borderRadius: 10
                                     }}
                                     accessor={"population"}
-                                    backgroundColor={Colors.tab}
+                                    backgroundColor={Colors.secondary}
                                     paddingLeft={"15"}
                                     />
                                 </View>
@@ -95,26 +95,26 @@ export default function EmbeddedView(props) {
 
 const styles = StyleSheet.create({
     rootView: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         display: 'flex',
         alignItems: 'center',
         gap: 10,
     },
     visText: {
-        color: Colors.subText,
+        color: Colors.text,
         fontSize: 20,
     },
     viewWrapper: {
         width: "90%",
         minHeight: 240,
-        backgroundColor: Colors.tab,
+        backgroundColor: Colors.secondary,
         display: 'flex',
         alignItems: 'center',
         borderRadius: 10,
     },
     subRootView: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         height: '100%',
         display: 'flex',

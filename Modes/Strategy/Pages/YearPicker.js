@@ -67,7 +67,7 @@ export default function YearPicker({ route, navigation }) {
         return (
             <View style={styles.center}>
                 <Text style={styles.messageText}>{serverMessage}</Text>
-                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.subText} />
+                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.text} />
             </View>
         ) 
     }
@@ -101,13 +101,13 @@ export default function YearPicker({ route, navigation }) {
 
 const styles = StyleSheet.create({
     rootView: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         display: 'flex',
         alignItems: 'center',
     },
     center: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -123,13 +123,13 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     year: {
-        backgroundColor: Colors.tab,
+        backgroundColor: Colors.secondary,
         borderRadius: 10,
         height: Dimensions.get('window').height * 0.3,
         width: '100%',
     },
     buttonText: {
-        color: Colors.subText,
+        color: Colors.text,
         fontSize: normalize(50),
         paddingLeft: 10,
         borderTopLeftRadius: 10,
@@ -137,12 +137,12 @@ const styles = StyleSheet.create({
         zIndex: 2,
     },
     errorText: {
-        color: Colors.subText,
+        color: Colors.text,
         padding: 5,
         fontSize: normalize(30),
     },
     messageText: {
-        color: Colors.subText,
+        color: Colors.text,
         padding: 5,
         fontSize: normalize(24),
     },

@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     errorText: {
-        color: Colors.subText,
+        color: Colors.text,
         padding: 5,
     }
 });

@@ -38,7 +38,7 @@ export default function EventPicker({ route, navigation }) {
     if (isLoading) {
         return (
             <View style={styles.center}>
-                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.subText} />
+                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.text} />
             </View>
         ) 
     }
@@ -61,13 +61,13 @@ export default function EventPicker({ route, navigation }) {
 
 const styles = StyleSheet.create({
     rootView: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         display: 'flex',
         alignItems: 'center',
     },
     center: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     event: {
-        backgroundColor: Colors.tab,
+        backgroundColor: Colors.secondary,
         borderRadius: 10,
         minHeight: Dimensions.get('window').height * 0.3,
         width: '100%',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         paddingTop: 0,
     },
     buttonText: {
-        color: Colors.subText,
+        color: Colors.text,
         fontSize: normalize(25),
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
@@ -99,12 +99,12 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     buttonHeader: {
-        color: Colors.subText,
+        color: Colors.text,
         fontSize: normalize(40),
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         zIndex: 2,
-        borderBottomColor: Colors.subText,
+        borderBottomColor: Colors.text,
         borderBottomWidth: 2,
         paddingBottom: 10,
     },

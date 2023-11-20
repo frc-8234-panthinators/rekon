@@ -148,7 +148,7 @@ export default function TemplateBuilder({ route, navigation }) {
             <Picker
                 selectedValue={selectedSource}
                 onValueChange={(itemValue, itemIndex) => setSelectedSource(itemValue)}
-                dropdownIconColor={Colors.subText}
+                dropdownIconColor={Colors.text}
                 style={styles.picker}
             >
                 {sources.map((item, index) => {
@@ -158,7 +158,7 @@ export default function TemplateBuilder({ route, navigation }) {
             <Picker
                 selectedValue={selectedData}
                 onValueChange={(itemValue, itemIndex) => {setSelectedData(itemValue); setPreviewLoaded(false);}}
-                dropdownIconColor={Colors.subText}
+                dropdownIconColor={Colors.text}
                 style={styles.picker}
             >
                 {dataPoints.map((item, index) => {
@@ -173,7 +173,7 @@ export default function TemplateBuilder({ route, navigation }) {
 
 const styles = StyleSheet.create({
     rootView: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.primary,
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -182,16 +182,16 @@ const styles = StyleSheet.create({
         gap: 20
     },
     text: {
-        color: Colors.subText,
+        color: Colors.text,
         fontSize: normalize(30),
     },
     picker: {
-        color: Colors.subText,
-        backgroundColor: Colors.tab,
+        color: Colors.text,
+        backgroundColor: Colors.secondary,
         width: '90%'
     },
     button: {
-        backgroundColor: Colors.tab,
+        backgroundColor: Colors.secondary,
         borderRadius: 10,
         padding: 10,
         width: '90%',
