@@ -10,11 +10,12 @@ import { PanGestureHandler, TapGestureHandler  } from 'react-native-gesture-hand
 import React, {useState} from 'react';
 import { runOnJS } from 'react-native-reanimated';
 
-const ResizableBox = () => {
+function ResizeBox() {
   const height = useSharedValue(100);
   const width = useSharedValue(100); // new shared value for width
   const translateY = useSharedValue(0);
   const translateX = useSharedValue(0);
+  const gridSize = 50;
 
   const growGesture = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
@@ -32,24 +33,44 @@ const ResizableBox = () => {
       newWidth = Math.max(50, newWidth); // minimum width
       newWidth = Math.min(300, newWidth); // maximum width
 
+     
+      height.value = newHeight;
+      width.value = newWidth;
+      
+
 
       if (newHeight !== 50 && newHeight !== 300) {
-        translateY.value = ctx.startY + event.translationY / 2; // move up at half the speed
-      }
-
-      height.value = newHeight;
+      translateY.value = Math.round(ctx.startY + event.translationY / 2); // move up at half the speed
+      } 
 
       if (newWidth !== 50 && newWidth !== 300) {
-        translateX.value = ctx.startX + event.translationX / 2; // move left
-      }
+      translateX.value = Math.round(ctx.startX + event.translationX / 2); // move left
+      } 
+      
 
-      width.value = newWidth;
 
+      
+      
 
-      height.value = withTiming(Math.round(newHeight / 50) * 50);
-      width.value = withTiming(Math.round(newWidth / 50) * 50);
+   
+      //height.value = withTiming(Math.round(newHeight / gridSize) * gridSize);
+      //width.value = withTiming(Math.round(newWidth / gridSize) * gridSize);
+
 
     },
+    onEnd: (event, ctx) => {
+      const newHeight = height.value;
+      const newWidth = width.value;
+
+      height.value = Math.round(newHeight / gridSize) * gridSize;
+      width.value = Math.round(newWidth / gridSize) * gridSize;
+
+      translateY.value = Math.round((newHeight - height.value) / 2);
+
+      
+      translateX.value = Math.round(translateX.value / gridSize) * gridSize;
+      translateY.value = Math.round(translateY.value / gridSize) * gridSize;
+    }
  
   });
 
@@ -61,6 +82,7 @@ const ResizableBox = () => {
       
       
     };
+    
   });
 /*
   const animatedInnerStyle = useAnimatedStyle(() => {
@@ -77,7 +99,7 @@ const ResizableBox = () => {
 
   
 
-  const gridSize = 50;
+  
 
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
@@ -92,8 +114,10 @@ const ResizableBox = () => {
       
     },
     onEnd: () => {
-      translateX.value = withTiming(Math.round(translateX.value / gridSize) * gridSize);
-      translateY.value = withTiming(Math.round(translateY.value / gridSize) * gridSize);
+      translateX.value = Math.round(translateX.value / gridSize) * gridSize;
+      translateY.value = Math.round(translateY.value / gridSize) * gridSize;
+      
+
     },
   });
 
@@ -153,10 +177,21 @@ const ResizableBox = () => {
   );
 };
 
-export default ResizableBox;
+//export default ResizableBox;
+
+export default function ResizableBox() {
+  return(
+    <View> 
+      <ResizeBox />
+      <ResizeBox />
+    </View>
+
+  )
+}
 
 
 const styles = StyleSheet.create({
+
     userBox: {
       //width: 105, 
       //height: 105, 
@@ -166,6 +201,8 @@ const styles = StyleSheet.create({
       marginRight: 'auto',
       marginTop: 'auto',
       marginBottom: 'auto',
+      
+     top: 100,
       
 
       
