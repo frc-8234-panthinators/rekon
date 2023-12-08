@@ -9,13 +9,15 @@ import Animated, {
 import { PanGestureHandler, TapGestureHandler  } from 'react-native-gesture-handler';
 import React, {useState} from 'react';
 import { runOnJS } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
 
 function ResizeBox() {
   const height = useSharedValue(100);
   const width = useSharedValue(100); // new shared value for width
-  const translateY = useSharedValue(0);
+  const translateY = useSharedValue(100);
   const translateX = useSharedValue(0);
   const gridSize = 50;
+  const scaleGrid = 50;
 
   const growGesture = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
@@ -61,15 +63,18 @@ function ResizeBox() {
     onEnd: (event, ctx) => {
       const newHeight = height.value;
       const newWidth = width.value;
-
-      height.value = Math.round(newHeight / gridSize) * gridSize;
-      width.value = Math.round(newWidth / gridSize) * gridSize;
-
-      translateY.value = Math.round((newHeight - height.value) / 2);
-
       
-      translateX.value = Math.round(translateX.value / gridSize) * gridSize;
-      translateY.value = Math.round(translateY.value / gridSize) * gridSize;
+      height.value = withTiming(Math.round(newHeight / scaleGrid) * scaleGrid);
+      width.value = withTiming(Math.round(newWidth / scaleGrid) * scaleGrid);
+
+      translateX.value = withTiming((Math.round(translateX.value / gridSize) * gridSize) - (width.value % 100)/2);
+      translateY.value = withTiming((Math.round(translateY.value / gridSize) * gridSize) - (height.value % 100)/2);
+
+      console.log('translateX:',translateX.value)
+      console.log('translateY:',translateY.value)
+      console.log('height:',height.value)
+      console.log('width:',width.value)
+
     }
  
   });
@@ -78,7 +83,8 @@ function ResizeBox() {
     return {
       height: height.value,
       width: width.value,
-      transform: [{ translateY: translateY.value }, { translateX: translateX.value }],
+      top: translateY.value,
+      left: translateX.value,
       
       
     };
@@ -114,18 +120,16 @@ function ResizeBox() {
       
     },
     onEnd: () => {
-      translateX.value = Math.round(translateX.value / gridSize) * gridSize;
-      translateY.value = Math.round(translateY.value / gridSize) * gridSize;
+      translateX.value = withTiming((Math.round(translateX.value / gridSize) * gridSize) - (width.value % 100)/2);
+      translateY.value = withTiming((Math.round(translateY.value / gridSize) * gridSize) - (height.value % 100)/2);
       
 
     },
   });
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-    ],
+    left: translateX.value,
+    top: translateY.value
   }));
 
 
@@ -181,7 +185,7 @@ function ResizeBox() {
 
 export default function ResizableBox() {
   return(
-    <View> 
+    <View>
       <ResizeBox />
       <ResizeBox />
     </View>
@@ -191,6 +195,13 @@ export default function ResizableBox() {
 
 
 const styles = StyleSheet.create({
+  dotGrid: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
 
     userBox: {
       //width: 105, 
