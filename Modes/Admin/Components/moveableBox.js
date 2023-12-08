@@ -67,9 +67,6 @@ function ResizeBox() {
       height.value = withTiming(Math.round(newHeight / scaleGrid) * scaleGrid);
       width.value = withTiming(Math.round(newWidth / scaleGrid) * scaleGrid);
 
-      translateX.value = withTiming((Math.round(translateX.value / gridSize) * gridSize) - (width.value % 100)/2);
-      translateY.value = withTiming((Math.round(translateY.value / gridSize) * gridSize) - (height.value % 100)/2);
-
       console.log('translateX:',translateX.value)
       console.log('translateY:',translateY.value)
       console.log('height:',height.value)
@@ -153,13 +150,11 @@ function ResizeBox() {
   return (
     <PanGestureHandler onGestureEvent={gestureHandler}>
         <Animated.View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-
-        <TapGestureHandler onGestureEvent={onClick} numberOfTaps={1}>
-          <Animated.View style={[styles.userBox, animatedGrowStyle, isClicked && styles.borderChange]}> 
-              <PanGestureHandler onGestureEvent={growGesture}><Animated.View style={[ isClicked && styles.topLeftDot]} /></PanGestureHandler>
-          </Animated.View> 
+          <TapGestureHandler onGestureEvent={onClick} numberOfTaps={1}>
+            <Animated.View style={[styles.userBox, animatedGrowStyle, isClicked && styles.borderChange]}> 
+                <PanGestureHandler onGestureEvent={growGesture}><Animated.View style={[ isClicked && styles.topLeftDot]} /></PanGestureHandler>
+            </Animated.View> 
           </TapGestureHandler>
-          
         </Animated.View>
     </PanGestureHandler>
 
@@ -227,6 +222,7 @@ const styles = StyleSheet.create({
       //height: 120, 
       backgroundColor: 'gray',  //save for testing
       position: 'absolute',
+      padding: 10
       //transform: [{ translateX: 0 }, { translateY: 0 }],
 
     },
