@@ -7,156 +7,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import React, {useState} from 'react';
 
-
-/*
-const END_POSITION = 200;
-
-export default function AnotherTest() {
-  const onLeft = useSharedValue(true);
-  const positionX = useSharedValue(0);
-  const positionY = useSharedValue(0);
-  let startPositionX = useSharedValue(0);
-  let startPositionY = useSharedValue(0);
- 
-  
-  const panGesture = Gesture.Pan()
-    .onStart((e) => {
- 
-    })
-    .onUpdate((e) => {
-
-       positionX.value = startPositionX.value + e.translationX;
-       positionY.value = startPositionY.value + e.translationY; 
-
-    })
-    .onEnd((e) => {
-
-      startPositionX.value = positionX.value;
-      startPositionY.value = positionY.value;
-
-      //positionX.value = withTiming((Math.round(positionX.value / 50) * 50))
-      //positionY.value = withTiming((Math.round(positionY.value / 50) * 50))
-
-    });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-
-    //left: positionX.value, top: positionY.value,
-    transform: [{translateX: positionX.value}, {translateY: positionY.value}]
- 
-  }));
-
-  const [isClicked, setIsClicked] = useState(false);
-
-  const tapGesture = Gesture.Tap()
-    .maxDuration(250)
-    .onStart((e) => {
-
-      setIsClicked(!isClicked);
-
-    }).runOnJS(true)
-
-    //const composed = Gesture.Race(tapGesture,panGesture);
-    
-    
-
-  return (
-    <GestureDetector gesture={panGesture}>
-
-   
-
-
-    <View>
-
-      
-      <Animated.View style={[styles.box, animatedStyle,]} />
-
-    </View>
-
-
-      
-
-    </GestureDetector>
-
-  );
-} */
-
-/*
-
-export default function App() {
-
-  const translatex = useSharedValue(0);
-  const translatey = useSharedValue(0);
-  
-
-  const pan = Gesture.Pan()
-
-    .onUpdate((e) => {
-      translatex.value = e.translationX;
-      translatey.value = e.translationY;
-    })
-
-    .onEnd((e) => {
-      translatex.value = 0;
-      translatey.value = 0;
-    })
-
-    const style = useAnimatedStyle(() => ({
-      transform: [
-        { translateX: translatex.value },
-        { translateY: translatey.value }
-      ],
-    }))
-
-    return (
-      <GestureDetector gesture={pan}>
-        <Animated.View style={[styles.box, style]} />
-      </GestureDetector>
-    );
-
-}
-
-const styles = StyleSheet.create({
-  box: {
-    height: 120,
-    width: 300,
-    backgroundColor: '#b58df1',
-    borderRadius: 10,
-    marginBottom: 30,
-  },
-
-  topLeftDot: {
-    width: 25,
-    height: 25,
-    borderRadius: 100,
-    color: 'black',
-    backgroundColor: 'black',
-    position: 'absolute',
-    top: -12.5,
-    left: -12.5,
- 
-},
-
-borderChange: {
-    borderColor: 'black',
-    borderWidth: 5,
-    
-},
-
-
-}); */
-
-
-
-
-
-
-export default function App() {
+export default function Box() {
   // Declare state variables for the initial position of the object
-
-
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
+  const [initWidth, setInitWidth] = useState(100);
+  const [initHeight, setInitHeight] = useState(100);
 
 
   // Use shared values for the translation of the object
@@ -193,9 +49,34 @@ export default function App() {
 
     const grow = Gesture.Pan()
     .onUpdate((e) => {
-      // Add the initial position to the translation
-      console.log("growth")
-    }).runOnJS(true)
+      // Calculate the new width and height based on the translation
+      let newWidth = initWidth - e.translationX;
+      let newHeight = initHeight - e.translationY;
+
+      newWidth = Math.max(50, newWidth); // minimum width
+      newWidth = Math.min(300, newWidth); // maximum width
+      newHeight = Math.max(50, newHeight); // minimum height
+      newHeight = Math.min(300, newHeight); // maximum height
+
+      // Update the width and height values
+      width.value = newWidth >= 0 ? newWidth : 0;
+      height.value = newHeight >= 0 ? newHeight : 0;
+
+      if (newHeight !== 50 && newHeight !== 300) {
+        translatey.value = initY + e.translationY;
+      }
+      if (newWidth !== 50 && newWidth !== 300) {
+        translatex.value = initX + e.translationX;
+      }
+      
+    })
+    .onEnd(() => {
+      // Update the initial position with the current translation
+      setInitWidth(width.value);
+      setInitHeight(height.value);
+      setInitX(translatex.value);
+      setInitY(translatey.value);
+    }).runOnJS(true);
 
     
 
