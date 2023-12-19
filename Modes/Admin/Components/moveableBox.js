@@ -1,5 +1,5 @@
 
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
@@ -101,7 +101,18 @@ function ResizeBox() {
   }); */
 
   
-
+  const testIf = (ctx) => {
+    setTimeout(() => {
+      console.log('Testing');
+      console.log("Width:" , width.value);
+      console.log(translateX.value + width.value, Dimensions.get("window").width);
+      if (translateX.value + width.value + 70 > Dimensions.get("window").width) {
+        console.log('Out of bounds');
+        translateX.value = withTiming(ctx.startX);
+      }
+    }, 300)
+    
+  }
   
 
   const gestureHandler = useAnimatedGestureHandler({
@@ -116,11 +127,11 @@ function ResizeBox() {
       //runOnJS(setIsClickedFalse)();
       
     },
-    onEnd: () => {
-      translateX.value = withTiming((Math.round(translateX.value / gridSize) * gridSize) - (width.value % 100)/2);
-      translateY.value = withTiming((Math.round(translateY.value / gridSize) * gridSize) - (height.value % 100)/2);
+    onEnd: (event, ctx) => {
+      translateX.value = withTiming((Math.round(translateX.value / gridSize) * gridSize) - (width.value % (gridSize*2))/2);
+      translateY.value = withTiming((Math.round(translateY.value / gridSize) * gridSize) - (height.value % (gridSize*2))/2);
       
-
+      runOnJS(testIf)(ctx);
     },
   });
 
@@ -150,11 +161,13 @@ function ResizeBox() {
   return (
     <PanGestureHandler onGestureEvent={gestureHandler}>
         <Animated.View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <TapGestureHandler onGestureEvent={onClick} numberOfTaps={1}>
-            <Animated.View style={[styles.userBox, animatedGrowStyle, isClicked && styles.borderChange]}> 
-                <PanGestureHandler onGestureEvent={growGesture}><Animated.View style={[ isClicked && styles.topLeftDot]} /></PanGestureHandler>
-            </Animated.View> 
+
+        <TapGestureHandler onGestureEvent={onClick} numberOfTaps={1}>
+          <Animated.View style={[styles.userBox, animatedGrowStyle, isClicked && styles.borderChange]}> 
+              <PanGestureHandler onGestureEvent={growGesture}><Animated.View style={[ isClicked && styles.topLeftDot]} /></PanGestureHandler>
+          </Animated.View> 
           </TapGestureHandler>
+          
         </Animated.View>
     </PanGestureHandler>
 
@@ -208,7 +221,7 @@ const styles = StyleSheet.create({
       marginTop: 'auto',
       marginBottom: 'auto',
       
-     top: 100,
+      top: 100,
       
 
       
@@ -222,7 +235,6 @@ const styles = StyleSheet.create({
       //height: 120, 
       backgroundColor: 'gray',  //save for testing
       position: 'absolute',
-      padding: 10
       //transform: [{ translateX: 0 }, { translateY: 0 }],
 
     },
