@@ -48,9 +48,9 @@ function HomeScreen(props) {
 		props.navigation.navigate('Test');
 	};
 	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
-			<Text>Home!</Text>
-			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
+		<View style={{height: '100%', width: '100%', backgroundColor: 'white'}}>
+			<MatchFormAgain />
+      <MatchFormAgain />
 		</View>
 	);
 }
@@ -150,7 +150,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={MatchFormAgain}  options={{ headerStyle: {
+			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={MatchForm} />

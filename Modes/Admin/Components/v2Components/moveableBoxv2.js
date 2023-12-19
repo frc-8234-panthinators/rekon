@@ -13,6 +13,7 @@ export default function Box() {
   const [initY, setInitY] = useState(0);
   const [initWidth, setInitWidth] = useState(100);
   const [initHeight, setInitHeight] = useState(100);
+  const gridSize = 50;
 
 
   // Use shared values for the translation of the object
@@ -28,6 +29,8 @@ export default function Box() {
     }).runOnJS(true)
     .onEnd(() => {
       // Update the initial position with the current translation
+      translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize);
+      translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
       setInitX(translatex.value);
       setInitY(translatey.value);
       
@@ -72,6 +75,13 @@ export default function Box() {
     })
     .onEnd(() => {
       // Update the initial position with the current translation
+
+      translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize);
+      translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
+      
+      height.value = withTiming(Math.round(height.value / gridSize) * gridSize);
+      width.value = withTiming(Math.round(width.value / gridSize) * gridSize);
+
       setInitWidth(width.value);
       setInitHeight(height.value);
       setInitX(translatex.value);
@@ -110,6 +120,7 @@ const styles = StyleSheet.create({
   box: {
     //height: 120,
     //width: 300,
+    position: 'absolute',
     backgroundColor: '#b58df1',
     borderRadius: 10,
     marginBottom: 30,
