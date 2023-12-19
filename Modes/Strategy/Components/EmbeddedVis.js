@@ -7,6 +7,7 @@ import ky from 'ky';
 import Constants from '../../../constants'
 import { normalize } from '../../CommonComponents/fontScaler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function EmbeddedView(props) {
     if (props.data == null) {
@@ -16,8 +17,6 @@ export default function EmbeddedView(props) {
     } else {
         const data = props.data;
         console.log(data);
-        console.log(data.graphs[0].labels);
-        console.log(data.graphs[0].data);
         return (
             <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
                 <View style={styles.subRootView}>
@@ -68,20 +67,22 @@ export default function EmbeddedView(props) {
                         } else if (graphData.type == 'pie') {
                             return (
                                 <View style={styles.viewWrapper}>
-                                    <Text style={styles.visText}>{graphData.title}</Text>
-                                    <PieChart data={graphData.data}
-                                    width={Dimensions.get("window").width * 0.86}
-                                    height={220}
-                                    chartConfig={{
-                                        color: (opacity = 1) => Colors.graphPrimary,
-                                    }}
-                                    style={{
-                                        borderRadius: 10
-                                    }}
-                                    accessor={"population"}
-                                    backgroundColor={Colors.secondary}
-                                    paddingLeft={"15"}
-                                    />
+                                    <Pressable onPress={props.openEdit} style={styles.editButton}>
+                                        <Text style={styles.header}>{graphData.title}</Text>
+                                        <PieChart data={graphData.data}
+                                        width={Dimensions.get("window").width * 0.86}
+                                        height={220}
+                                        chartConfig={{
+                                            color: (opacity = 1) => Colors.graphPrimary,
+                                        }}
+                                        style={{
+                                            borderRadius: 10
+                                        }}
+                                        accessor={"population"}
+                                        backgroundColor={Colors.secondary}
+                                        paddingLeft={"15"}
+                                        />
+                                    </Pressable>
                                 </View>
                             )
                         }
@@ -103,7 +104,11 @@ const styles = StyleSheet.create({
     },
     visText: {
         color: Colors.text,
-        fontSize: 20,
+        fontSize: 25,
+    },
+    header: {
+        color: Colors.text,
+        fontSize: 25,
     },
     viewWrapper: {
         width: "90%",
@@ -112,6 +117,11 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         borderRadius: 10,
+    },
+    editWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%'
     },
     subRootView: {
         backgroundColor: Colors.primary,
@@ -123,4 +133,9 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20
     },
+    editButton: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    }
 });

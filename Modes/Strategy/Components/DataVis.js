@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator, Pressable } from 'react-native';
+import { StatusBar, StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator, Pressable, Modal } from 'react-native';
 import Colors from '../../../colors';
 import {LineChart, PieChart} from "react-native-chart-kit";
 import { useState } from 'react';
@@ -8,6 +8,7 @@ import Constants from '../../../constants'
 import { normalize } from '../../CommonComponents/fontScaler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WidgetCarousel from './WidgetCarousel';
+import ColorPicker from 'react-native-wheel-color-picker';
 
 const storeData = async (key, value) => {
     try {
@@ -27,6 +28,23 @@ const getData = async (key) => {
     }
 };
 
+function getRandomHexColor() {
+    // Generate random values for red, green, and blue components
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    // Convert the decimal values to hexadecimal
+    const hexRed = red.toString(16).padStart(2, '0');
+    const hexGreen = green.toString(16).padStart(2, '0');
+    const hexBlue = blue.toString(16).padStart(2, '0');
+
+    // Concatenate the hex values to form the color code
+    const hexColor = `#${hexRed}${hexGreen}${hexBlue}`;
+
+    return hexColor;
+}  
+
 export default function VisualView({ route, navigation }) {
     let [tbaData, setTbaData] = useState({});
     let [isLoading, setIsLoading] = useState(true);
@@ -35,8 +53,12 @@ export default function VisualView({ route, navigation }) {
     let [template, setTemplate] = useState([]);
     let [visLoaded, setVisLoaded] = useState(false);
     let [visData, setVisData] = useState([]);
-    let [carouselVisible, setCarouselVisible] = useState(false);
-    let [widgetPositions, setWidgetPositions] = useState([]); // [x, y, width, height]
+    const [editModalVisible, setEditModalVisible] = useState(false);
+    const [colorModalVisible, setColorModalVisible] = useState(false);
+    const [userColors, setUserColors] = useState([]);
+    const [startColor, setStartColor] = useState('#000000');
+    const [activeColor, setActiveColor] = useState(0);
+    const [activeIndex, setActiveIndex] = useState(0);
     const team = route.params.teamId;
     const event = route.params.event;
     const year = route.params.year;
@@ -90,13 +112,13 @@ export default function VisualView({ route, navigation }) {
     if (!visLoaded && template.length != 0) {
         let graphs = [];
         for (const dataPoint of template) {
-            if (dataPoint.widget = "line") {
-                const graphData = {
-                    "title": dataPoint.label,
-                    "type": "line",
-                    "labels": [],
-                    "data": []
-                }
+            const graphData = {
+                "title": dataPoint.label,
+                "labels": [],
+                "data": []
+            }
+            if (dataPoint.widget == "number") {
+                graphData['type'] = 'line';
                 for (const match of tbaData) {
                     let tempMatch = [];
                     let tempSelected = [];
@@ -130,8 +152,46 @@ export default function VisualView({ route, navigation }) {
                         graphData.data.push(tempMatch[tempSelected])
                     }
                 }
-                graphs.push(graphData);
+            } else if (dataPoint.widget == 'text') {
+                graphData['type'] = 'pie';
+                let typeDict = {};
+                for (const match of tbaData) {
+                    let tempMatch = [];
+                    let tempSelected = [];
+                    let currentAlliance = '';
+                    if (match.alliances.blue.team_keys.includes(`frc${team}`)) {
+                        currentAlliance = 'blue';
+                    } else {
+                        currentAlliance = 'red';
+                    }
+                    if (dataPoint.value.includes('/')) {
+                        tempMatch = match.score_breakdown[currentAlliance];
+                        tempSelected = dataPoint.value.split('/')[1];
+                    } else {
+                        tempMatch = match;
+                        tempSelected = dataPoint.value;
+                    }
+                    if (tempMatch[tempSelected] in typeDict) {
+                        const number = typeDict[tempMatch[tempSelected]];
+                        typeDict[tempMatch[tempSelected]] = number + 1
+                    } else {
+                        typeDict[tempMatch[tempSelected]] = 1
+                    }
+                }
+                let indexCounter = 0;
+                for ([key,point] of Object.entries(typeDict)) {
+                    let chartData = {
+                        name: key,
+                        population: point,
+                        color: dataPoint.colors[indexCounter],
+                        legendFontColor: '#e3e2e6',
+                        legendFontSize: 15
+                    }
+                    graphData.data.push(chartData)
+                    indexCounter++;
+                }
             }
+            graphs.push(graphData);
         }
         setVisData({graphs: graphs})
         setVisLoaded(true);
@@ -216,24 +276,53 @@ export default function VisualView({ route, navigation }) {
                         } else if (graphData.type == 'pie') {
                             return (
                                 <View style={styles.viewWrapper}>
-                                    <Text style={styles.visText}>{graphData.title}</Text>
-                                    <PieChart data={graphData.data}
-                                    width={Dimensions.get("window").width * 0.86}
-                                    height={220}
-                                    chartConfig={{
-                                        color: (opacity = 1) => Colors.graphPrimary,
-                                    }}
-                                    style={{
-                                        borderRadius: 10
-                                    }}
-                                    accessor={"population"}
-                                    backgroundColor={Colors.secondary}
-                                    paddingLeft={"15"}
-                                    />
+                                    <Pressable onPress={() => {setEditModalVisible(!editModalVisible); setActiveIndex(index)}} style={styles.editButton}>
+                                        <Text style={styles.visText}>{graphData.title}</Text>
+                                        <PieChart data={graphData.data}
+                                        width={Dimensions.get("window").width * 0.86}
+                                        height={220}
+                                        chartConfig={{
+                                            color: (opacity = 1) => Colors.graphPrimary,
+                                        }}
+                                        style={{
+                                            borderRadius: 10
+                                        }}
+                                        accessor={"population"}
+                                        backgroundColor={Colors.secondary}
+                                        paddingLeft={"15"}
+                                        />
+                                    </Pressable>
                                 </View>
                             )
                         }
                     })}
+                    <Modal animationType='slide' transparent={true} visible={editModalVisible} onRequestClose={() => {setEditModalVisible(!editModalVisible)}}>
+                        <View style={styles.dimBackground}>
+                            <View style={styles.modalPopup}>
+                                <Text style={styles.text}>Legend</Text>
+                                <View style={styles.divider}></View>
+                                {visLoaded && visData.graphs[activeIndex].data.map((item, index) => {
+                                    return (
+                                        <View style={styles.flexHorizontal}>
+                                            <Text style={styles.text}>{item.name}</Text>
+                                            <Pressable onPress={() => {setColorModalVisible(!colorModalVisible); setActiveColor(index); setStartColor(item.color)}} style={{backgroundColor: item.color, width: 50, height: 50}}></Pressable>
+                                        </View>
+                                    )
+                                })}
+                            </View>
+                        </View>
+                    </Modal>
+                    <Modal visible={colorModalVisible} onRequestClose={() => {setColorModalVisible(!colorModalVisible)}}>
+                        <View style={[styles.flexHorizontal, {backgroundColor: Colors.secondary, paddingTop: 20}]}>
+                            <View style={{backgroundColor: startColor, flexGrow: 1, height: 50}}></View>
+                            <View style={{backgroundColor: visData.graphs[activeIndex].data[activeColor].color, flexGrow: 1, height: 50}}></View>
+                        </View>
+                        <ColorPicker style={{flex: 1, padding: 20, backgroundColor: Colors.secondary}} color={visData.graphs[activeIndex].data[activeColor].color} onColorChangeComplete={async (color) => {
+                            template[activeIndex].colors[activeColor] = color;
+                            await storeData(`visTemplate${year}`, template);
+                            setVisLoaded(false);
+                            }}/>
+                    </Modal>
                     <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Add new data point</Text></Pressable>
                     <Pressable style={styles.button} onPress={resetTemplate}><Text style={styles.text}>Reset Template</Text></Pressable>
                 </View>
@@ -254,6 +343,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         display: 'flex',
         alignItems: 'center',
+        paddingTop: StatusBar.currentHeight,
     },
     center: {
         backgroundColor: Colors.primary,
@@ -302,5 +392,32 @@ const styles = StyleSheet.create({
         color: Colors.text,
         fontSize: normalize(18),
         padding: 10,
-    }
+    },
+    modalPopup: {
+        backgroundColor: Colors.secondary,
+        width: '90%',
+        height: '90%',
+        borderRadius: 10,
+        display: 'flex',
+        alignItems: 'center',
+        padding: 10
+    },
+    dimBackground: {
+        backgroundColor: '#000000aa',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    flexHorizontal: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingLeft: 25,
+        paddingRight: 25,
+        paddingBottom: 10
+    },
   });

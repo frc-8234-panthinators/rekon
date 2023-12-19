@@ -82,12 +82,12 @@ export default function Strategy() {
                 cardStyle: { backgroundColor: (Colors.primary)} // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
-				<Stack.Screen name="EventPicker" component={EventPicker} />
-				<Stack.Screen name="YearPicker" component={YearPicker} />
-				<Stack.Screen name="VisualView" component={VisualView} />
-				<Stack.Screen name="TemplateBuilder" component={TemplateBuilder} />
-				<Stack.Screen name="ErrorPage" component={ErrorPage} />
-      	        <Stack.Screen name="Test" component={TestScreen} />
+				<Stack.Screen name="EventPicker" component={EventPicker} options={{headerShown:false}}/>
+				<Stack.Screen name="YearPicker" component={YearPicker} options={{headerShown:false}}/>
+				<Stack.Screen name="VisualView" component={VisualView} options={{headerShown:false}}/>
+				<Stack.Screen name="TemplateBuilder" component={TemplateBuilder} options={{headerShown:false}}/>
+				<Stack.Screen name="ErrorPage" component={ErrorPage} options={{headerShown:false}}/>
+      	        <Stack.Screen name="Test" component={TestScreen} options={{headerShown:false}}/>
 			</Stack.Navigator>
 		
 	);

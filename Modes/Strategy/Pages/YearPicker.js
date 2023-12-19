@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, ActivityIndicator, View, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { StatusBar, StyleSheet, Text, ActivityIndicator, View, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
 import Colors from '../../../colors';
 import { useState, useEffect } from 'react';
 import ky from 'ky';
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
         width: '100%',
         display: 'flex',
         alignItems: 'center',
+        paddingTop: StatusBar.currentHeight,
     },
     center: {
         backgroundColor: Colors.primary,
