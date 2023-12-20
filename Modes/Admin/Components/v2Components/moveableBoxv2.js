@@ -22,6 +22,21 @@ function Box() {
   const translatex = useSharedValue(initX);
   const translatey = useSharedValue(initY);
 
+  function checkX() {
+    let newX = translatex.value;
+    console.log('callback')
+    if (translatex.value < 0){
+      console.log(initX)
+      newX = initX;
+      translatex.value = withTiming(newX, undefined, setInitX(translatex.value));
+    } else {
+      setInitX(translatex.value);
+    }
+  }
+
+    
+  
+
   // Define the pan gesture
   const pan = Gesture.Pan()
     .onUpdate((e) => {
@@ -31,12 +46,19 @@ function Box() {
     }).runOnJS(true)
     .onEnd(() => {
       // Update the initial position with the current translation
-      translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize);
+      translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize, /*undefined, checkX()*/ );
       translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
-      setInitX(translatex.value);
+      
       setInitY(translatey.value);
+      setInitX(translatex.value);
+    
       
     });
+
+
+
+
+    
 
      const [isClicked, setIsClicked] = useState(false);
 
@@ -91,43 +113,7 @@ function Box() {
     }).runOnJS(true);
 
 
-    const growBottom = Gesture.Pan()
-    .onUpdate((e) => {
-      // Calculate the new width and height based on the translation
-      let newWidth = initWidth - e.translationX;
-      let newHeight = initHeight - e.translationY;
 
-      newWidth = Math.max(50, newWidth); // minimum width
-      newWidth = Math.min(300, newWidth); // maximum width
-      newHeight = Math.max(50, newHeight); // minimum height
-      newHeight = Math.min(300, newHeight); // maximum height
-
-      // Update the width and height values
-      width.value = newWidth >= 0 ? newWidth : 0;
-      height.value = newHeight >= 0 ? newHeight : 0;
-
-      if (newHeight !== 50 && newHeight !== 300) {
-        translatey.value = initY + e.translationY;
-      }
-      if (newWidth !== 50 && newWidth !== 300) {
-        translatex.value = initX + e.translationX;
-      }
-      
-    })
-    .onEnd(() => {
-      // Update the initial position with the current translation
-
-      translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize);
-      translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
-      
-      height.value = withTiming(Math.round(height.value / gridSize) * gridSize);
-      width.value = withTiming(Math.round(width.value / gridSize) * gridSize);
-
-      setInitWidth(width.value);
-      setInitHeight(height.value);
-      setInitX(translatex.value);
-      setInitY(translatey.value);
-    }).runOnJS(true);
 
     
 
@@ -141,8 +127,8 @@ function Box() {
     width: width.value - 10,
 
     transform: [
-      { translateX: translatex.value },
-      { translateY: translatey.value },
+      { translateX: translatex.value + 10 },
+      { translateY: translatey.value + 10 },
     ],
   }));
 
