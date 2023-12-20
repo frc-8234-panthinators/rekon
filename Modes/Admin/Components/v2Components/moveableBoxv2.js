@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Pressable, Dimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -7,13 +7,15 @@ import Animated, {
 } from 'react-native-reanimated';
 import React, {useState} from 'react';
 
-export default function Box() {
+function Box() {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
   const [initWidth, setInitWidth] = useState(100);
   const [initHeight, setInitHeight] = useState(100);
+  //const gridSize = Dimensions.get("window").width / 10;
   const gridSize = 50;
+
 
 
   // Use shared values for the translation of the object
@@ -88,6 +90,45 @@ export default function Box() {
       setInitY(translatey.value);
     }).runOnJS(true);
 
+
+    const growBottom = Gesture.Pan()
+    .onUpdate((e) => {
+      // Calculate the new width and height based on the translation
+      let newWidth = initWidth - e.translationX;
+      let newHeight = initHeight - e.translationY;
+
+      newWidth = Math.max(50, newWidth); // minimum width
+      newWidth = Math.min(300, newWidth); // maximum width
+      newHeight = Math.max(50, newHeight); // minimum height
+      newHeight = Math.min(300, newHeight); // maximum height
+
+      // Update the width and height values
+      width.value = newWidth >= 0 ? newWidth : 0;
+      height.value = newHeight >= 0 ? newHeight : 0;
+
+      if (newHeight !== 50 && newHeight !== 300) {
+        translatey.value = initY + e.translationY;
+      }
+      if (newWidth !== 50 && newWidth !== 300) {
+        translatex.value = initX + e.translationX;
+      }
+      
+    })
+    .onEnd(() => {
+      // Update the initial position with the current translation
+
+      translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize);
+      translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
+      
+      height.value = withTiming(Math.round(height.value / gridSize) * gridSize);
+      width.value = withTiming(Math.round(width.value / gridSize) * gridSize);
+
+      setInitWidth(width.value);
+      setInitHeight(height.value);
+      setInitX(translatex.value);
+      setInitY(translatey.value);
+    }).runOnJS(true);
+
     
 
     const composed = Gesture.Race(tap , pan);
@@ -96,8 +137,8 @@ export default function Box() {
   // Define the animated style for the object
   const style = useAnimatedStyle(() => ({
 
-    height: height.value,
-    width: width.value,
+    height: height.value - 10,
+    width: width.value - 10,
 
     transform: [
       { translateX: translatex.value },
@@ -105,16 +146,47 @@ export default function Box() {
     ],
   }));
 
+
   return (
-    <GestureDetector gesture={composed}>
-      <Animated.View style={[styles.box, style, isClicked && styles.borderChange]}>
-        <GestureDetector gesture={grow}>
-          <Animated.View style={isClicked && styles.topLeftDot} />
-        </GestureDetector> 
-      </Animated.View>
-    </GestureDetector>
+
+  
+
+      <GestureDetector gesture={composed}> 
+        
+          <Animated.View style={[styles.box, style, isClicked && styles.borderChange]}>
+            <GestureDetector gesture={grow}>
+              <Animated.View style={isClicked && styles.topLeftDot} />
+            </GestureDetector> 
+          </Animated.View> 
+          
+      </GestureDetector>
+
+
+
+ 
+
+
   );
 }
+
+
+
+export default function AnotherTest(){
+
+  return(
+
+    <View>
+      
+      <Box />
+      <Box />
+      <Box />
+      <Box />
+
+    </View>
+
+  )
+}
+
 
 const styles = StyleSheet.create({
   box: {
@@ -123,7 +195,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: '#b58df1',
     borderRadius: 10,
-    marginBottom: 30,
+    //marginBottom: 30,
+    
+
   },
 
   topLeftDot: {
@@ -137,6 +211,7 @@ const styles = StyleSheet.create({
     left: -12.5,
  
 },
+
 
 borderChange: {
     borderColor: 'black',

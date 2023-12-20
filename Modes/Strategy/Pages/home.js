@@ -150,7 +150,7 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
+			<Tab.Screen name="Home" component={MatchFormAgain}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={MatchForm} />
