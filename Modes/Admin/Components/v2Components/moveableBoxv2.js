@@ -44,14 +44,30 @@ function Box() {
       translatex.value = initX + e.translationX;
       translatey.value = initY + e.translationY;
     }).runOnJS(true)
-    .onEnd(() => {
+    .onEnd((e) => {
       // Update the initial position with the current translation
       translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize, /*undefined, checkX()*/ );
       translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
-      
-      setInitY(translatey.value);
-      setInitX(translatex.value);
-    
+      if (translatex.value + width.value >= Dimensions.get("window").width) {
+        //console.log("Right Side!");
+        translatex.value = initX;
+        translatey.value = initY;
+      } else if (translatex.value <= 0) {
+        //console.log("Left Side!");
+        translatex.value = initX;
+        translatey.value = initY;
+      } else if (translatey.value <= 0) {
+        //console.log("Upper Side!");
+        translatex.value = initX;
+        translatey.value = initY;
+      } else if (translatey.value + height.value >= Dimensions.get("window").height - 160) {
+        //console.log("Lower Side!");
+        translatex.value = initX;
+        translatey.value = initY;
+      } else {
+        setInitY(translatey.value);
+        setInitX(translatex.value);
+      }
       
     });
 
