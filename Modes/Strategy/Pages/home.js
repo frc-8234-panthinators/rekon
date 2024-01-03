@@ -1,10 +1,14 @@
-import * as React from 'react';
-import { Text, View, Button, TouchableOpacity } from 'react-native';
+//import * as React from 'react';
+import { Text, View, Button, TouchableOpacity, Pressable} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Colors from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
+
+
+
+
 
 /*import Home from './Modes/Strategy/Pages/home';*/
 
@@ -15,15 +19,16 @@ import DotBackground from '../../Admin/Components/test';
 import AHH from '../../Admin/Components/ahhh'; //delete after
 import AnotherTest from '../../Admin/Components/anotherTest';
 import Resize from '../../Admin/Components/moveableBox';
-import MatchFormAgain from '../../Admin/Components/v2Components/moveableBoxv2';
+import TEST from '../../Admin/Components/v2Components/moveableBoxv2';
 
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MatchFormLayout from '../../Admin/Pages/matchFormBuilder';
 
 
 const background = '#1a1b1e'
 
-function TestScreen() {
+function Test() {
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
 			<Text>Test!</Text>
@@ -48,10 +53,11 @@ function HomeScreen(props) {
 		props.navigation.navigate('Test');
 	};
 	return (
-		<View style={{height: '100%', width: '100%', backgroundColor: 'white'}}>
-			<MatchFormAgain />
-      <MatchFormAgain />
-		</View>
+    <Pressable onPress={gotoTestStackScreen}>
+      <Text>
+        PRESS ME
+      </Text>
+    </Pressable>
 	);
 }
 
@@ -68,7 +74,7 @@ function MyTabBar({ state, descriptors, navigation }) {
   NavigationBar.setBehaviorAsync('overlay-swipe').then(() => {}).catch(() => {});
   NavigationBar.setBackgroundColorAsync(Colors.background).then(() => {}).catch(() => {});
   return (
-    <View style={{ flexDirection: 'row',backgroundColor: (Colors.tab) ,height:65,borderRadius:10, margin: 12, justifyContent:"center",alignItems:"center" }}>
+    <View style={{ flexDirection: 'row',backgroundColor: (Colors.tab) ,height:65,borderRadius:10, margin: 12, justifyContent:"center",alignItems:"center", }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -150,26 +156,49 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={MatchFormAgain}  options={{ headerStyle: {
+			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
             <Tab.Screen name="Search" component={MatchForm} />
-			<Tab.Screen name="Settings" component={Resize}  options={{headerShown:false}}/>
+			<Tab.Screen name="Settings" component={Resize}  options={{headerShown:false}} />
 		</Tab.Navigator>
 	);
 }
 
+
+import EditBar from '../../Admin/Components/v2Components/editBar';
+import React, { useState, useEffect } from 'react';
+
+
+
 const Stack = createStackNavigator();
 
 export default function Strategy() {
+
+
+  
+  
+const [tabActive, setTabActive] = useState(false);
+
+  function editBarShow(){
+    
+    setTabActive(!tabActive);
+    console.log(tabActive);
+
+  }  
+ 
+
 	return (
 		
-			<Stack.Navigator initialRouteName="Tabs" independant={true}   screenOptions={{
-                cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
+			<Stack.Navigator initialRouteName="Tabs" independant={true} screenOptions={{
+                cardStyle: { backgroundColor: (Colors.background) }  // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
-				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
-      	        <Stack.Screen name="Test" component={DotBackground} />
-			</Stack.Navigator>
+				        <Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
+                <Stack.Screen name="Test" component={MatchFormLayout} options={{cardStyle: {backgroundColor: 'white'}, 
+                headerRight: () => (<Pressable style={{ marginRight: 30 }} onPress={editBarShow}>
+                                      <MaterialIcons name="edit" size={24} color="black" />
+                                    </Pressable>)}}/>
+  </Stack.Navigator>
 		
 	);
 }

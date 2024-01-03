@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable, Dimensions } from 'react-native';
+import { StyleSheet, View, Pressable, Dimensions, Button } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import React, {useState} from 'react';
 
-function Box() {
+export default function Box() {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
@@ -60,15 +60,12 @@ function Box() {
 
     
 
-     const [isClicked, setIsClicked] = useState(false);
+    const [isClicked, setIsClicked] = useState(false);
 
     const tap = Gesture.Tap()
     .onStart(() => {
       setIsClicked(!isClicked);
     }).runOnJS(true)
-
-
-
 
 
     const width = useSharedValue(100);
@@ -155,23 +152,12 @@ function Box() {
   );
 }
 
+import ToolBar from './editBar';
+import Strategy from '../../../Strategy/Pages/home';
 
 
-export default function AnotherTest(){
 
-  return(
 
-    <View>
-      
-      <Box />
-      <Box />
-      <Box />
-      <Box />
-
-    </View>
-
-  )
-}
 
 
 const styles = StyleSheet.create({
@@ -185,6 +171,16 @@ const styles = StyleSheet.create({
     
 
   },
+
+
+
+  bar: {
+    flex: 1,
+    width: 100,
+    height: 400,
+    backgroundColor: 'blue',
+    position: 'absolute',
+},
 
   topLeftDot: {
     width: 25,
