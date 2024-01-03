@@ -50,20 +50,20 @@ export default function Box() {
       translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
       if (translatex.value + width.value >= Dimensions.get("window").width) {
         //console.log("Right Side!");
-        translatex.value = withTiming(initX);
-        translatey.value = withTiming(initY);
+        translatex.value = withTiming(Math.round(initX / gridSize) * gridSize);
+        translatey.value = withTiming(Math.round(initY / gridSize) * gridSize);
       } else if (translatex.value <= 0) {
         //console.log("Left Side!");
-        translatex.value = withTiming(initX);
-        translatey.value = withTiming(initY);
+        translatex.value = withTiming(Math.round(initX / gridSize) * gridSize);
+        translatey.value = withTiming(Math.round(initY / gridSize) * gridSize);
       } else if (translatey.value <= 0) {
         //console.log("Upper Side!");
-        translatex.value = withTiming(initX);
-        translatey.value = withTiming(initY);
+        translatex.value = withTiming(Math.round(initX / gridSize) * gridSize);
+        translatey.value = withTiming(Math.round(initY / gridSize) * gridSize);
       } else if (translatey.value + height.value >= Dimensions.get("window").height - 160) {
         //console.log("Lower Side!");
-        translatex.value = withTiming(initX);
-        translatey.value = withTiming(initY);
+        translatex.value = withTiming(Math.round(initX / gridSize) * gridSize);
+        translatey.value = withTiming(Math.round(initY / gridSize) * gridSize);
       } else {
         setInitY(translatey.value);
         setInitX(translatex.value);
