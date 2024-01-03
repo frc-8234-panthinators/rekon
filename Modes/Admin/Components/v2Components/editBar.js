@@ -13,8 +13,54 @@ function AllToolBar(props){
     const addBox = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-        props.add()
+            props.add()
     }).runOnJS(true);
+
+    const duplicate = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+        console.log("Duplicate")
+    }).runOnJS(true);
+
+    const redo = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            console.log("redo")
+    }).runOnJS(true);
+
+    const undo = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            console.log("undo")
+    }).runOnJS(true);
+
+    const addText = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            console.log("add Text")
+    }).runOnJS(true);
+
+    const addIcon = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            console.log("add Icon")
+        }).runOnJS(true);
+    const remove = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            console.log("Delete")
+    }).runOnJS(true);
+    const map = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            console.log("Map")
+    }).runOnJS(true);
+    const color = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            console.log("Color")
+    }).runOnJS(true);
+
 
 
     return(
@@ -24,17 +70,37 @@ function AllToolBar(props){
                 <MaterialIcons name="add" size={34} color="#e3e2e6" fontWeight="bold"/> 
             </GestureDetector>
 
-        
-            
-            
-            <MaterialIcons name="redo" size={34} color="#e3e2e6" />
-            <MaterialIcons name="undo" size={34} color="#e3e2e6" />
-            <MaterialIcons name="delete" size={34} color="#e3e2e6" />
-            <MaterialIcons name="content-copy" size={34} color="#e3e2e6" />
-            <MaterialIcons name="format-color-fill" size={34} color="#e3e2e6" />
-            <MaterialIcons name="text-fields" size={34} color="#e3e2e6" />
-            <MaterialIcons name="emoji-emotions" size={34} color="#e3e2e6" />
-            <MaterialIcons name="map" size={34} color="#e3e2e6" />
+            <GestureDetector gesture={redo}> 
+                <MaterialIcons name="redo" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={undo}> 
+                <MaterialIcons name="undo" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={remove}> 
+                <MaterialIcons name="delete" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={duplicate}> 
+                <MaterialIcons name="content-copy" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={color}> 
+                <MaterialIcons name="format-color-fill" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={addText}> 
+                <MaterialIcons name="text-fields" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={addIcon}> 
+                <MaterialIcons name="emoji-emotions" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={map}> 
+                <MaterialIcons name="map" size={34} color="#e3e2e6" />
+            </GestureDetector>
             
 
         </ScrollView>
