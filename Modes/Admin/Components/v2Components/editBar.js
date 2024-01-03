@@ -70,13 +70,15 @@ function AllToolBar(props){
                 <MaterialIcons name="add" size={34} color="#e3e2e6" fontWeight="bold"/> 
             </GestureDetector>
 
+            <GestureDetector gesture={undo}> 
+                <MaterialIcons name="undo" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
             <GestureDetector gesture={redo}> 
                 <MaterialIcons name="redo" size={34} color="#e3e2e6" />
             </GestureDetector>
 
-            <GestureDetector gesture={undo}> 
-                <MaterialIcons name="undo" size={34} color="#e3e2e6" />
-            </GestureDetector>
+  
 
             <GestureDetector gesture={remove}> 
                 <MaterialIcons name="delete" size={34} color="#e3e2e6" />
