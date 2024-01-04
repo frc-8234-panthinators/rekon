@@ -8,16 +8,17 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 
 
+
 function AllToolBar(props){
 
     const addBox = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-            props.add()
+            props.add();
     }).runOnJS(true);
 
     const duplicate = Gesture.Tap()
-        .maxDuration(250)
+        
         .onStart(() => {
         console.log("Duplicate")
     }).runOnJS(true);
@@ -49,6 +50,7 @@ function AllToolBar(props){
         .maxDuration(250)
         .onStart(() => {
             console.log("Delete")
+            props.remove(props.selectedBox);
     }).runOnJS(true);
     const map = Gesture.Tap()
         .maxDuration(250)
@@ -130,7 +132,7 @@ export default function ToolBar(props){
 
                     
                 </Pressable>
-                {tabActive && <AllToolBar add={props.add}/>}
+                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} />}
             </View>
 
             

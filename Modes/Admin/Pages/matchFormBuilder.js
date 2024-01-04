@@ -12,15 +12,28 @@ export default function MatchFormLayout(){
         let newBoxes = [...boxes, {}];
         setBoxes(newBoxes);
     }
+
+    function removeBox(id) {
+        //setBoxes(prevBoxes => prevBoxes.filter(box => box.id !== id));
+        setBoxes(prevBoxes => prevBoxes.filter((_, index) => index !== id));
+        console.log(id)
+       }
+
+    const [selectedBox, setSelectedBox] = useState(null);
+
+    function handleBoxSelect(id) {
+        //setSelectedBox(prevId => prevId === id ? null : id);
+        console.log(id)
+     }
     return(
         <View style={{width: '100%', height: '100%'}}>
             {boxes.map((box, index) => {
                 return (
-                    <Box key={index} />
+                    <Box key={index} id={index} selectedBox={selectedBox} onSelect={handleBoxSelect} />
                 )
             })}
             
-            <ToolBar add={addBox}/>
+            <ToolBar add={addBox} remove={removeBox} selectedBox={selectedBox}/>
         </View>
     )
 }

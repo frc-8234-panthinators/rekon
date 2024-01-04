@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import React, {useState} from 'react';
 
-export default function Box() {
+export default function Box( { id, selectedBox, onSelect }) {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
@@ -79,8 +79,10 @@ export default function Box() {
     const [isClicked, setIsClicked] = useState(false);
 
     const tap = Gesture.Tap()
-    .onStart(() => {
-      setIsClicked(!isClicked);
+    .onStart((props) => {
+      //setIsClicked(!isClicked);
+      //props.onSelect(props.id);
+      onSelect(id)
     }).runOnJS(true)
 
 
@@ -152,9 +154,9 @@ export default function Box() {
 
       <GestureDetector gesture={composed}> 
         
-          <Animated.View style={[styles.box, style, isClicked && styles.borderChange]}>
+          <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
             <GestureDetector gesture={grow}>
-              <Animated.View style={isClicked && styles.topLeftDot} />
+              <Animated.View style={id === selectedBox && styles.topLeftDot} />
             </GestureDetector> 
           </Animated.View> 
           
