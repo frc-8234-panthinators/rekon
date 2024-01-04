@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import React, {useState} from 'react';
 
-export default function Box( { id, selectedBox, onSelect }) {
+export default function Box({ id, x, y, moveBox, boxes }) {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
@@ -15,7 +15,6 @@ export default function Box( { id, selectedBox, onSelect }) {
   const [initHeight, setInitHeight] = useState(100);
   //const gridSize = Dimensions.get("window").width / 10;
   const gridSize = 50;
-
 
 
   // Use shared values for the translation of the object
@@ -68,7 +67,7 @@ export default function Box( { id, selectedBox, onSelect }) {
         setInitY(translatey.value);
         setInitX(translatex.value);
       }
-      
+      moveBox(id, translatex.value, translatey.value);
     });
 
 
