@@ -309,6 +309,8 @@ export default function VisualView({ route, navigation }) {
                                         </View>
                                     )
                                 })}
+                                <Text style={styles.text}>I/O</Text>
+                                <View style={styles.divider}></View>
                             </View>
                         </View>
                     </Modal>
@@ -420,4 +422,10 @@ const styles = StyleSheet.create({
         paddingRight: 25,
         paddingBottom: 10
     },
+    divider: {
+        backgroundColor: Colors.text,
+        width: '100%',
+        height: 1,
+        margin: 10
+    }
   });

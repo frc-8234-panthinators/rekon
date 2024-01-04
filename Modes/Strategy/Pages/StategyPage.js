@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, Button, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -15,6 +15,7 @@ import EventPicker from './EventPicker';
 import YearPicker from './YearPicker';
 import ErrorPage from '../../CommonComponents/ErrorPage';
 import TemplateBuilder from './TemplateBuilder';
+import MathJax from '../Components/MathJax';
 
 
 
@@ -39,13 +40,15 @@ function TestScreen() {
 }*/
 
 function HomeScreen(props) {
+	const [text, onChangeText] = React.useState("Useless Text");
 	const gotoTestStackScreen = () => {
 		props.navigation.navigate('Test');
 	};
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.primary)}}>
-			<Text>Home!</Text>
-			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
+			<Text style={{color:Colors.text}}>MathJax Test</Text>
+			<TextInput style={{ height: 40, borderColor: 'gray', borderWidth: 1, color:Colors.text, width: '90%' }} onChangeText={onChangeText} value={text} />
+			<MathJax math={text}></MathJax>
 		</View>
 	);
 }

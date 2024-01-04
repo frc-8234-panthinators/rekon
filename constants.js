@@ -1,5 +1,5 @@
 let Constants = {
-    API_URL: 'https://scoutinator-staging.tbuk.me'
+    API_URL: 'http://127.0.0.1:8000',
 }
 
 export default Constants;
