@@ -62,6 +62,7 @@ function AllToolBar(props){
         .maxDuration(250)
         .onStart(() => {
             console.log("Color")
+            props.colorChange(props.selectedBox, 'black');
     }).runOnJS(true);
 
 
@@ -133,7 +134,7 @@ export default function ToolBar(props){
 
                     
                 </Pressable>
-                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} duplicate={props.duplicate} />}
+                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} duplicate={props.duplicate} colorChange={props.colorChange} />}
             </View>
 
             

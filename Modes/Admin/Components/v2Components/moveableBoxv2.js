@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import React, {useState, useEffect} from 'react';
 
-export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth}) {
+export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color}) {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
@@ -84,8 +84,8 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     }).runOnJS(true)
 
 
-    const width = useSharedValue(100);
-    const height = useSharedValue(100); 
+    const width = useSharedValue(boxWidth);
+    const height = useSharedValue(boxHeight); 
 
     const grow = Gesture.Pan()
     .onUpdate((e) => {
@@ -141,6 +141,7 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
 
     height: height.value - 10,
     width: width.value - 10,
+    backgroundColor: color,
 
     transform: [
       { translateX: translatex.value + 10 },

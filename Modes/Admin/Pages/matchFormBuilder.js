@@ -14,7 +14,7 @@ export default function MatchFormLayout(){
     const [boxes, setBoxes] = useState([]);
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100,  color: '#b58df1'}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
@@ -45,13 +45,31 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
     }
 
-    function duplicate() {
 
-        let newBoxes = [...boxes, {id: nextBoxId}];
-        let nextBox = nextBoxId + 1
-        setNextBoxId(nextBox)
+
+    function colorChange(id, newColor) {
+        console.log(`Changing color of box ${id} to ${newColor}`);
+        let newBoxes = boxes.map(box =>
+          box.id === id ? {...box, color: newColor} : box
+        );
         setBoxes(newBoxes);
+       }
 
+    function duplicate() {
+        let selectedBoxWidth = boxes.find(box => box.id === selectedBox)?.width;
+        let selectedBoxHeight = boxes.find(box => box.id === selectedBox)?.height;
+
+        let selectedBoxX = boxes.find(box => box.id === selectedBox)?.x;
+        let selectedBoxY = boxes.find(box => box.id === selectedBox)?.y;
+
+        let selectedBoxColor = boxes.find(box => box.id === selectedBox)?.color;
+
+        if (selectedBox !== null) {
+            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor}];
+            let nextBox = nextBoxId + 1
+            setNextBoxId(nextBox)
+            setBoxes(newBoxes);
+        }
        }
 
     const [selectedBox, setSelectedBox] = useState(null);
@@ -68,10 +86,11 @@ export default function MatchFormLayout(){
                     
                     key={box.id} 
                     id={box.id} 
-                    x={box.x} 
-                    y={box.y} 
+                    boxX={box.x} 
+                    boxY={box.y} 
                     boxHeight={box.height} 
                     boxWidth={box.width} 
+                    color={box.color}
                     selectedBox={selectedBox} 
                     onSelect={handleBoxSelect} 
                     onRemove={removeBox} 
@@ -80,7 +99,7 @@ export default function MatchFormLayout(){
                 )
             })}
             
-            <ToolBar add={addBox} remove={removeBox} selectedBox={selectedBox}  duplicate={duplicate}/>
+            <ToolBar add={addBox} remove={removeBox} selectedBox={selectedBox} duplicate={duplicate} colorChange={colorChange}/>
         </View>
     )
 }
