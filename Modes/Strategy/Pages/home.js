@@ -195,9 +195,9 @@ const [tabActive, setTabActive] = useState(false);
               }}/*screenOptions={{headerShown: false}}*/>
 				        <Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
                 <Stack.Screen name="Test" component={MatchFormLayout} options={{cardStyle: {backgroundColor: 'white'}, 
-                headerRight: () => (<Pressable style={{ marginRight: 30 }} onPress={editBarShow}>
+                /* headerRight: () => (<Pressable style={{ marginRight: 30 }} onPress={editBarShow}>
                                       <MaterialIcons name="edit" size={24} color="black" />
-                                    </Pressable>)}}/>
+                </Pressable>) */ }} /> 
   </Stack.Navigator>
 		
 	);

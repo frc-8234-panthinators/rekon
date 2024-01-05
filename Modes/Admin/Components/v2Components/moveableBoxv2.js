@@ -1,21 +1,20 @@
-import { StyleSheet, View, Pressable, Dimensions, Button } from 'react-native';
+import { StyleSheet, View, Pressable, Dimensions, Button, Text } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
-export default function Box({ id, x, y, moveBox, boxes }) {
+export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth}) {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
   const [initWidth, setInitWidth] = useState(100);
   const [initHeight, setInitHeight] = useState(100);
-  //const gridSize = Dimensions.get("window").width / 10;
+  //const gridSize = Dimensions.get("window").width / 4;
   const gridSize = 50;
-
 
   // Use shared values for the translation of the object
   const translatex = useSharedValue(initX);
@@ -67,7 +66,7 @@ export default function Box({ id, x, y, moveBox, boxes }) {
         setInitY(translatey.value);
         setInitX(translatex.value);
       }
-      moveBox(id, translatex.value, translatey.value);
+      onMove(id, Math.round(initX / gridSize) * gridSize, Math.round(initY / gridSize) * gridSize)
     });
 
 
@@ -117,13 +116,16 @@ export default function Box({ id, x, y, moveBox, boxes }) {
       translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize);
       translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
       
-      height.value = withTiming(Math.round(height.value / gridSize) * gridSize);
       width.value = withTiming(Math.round(width.value / gridSize) * gridSize);
+      height.value = withTiming(Math.round(height.value / gridSize) * gridSize);
 
       setInitWidth(width.value);
       setInitHeight(height.value);
       setInitX(translatex.value);
       setInitY(translatey.value);
+
+      onScale(id, Math.round(width.value / gridSize) * gridSize, Math.round(height.value / gridSize) * gridSize)
+
     }).runOnJS(true);
 
 
@@ -154,6 +156,7 @@ export default function Box({ id, x, y, moveBox, boxes }) {
       <GestureDetector gesture={composed}> 
         
           <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
+            <Text>{id}</Text>
             <GestureDetector gesture={grow}>
               <Animated.View style={id === selectedBox && styles.topLeftDot} />
             </GestureDetector> 
@@ -220,7 +223,3 @@ borderChange: {
 
 
 });
-
-
-
-

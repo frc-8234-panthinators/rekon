@@ -21,6 +21,7 @@ function AllToolBar(props){
         
         .onStart(() => {
         console.log("Duplicate")
+        props.duplicate();
     }).runOnJS(true);
 
     const redo = Gesture.Tap()
@@ -132,7 +133,7 @@ export default function ToolBar(props){
 
                     
                 </Pressable>
-                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} />}
+                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} duplicate={props.duplicate} />}
             </View>
 
             
