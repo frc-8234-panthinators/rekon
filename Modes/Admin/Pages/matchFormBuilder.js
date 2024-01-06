@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView, Modal, TextInput, Button } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Box from '../Components/v2Components/moveableBoxv2';
@@ -10,11 +10,14 @@ export default function MatchFormLayout(){
 
     const [nextBoxId, setNextBoxId] = useState(0);
 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [inputText, setInputText] = useState('');
+    const [selectedBoxId, setSelectedBoxId] = useState(null);
 
     const [boxes, setBoxes] = useState([]);
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100,  color: '#b58df1'}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100,  color: '#b58df1', text: ''}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
@@ -22,6 +25,7 @@ export default function MatchFormLayout(){
 
     function removeBox() {
         setBoxes(boxes.filter(box => box.id !== selectedBox));
+        setSelectedBox(null);
       }
 
 
@@ -45,7 +49,10 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
     }
 
-
+    function textAdder(id) {
+        setSelectedBoxId(id);
+        setModalVisible(true);
+    }
 
     function colorChange(id, newColor) {
         console.log(`Changing color of box ${id} to ${newColor}`);
@@ -76,6 +83,10 @@ export default function MatchFormLayout(){
 
     function handleBoxSelect(id) {
         setSelectedBox(prevId => prevId === id ? null : id);
+        const selectedBox = boxes.find(box => box.id === id);
+        if (selectedBox) {
+            setInputText(selectedBox.text);
+        }
         console.log(id)
      }
     return(
@@ -91,6 +102,7 @@ export default function MatchFormLayout(){
                     boxHeight={box.height} 
                     boxWidth={box.width} 
                     color={box.color}
+                    text={box.text}
                     selectedBox={selectedBox} 
                     onSelect={handleBoxSelect} 
                     onRemove={removeBox} 
@@ -99,7 +111,46 @@ export default function MatchFormLayout(){
                 )
             })}
             
-            <ToolBar add={addBox} remove={removeBox} selectedBox={selectedBox} duplicate={duplicate} colorChange={colorChange}/>
+            <ToolBar add={addBox} remove={removeBox} selectedBox={selectedBox} duplicate={duplicate} colorChange={colorChange} textAdder={textAdder}/>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={{marginTop: 250}}>
+                    <View>
+                        <TextInput
+                            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                            onChangeText={text => setInputText(text)}
+                            value={inputText}
+                        />
+
+                        <View style={{margin: 20}}>
+                            <Button
+                                onPress={() => {
+                                    let newBoxes = boxes.map(box =>
+                                        box.id === selectedBoxId ? {...box, text: inputText} : box
+                                    );
+                                    setBoxes(newBoxes);
+                                    setModalVisible(!modalVisible);
+                                }}
+                                title="Submit"
+                                color="#841584"
+                            />
+                            <Button
+                                onPress={() => {
+                                    setModalVisible(!modalVisible);
+                                }}
+                                title="Cancel"
+                                color="#841584"
+                            />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     )
 }

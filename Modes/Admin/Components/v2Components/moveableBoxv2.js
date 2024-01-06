@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import React, {useState, useEffect} from 'react';
 
-export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color}) {
+export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color, text}) {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
@@ -142,7 +142,8 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     height: height.value - 10,
     width: width.value - 10,
     backgroundColor: color,
-
+    justifyContent: 'center',
+    alignItems: 'center',
     transform: [
       { translateX: translatex.value + 10 },
       { translateY: translatey.value + 10 },
@@ -157,7 +158,7 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
       <GestureDetector gesture={composed}> 
         
           <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
-            <Text>{id}</Text>
+            <Text>{text}</Text>
             <GestureDetector gesture={grow}>
               <Animated.View style={id === selectedBox && styles.topLeftDot} />
             </GestureDetector> 

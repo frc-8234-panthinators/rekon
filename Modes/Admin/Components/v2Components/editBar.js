@@ -39,7 +39,10 @@ function AllToolBar(props){
     const addText = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-            console.log("add Text")
+            if (props.selectedBox !== null) {
+                console.log("add Text")
+                props.textAdder(props.selectedBox);
+            }
     }).runOnJS(true);
 
     const addIcon = Gesture.Tap()
@@ -134,7 +137,7 @@ export default function ToolBar(props){
 
                     
                 </Pressable>
-                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} duplicate={props.duplicate} colorChange={props.colorChange} />}
+                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} duplicate={props.duplicate} colorChange={props.colorChange} textAdder={props.textAdder}/>}
             </View>
 
             
