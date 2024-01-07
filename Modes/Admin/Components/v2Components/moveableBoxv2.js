@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import React, {useState, useEffect} from 'react';
 
-export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color, text, fontSize}) {
+export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color}) {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
@@ -67,7 +67,6 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
         setInitX(translatex.value);
       }
       onMove(id, Math.round(initX / gridSize) * gridSize, Math.round(initY / gridSize) * gridSize)
-      console.log(fontSize)
     });
 
 
@@ -143,9 +142,6 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     height: height.value - 10,
     width: width.value - 10,
     backgroundColor: color,
-    justifyContent: 'center',
-    alignItems: 'center',
-
 
     transform: [
       { translateX: translatex.value + 10 },
@@ -161,7 +157,7 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
       <GestureDetector gesture={composed}> 
         
           <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
-            <Text style={{fontSize: isNaN(parseInt(fontSize)) ? 0 : parseInt(fontSize)}}>{text}</Text>
+            <Text>{id}</Text>
             <GestureDetector gesture={grow}>
               <Animated.View style={id === selectedBox && styles.topLeftDot} />
             </GestureDetector> 
