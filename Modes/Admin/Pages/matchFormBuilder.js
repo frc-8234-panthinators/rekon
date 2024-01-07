@@ -15,6 +15,8 @@ export default function MatchFormLayout(){
     const [selectedBoxId, setSelectedBoxId] = useState(null);
 
     const [fontSize, setFontSize] = useState();
+    const [isBold, setIsBold] = useState(false);
+    const [isItalic, setIsItalic] = useState(false);
 
     const [boxes, setBoxes] = useState([]);
 
@@ -35,7 +37,7 @@ export default function MatchFormLayout(){
 
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100,  color: '#b58df1', text: '', fontSize: 15}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000001', bold: 'normal', italic: 'normal'}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
@@ -46,7 +48,28 @@ export default function MatchFormLayout(){
         setSelectedBox(null);
       }
 
+    function changeFontColor(id, fontColor) {
+        let newBoxes = boxes.map(box =>
+            box.id === id ? {...box, fontColor: fontColor} : box
+        );
+        setBoxes(newBoxes)
+    }
 
+    function toggleBold(id) {
+        setIsBold(!isBold);
+        let newBoxes = boxes.map(box =>
+            box.id === id ? { ...box, bold: box.bold === 'bold' ? 'normal' : 'bold' } : box
+        )
+        setBoxes(newBoxes);
+    }
+
+    function toggleItalic(id) {
+        setIsItalic(!isItalic);
+        let newBoxes = boxes.map(box =>
+            box.id === id ? { ...box, italic: box.italic === 'italic' ? 'normal' : 'italic' } : box
+        )
+        setBoxes(newBoxes);
+    }
 
 
     useEffect(() => {
@@ -95,9 +118,12 @@ export default function MatchFormLayout(){
 
         let selectedBoxText = boxes.find(box => box.id === selectedBox)?.text;
         let selectedBoxFontSize = boxes.find(box => box.id === selectedBox)?.fontSize;
+        let selectedBoxFontColor = boxes.find(box => box.id === selectedBox)?.fontColor;
+        let selectedBoxBold = boxes.find(box => box.id === selectedBox)?.bold;
+        let selectedBoxItalic = boxes.find(box => box.id === selectedBox)?.italic;
 
         if (selectedBox !== null) {
-            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize}];
+            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic}];
             let nextBox = nextBoxId + 1
             setNextBoxId(nextBox)
             setBoxes(newBoxes);
@@ -132,16 +158,19 @@ export default function MatchFormLayout(){
                     boxWidth={box.width} 
                     color={box.color}
                     text={box.text}
+                    fontSize={box.fontSize}
+                    fontColor={box.fontColor}
+                    bold={box.bold}
+                    italic={box.italic}
                     selectedBox={selectedBox} 
                     onSelect={handleBoxSelect} 
                     onRemove={removeBox} 
                     onMove={setBoxPos} 
-                    onScale={setBoxScale}
-                    fontSize={box.fontSize}/>
+                    onScale={setBoxScale}/>
                 )
             })}
             
-            <ToolBar add={addBox} remove={removeBox} selectedBox={selectedBox} getSelectedBox={getSelectedBox} duplicate={duplicate} colorChange={colorChange} textAdder={textAdder} fontSize={fontSize} setFontSize={setFontSize} changeFontSize={changeFontSize}/>
+            <ToolBar add={addBox} remove={removeBox} selectedBox={selectedBox} getSelectedBox={getSelectedBox} duplicate={duplicate} colorChange={colorChange} textAdder={textAdder} fontSize={fontSize} setFontSize={setFontSize} changeFontSize={changeFontSize} changeFontColor={changeFontColor} isBold={isBold} isItalic={isItalic} toggleBold={toggleBold} toggleItalic={toggleItalic}/>
             <Modal
                 animationType="slide"
                 transparent={true}
