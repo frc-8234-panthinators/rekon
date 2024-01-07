@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity, ScrollView, } from 'react-native';
-import React, {useState} from 'react';
+import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import React, {useState, useEffect} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import colors from '../../../../colors';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
@@ -10,6 +11,9 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 
 function AllToolBar(props){
+
+    const [isAddTextPressed, setIsAddTextPressed] = useState(false);
+    const [fontSize, setFontSize] = useState(props.fontSize);
 
     const addBox = Gesture.Tap()
         .maxDuration(250)
@@ -40,8 +44,9 @@ function AllToolBar(props){
         .maxDuration(250)
         .onStart(() => {
             if (props.selectedBox !== null) {
-                console.log("add Text")
+                console.log("add Text");
                 props.textAdder(props.selectedBox);
+                setIsAddTextPressed(true);
             }
     }).runOnJS(true);
 
@@ -71,45 +76,80 @@ function AllToolBar(props){
 
 
     return(
-        <ScrollView style={styles.bar} horizontal={true} contentContainerStyle={styles.innerBar}> 
+        <ScrollView key={isAddTextPressed ? "addText" : "default"} style={styles.bar} horizontal={true} contentContainerStyle={styles.innerBar}> 
+            {!isAddTextPressed && (
+                <>
+                    <GestureDetector gesture={addBox}> 
+                        <MaterialIcons name="add" size={34} color="#e3e2e6" fontWeight="bold"/> 
+                    </GestureDetector>
 
-            <GestureDetector gesture={addBox}> 
-                <MaterialIcons name="add" size={34} color="#e3e2e6" fontWeight="bold"/> 
-            </GestureDetector>
+                    <GestureDetector gesture={undo}> 
+                        <MaterialIcons name="undo" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-            <GestureDetector gesture={undo}> 
-                <MaterialIcons name="undo" size={34} color="#e3e2e6" />
-            </GestureDetector>
+                    <GestureDetector gesture={redo}> 
+                        <MaterialIcons name="redo" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-            <GestureDetector gesture={redo}> 
-                <MaterialIcons name="redo" size={34} color="#e3e2e6" />
-            </GestureDetector>
+                    <GestureDetector gesture={remove}> 
+                        <MaterialIcons name="delete" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-  
+                    <GestureDetector gesture={duplicate}> 
+                        <MaterialIcons name="content-copy" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-            <GestureDetector gesture={remove}> 
-                <MaterialIcons name="delete" size={34} color="#e3e2e6" />
-            </GestureDetector>
+                    <GestureDetector gesture={color}> 
+                        <MaterialIcons name="format-color-fill" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-            <GestureDetector gesture={duplicate}> 
-                <MaterialIcons name="content-copy" size={34} color="#e3e2e6" />
-            </GestureDetector>
+                    <GestureDetector gesture={addText}> 
+                        <MaterialIcons name="text-fields" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-            <GestureDetector gesture={color}> 
-                <MaterialIcons name="format-color-fill" size={34} color="#e3e2e6" />
-            </GestureDetector>
+                    <GestureDetector gesture={addIcon}> 
+                        <MaterialIcons name="emoji-emotions" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-            <GestureDetector gesture={addText}> 
-                <MaterialIcons name="text-fields" size={34} color="#e3e2e6" />
-            </GestureDetector>
+                    <GestureDetector gesture={map}> 
+                        <MaterialIcons name="map" size={34} color="#e3e2e6" />
+                    </GestureDetector>
+                </>
+            )}
+            {isAddTextPressed && (
+                <>
+                    <GestureDetector gesture={undo}> 
+                        <MaterialIcons name="undo" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-            <GestureDetector gesture={addIcon}> 
-                <MaterialIcons name="emoji-emotions" size={34} color="#e3e2e6" />
-            </GestureDetector>
+                    <GestureDetector gesture={redo}> 
+                        <MaterialIcons name="redo" size={34} color="#e3e2e6" />
+                    </GestureDetector>
 
-            <GestureDetector gesture={map}> 
-                <MaterialIcons name="map" size={34} color="#e3e2e6" />
-            </GestureDetector>
+                    <GestureDetector gesture={addText}> 
+                        <MaterialIcons name="text-fields" size={34} color="#e3e2e6" />
+                    </GestureDetector>
+
+                    <TextInput
+                        keyboardType='numeric'
+                        value={props.fontSize.toString()}
+                        onChangeText={(newFontSize) => {
+                            console.log('New font size:', newFontSize);
+                            props.setFontSize(newFontSize);
+                            props.changeFontSize(props.selectedBox, newFontSize);
+                        }}
+                        style={{
+                            height: 34,
+                            width: 34,
+                            borderColor: 'gray',
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            backgroundColor: '#fff',
+                            textAlign: 'center',
+                        }}
+                    />
+                </>
+            )}
             
 
         </ScrollView>
@@ -121,7 +161,9 @@ function AllToolBar(props){
 export default function ToolBar(props){
 
     
-  const [ tabActive, setTabActive ] = useState(false);
+    const [ tabActive, setTabActive ] = useState(false);
+    console.log('selectedBox', props.selectedBox);
+    console.log('fontSize', props.getSelectedBox(props.selectedBox)?.fontSize);
 
     return( 
 
@@ -137,7 +179,7 @@ export default function ToolBar(props){
 
                     
                 </Pressable>
-                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} duplicate={props.duplicate} colorChange={props.colorChange} textAdder={props.textAdder}/>}
+                {tabActive && <AllToolBar add={props.add} remove={props.remove} selectedBox={props.selectedBox} getSelectedBox={props.getSelectedBox} duplicate={props.duplicate} colorChange={props.colorChange} textAdder={props.textAdder} fontSize={props.getSelectedBox(props.selectedBox)?.fontSize} setFontSize={props.setFontSize} changeFontSize={props.changeFontSize}/>}
             </View>
 
             
