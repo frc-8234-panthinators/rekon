@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView, Modal, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Box from '../Components/v2Components/moveableBoxv2';
@@ -43,7 +43,6 @@ export default function MatchFormLayout(){
 
     function removeBox() {
         setBoxes(boxes.filter(box => box.id !== selectedBox));
-        setSelectedBox(null);
       }
 
 
@@ -71,10 +70,7 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
     }
 
-    function textAdder(id) {
-        setSelectedBoxId(id);
-        setModalVisible(true);
-    }
+
 
     function colorChange(id, newColor) {
         console.log(`Changing color of box ${id} to ${newColor}`);
@@ -108,10 +104,6 @@ export default function MatchFormLayout(){
 
     function handleBoxSelect(id) {
         setSelectedBox(prevId => prevId === id ? null : id);
-        const selectedBox = boxes.find(box => box.id === id);
-        if (selectedBox) {
-            setInputText(selectedBox.text);
-        }
         console.log(id)
      }
 
@@ -131,7 +123,6 @@ export default function MatchFormLayout(){
                     boxHeight={box.height} 
                     boxWidth={box.width} 
                     color={box.color}
-                    text={box.text}
                     selectedBox={selectedBox} 
                     onSelect={handleBoxSelect} 
                     onRemove={removeBox} 

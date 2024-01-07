@@ -143,8 +143,7 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     height: height.value - 10,
     width: width.value - 10,
     backgroundColor: color,
-    justifyContent: 'center',
-    alignItems: 'center',
+
     transform: [
       { translateX: translatex.value + 10 },
       { translateY: translatey.value + 10 },
