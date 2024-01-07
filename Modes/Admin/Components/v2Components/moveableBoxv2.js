@@ -67,7 +67,6 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
         setInitX(translatex.value);
       }
       onMove(id, Math.round(initX / gridSize) * gridSize, Math.round(initY / gridSize) * gridSize)
-      console.log(fontSize)
     });
 
 
@@ -143,9 +142,6 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     height: height.value - 10,
     width: width.value - 10,
     backgroundColor: color,
-    justifyContent: 'center',
-    alignItems: 'center',
-
 
     transform: [
       { translateX: translatex.value + 10 },

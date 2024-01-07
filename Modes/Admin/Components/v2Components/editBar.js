@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity, ScrollView, TextInput } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity, ScrollView, } from 'react-native';
+import React, {useState} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import colors from '../../../../colors';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
@@ -155,40 +154,41 @@ function AllToolBar(props){
 
 
     return(
-        <ScrollView key={isAddTextPressed ? "addText" : "default"} style={styles.bar} horizontal={true} contentContainerStyle={styles.innerBar}> 
-            {!isAddTextPressed && (
-                <>
-                    <GestureDetector gesture={addBox}> 
-                        <MaterialIcons name="add" size={34} color="#e3e2e6" fontWeight="bold"/> 
-                    </GestureDetector>
+        <ScrollView style={styles.bar} horizontal={true} contentContainerStyle={styles.innerBar}> 
 
-                    <GestureDetector gesture={undo}> 
-                        <MaterialIcons name="undo" size={34} color="#e3e2e6" />
-                    </GestureDetector>
+            <GestureDetector gesture={addBox}> 
+                <MaterialIcons name="add" size={34} color="#e3e2e6" fontWeight="bold"/> 
+            </GestureDetector>
 
-                    <GestureDetector gesture={redo}> 
-                        <MaterialIcons name="redo" size={34} color="#e3e2e6" />
-                    </GestureDetector>
+            <GestureDetector gesture={undo}> 
+                <MaterialIcons name="undo" size={34} color="#e3e2e6" />
+            </GestureDetector>
 
-                    <GestureDetector gesture={remove}> 
-                        <MaterialIcons name="delete" size={34} color="#e3e2e6" />
-                    </GestureDetector>
+            <GestureDetector gesture={redo}> 
+                <MaterialIcons name="redo" size={34} color="#e3e2e6" />
+            </GestureDetector>
 
-                    <GestureDetector gesture={duplicate}> 
-                        <MaterialIcons name="content-copy" size={34} color="#e3e2e6" />
-                    </GestureDetector>
+  
 
-                    <GestureDetector gesture={color}> 
-                        <MaterialIcons name="format-color-fill" size={34} color="#e3e2e6" />
-                    </GestureDetector>
+            <GestureDetector gesture={remove}> 
+                <MaterialIcons name="delete" size={34} color="#e3e2e6" />
+            </GestureDetector>
 
-                    <GestureDetector gesture={addText}> 
-                        <MaterialIcons name="text-fields" size={34} color="#e3e2e6" />
-                    </GestureDetector>
+            <GestureDetector gesture={duplicate}> 
+                <MaterialIcons name="content-copy" size={34} color="#e3e2e6" />
+            </GestureDetector>
 
-                    <GestureDetector gesture={addIcon}> 
-                        <MaterialIcons name="emoji-emotions" size={34} color="#e3e2e6" />
-                    </GestureDetector>
+            <GestureDetector gesture={color}> 
+                <MaterialIcons name="format-color-fill" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={addText}> 
+                <MaterialIcons name="text-fields" size={34} color="#e3e2e6" />
+            </GestureDetector>
+
+            <GestureDetector gesture={addIcon}> 
+                <MaterialIcons name="emoji-emotions" size={34} color="#e3e2e6" />
+            </GestureDetector>
 
                     <GestureDetector gesture={map}> 
                         <MaterialIcons name="map" size={34} color="#e3e2e6" />

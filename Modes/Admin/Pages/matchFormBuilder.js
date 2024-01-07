@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView, Modal, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Box from '../Components/v2Components/moveableBoxv2';
@@ -19,22 +19,6 @@ export default function MatchFormLayout(){
     const [isItalic, setIsItalic] = useState(false);
 
     const [boxes, setBoxes] = useState([]);
-
-    /*useEffect(() => {
-        console.log(fontSize);
-        let newBoxes = boxes.map(box =>
-            box.id === id ? {...box, fontSize: fontSize} : box
-        );
-        setBoxes(newBoxes);
-    }, [fontSize]);*/
-
-    function changeFontSize(id, fontSize) {
-        let newBoxes = boxes.map(box =>
-            box.id === id ? {...box, fontSize: fontSize} : box
-        );
-        setBoxes(newBoxes);
-       }
-
     function addBox() {
         //let newBoxes = boxes.push({});
         let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000001', bold: 'normal', italic: 'normal'}];
@@ -74,11 +58,7 @@ export default function MatchFormLayout(){
 
     useEffect(() => {
         console.log(boxes);
-        if (selectedBox !== null) {
-            const selectedBoxFontSize = boxes.find(box => box.id === selectedBox)?.fontSize;
-            setFontSize(selectedBoxFontSize);
-        }
-    }, [boxes, selectedBox]);
+    }, [boxes]);
 
     function setBoxPos(id, newX, newY) {
         let newBoxes = boxes.map(box =>
@@ -94,10 +74,7 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
     }
 
-    function textAdder(id) {
-        setSelectedBoxId(id);
-        setModalVisible(true);
-    }
+
 
     function colorChange(id, newColor) {
         console.log(`Changing color of box ${id} to ${newColor}`);
@@ -105,7 +82,7 @@ export default function MatchFormLayout(){
           box.id === id ? {...box, color: newColor} : box
         );
         setBoxes(newBoxes);
-    }
+       }
 
     function duplicate() {
         let selectedBoxWidth = boxes.find(box => box.id === selectedBox)?.width;
@@ -134,16 +111,8 @@ export default function MatchFormLayout(){
 
     function handleBoxSelect(id) {
         setSelectedBox(prevId => prevId === id ? null : id);
-        const selectedBox = boxes.find(box => box.id === id);
-        if (selectedBox) {
-            setInputText(selectedBox.text);
-        }
         console.log(id)
      }
-
-    function getSelectedBox(id) {
-        return boxes.find(box => box.id === id);
-    }
     return(
         <View style={{width: '100%', height: '100%'}}>
             {boxes.map((box, index) => {
