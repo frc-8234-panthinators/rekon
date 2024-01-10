@@ -6,8 +6,9 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import React, {useState, useEffect} from 'react';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color, text, fontSize, fontColor, bold, italic}) {
+export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color, text, fontSize, fontColor, bold, italic, icon}) {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
@@ -158,16 +159,33 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
 
   
 
-      <GestureDetector gesture={composed}> 
-        
-          <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
-            <Text style={{fontSize: isNaN(parseInt(fontSize)) ? 0 : parseInt(fontSize), color: fontColor, fontWeight: bold, fontStyle: italic}}>{text}</Text>
-            <GestureDetector gesture={grow}>
-              <Animated.View style={id === selectedBox && styles.topLeftDot} />
-            </GestureDetector> 
-          </Animated.View> 
-          
+    <GestureDetector gesture={composed}> 
+
+    
+
+
+
+    <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
+      <View style={{overflow: 'hidden', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'}}>
+        {icon.length != 0 && <MaterialIcons name={icon} size={100} color={'blue'} />}
+        {text.length != 0 && <Text numberOfLines={1} style={{fontSize: isNaN(parseInt(fontSize)) ? 0 : parseInt(fontSize), color: fontColor, fontWeight: bold, fontStyle: italic, }}>{text}</Text>}
+      </View>
+
+      <GestureDetector gesture={grow}>
+            <Animated.View style={id === selectedBox && styles.topLeftDot} />
       </GestureDetector>
+    
+    </Animated.View> 
+
+
+    
+
+
+
+
+
+    
+</GestureDetector>
 
 
 
@@ -193,10 +211,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#b58df1',
     borderRadius: 10,
     //marginBottom: 30,
+    //overflow: 'hidden'
+  
     
 
   },
-
 
 
   bar: {
@@ -205,6 +224,7 @@ const styles = StyleSheet.create({
     height: 400,
     backgroundColor: 'blue',
     position: 'absolute',
+    
 },
 
   topLeftDot: {
@@ -216,6 +236,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -12.5,
     left: -12.5,
+
  
 },
 

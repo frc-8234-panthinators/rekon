@@ -100,6 +100,15 @@ function AllToolBar(props){
             }).runOnJS(true);
     };
 
+    const changeIcon = (icon) => {
+        return Gesture.Tap()
+            .maxDuration(250)
+            .onStart(() => {
+                console.log(`changing icon to ${icon}`);
+                props.changeIcon(props.selectedBox, icon)
+            }).runOnJS(true);
+    }
+
     const blackTextColor = changeTextColor('black');
     const whiteTextColor = changeTextColor('white');
     const redTextColor = changeTextColor('red');
@@ -217,6 +226,7 @@ function AllToolBar(props){
                             props.setFontSize(newText);
                             props.textAdder(props.selectedBox, newText);
                         }}
+                        placeholder='Enter Text'
                         style={{
                             height: 34,
                             width: 102,
@@ -236,6 +246,7 @@ function AllToolBar(props){
                             props.setFontSize(newFontSize);
                             props.changeFontSize(props.selectedBox, newFontSize);
                         }}
+                        placeholder='px'
                         style={{
                             height: 34,
                             width: 34,
@@ -350,6 +361,7 @@ function AllToolBar(props){
                             setMatches(newMatches);
                             setSearch(search);
                         }}
+                        placeholder='Search Icons'
                         style={{
                             height: 34,
                             width: 102,
@@ -362,7 +374,7 @@ function AllToolBar(props){
                     />
 
                     {search.length > 0 && matches.map((match, index) => (
-                        <GestureDetector gesture={blackBoxColor} key={index}>
+                        <GestureDetector gesture={changeIcon(match)} key={index}>
                             <View>
                                 <MaterialIcons name={match} size={34} color="#e3e2e6" />
                             </View>
@@ -421,10 +433,12 @@ export default function ToolBar(props){
                 setFontSize={props.setFontSize} 
                 changeFontSize={props.changeFontSize}
                 changeFontColor={props.changeFontColor}
+                changeIcon={props.changeIcon}
                 isBold={props.isBold}
                 isItalic={props.isItalic}
                 toggleBold={props.toggleBold}
                 toggleItalic={props.toggleItalic}
+                icon={props.getSelectedBox(props.selectedBox)?.icon}
                 text={props.getSelectedBox(props.selectedBox)?.text}
                 fontSize={props.getSelectedBox(props.selectedBox)?.fontSize}
                 isAddTextPressed={isAddTextPressed}
