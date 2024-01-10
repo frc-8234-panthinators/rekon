@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity, ScrollView, TextInput, Modal, LogBox } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -6,16 +6,22 @@ import colors from '../../../../colors';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { isColor } from 'react-native-reanimated';
 
+const closest_match = require('closest-match');
+
+const iconNames = require('./icon_names.json');
+
 
 
 
 
 
 function AllToolBar(props){
-
+    LogBox.ignoreAllLogs();
     const [fontSize, setFontSize] = useState(props.fontSize);
     const isBold = props.getSelectedBox(props.selectedBox)?.bold === 'bold';
     const isItalic = props.getSelectedBox(props.selectedBox)?.italic === 'italic';
+    const [openSearch, setOpenSearch] = useState(false);
+    const [matches, setMatches] = useState([]);
 
     const colorMap = {
         black: '#000000',
@@ -123,7 +129,7 @@ function AllToolBar(props){
     const addIcon = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-            console.log("add Icon")
+            setOpenSearch(true);
         }).runOnJS(true);
     const remove = Gesture.Tap()
         .maxDuration(250)
@@ -153,6 +159,15 @@ function AllToolBar(props){
         borderRadius: 17,
     };
 
+    function SearchIcons(query) {
+        if (query === '') {
+            setMatches([]);
+            return;
+        }
+        let matches = closest_match.closestMatch(query.toLowerCase(), iconNames, true)
+        console.log(matches)
+        setMatches(matches);
+    }
 
 
     return(
@@ -329,6 +344,37 @@ function AllToolBar(props){
                     </GestureDetector>
                 </>
             )}
+            {openSearch && (
+                <Modal transparent={true}>
+                    <View style={{height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', backgroundColor: '#000000aa'}}>
+                        <View style={{height: '80%', width: '90%', backgroundColor: colors.background, transform: [{translateY: -20}], borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', margin: 10}}>
+                                <Pressable onPress={() => setOpenSearch(false)}>
+                                    <MaterialIcons name="close" size={40} color={'white'} />
+                                </Pressable>
+                                <TextInput style={{height: 40, flexGrow: 1, backgroundColor: '#fff', borderRadius: 10, marginRight: 10, marginLeft: 10, paddingLeft: 10}} placeholder="Search" onChangeText={SearchIcons}/>
+                            </View>
+                            <ScrollView style={{height: '80%', width: '100%'}} contentContainerStyle={{flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'center'}}>
+                                {matches.map((iconName) => {
+                                    return (
+                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                            <Pressable onPress={() => {
+                                                setOpenSearch(false);
+                                                props.getSelectedBox(props.selectedBox).icon = iconName;
+                                            }}>
+                                                <MaterialIcons name={iconName} size={80} color={'white'} style={{margin: 10}}/>
+                                            </Pressable>
+                                            <Text style={{color: 'white', textAlign: 'center', fontSize: 30}}>{iconName}</Text>
+                                        </View>
+                                    );
+                                }
+                                )}
+                            </ScrollView>
+                        </View>
+                    </View>
+                </Modal>
+                )
+            }
             
 
         </ScrollView>
