@@ -168,7 +168,7 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
       <View style={{overflow: 'hidden', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'}}>
         {icon.length != 0 && <MaterialIcons name={icon} size={100} color={'blue'} />}
-        {text.length != 0 && <Text numberOfLines={1} style={{fontSize: isNaN(parseInt(fontSize)) ? 0 : parseInt(fontSize), color: fontColor, fontWeight: bold, fontStyle: italic, }}>{text}</Text>}
+        {text.length != 0 && <Text style={{fontSize: isNaN(parseInt(fontSize)) ? 0 : parseInt(fontSize), color: fontColor, fontWeight: bold, fontStyle: italic, }}>{text}</Text>}
       </View>
 
       <GestureDetector gesture={grow}>

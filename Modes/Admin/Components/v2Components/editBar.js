@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Dimensions, TouchableOpacity, ScrollView, TextInput, LogBox } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -12,7 +12,7 @@ import { isColor } from 'react-native-reanimated';
 
 
 function AllToolBar(props){
-
+    //LogBox.ignoreAllLogs();
     const closest_match = require('closest-match');
     const iconNames = require('./icon_names.json');
 
@@ -212,7 +212,7 @@ function AllToolBar(props){
                     </GestureDetector>
 
                     <GestureDetector gesture={map}> 
-                        <MaterialIcons name="route" size={34} color="#e3e2e6" />
+                        <MaterialIcons name="link" size={34} color="#e3e2e6" />
                     </GestureDetector>
                 </>
             )}
