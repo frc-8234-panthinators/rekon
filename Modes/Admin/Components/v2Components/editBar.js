@@ -15,8 +15,7 @@ const iconNames = require('./icon_names.json');
 
 
 
-function AllToolBar(props){
-    LogBox.ignoreAllLogs();
+function AllToolBar(props) {
     const [fontSize, setFontSize] = useState(props.fontSize);
     const isBold = props.getSelectedBox(props.selectedBox)?.bold === 'bold';
     const isItalic = props.getSelectedBox(props.selectedBox)?.italic === 'italic';
@@ -203,11 +202,11 @@ function AllToolBar(props){
                     </GestureDetector>
 
                     <GestureDetector gesture={addIcon}> 
-                        <MaterialIcons name="emoji-emotions" size={34} color="#e3e2e6" />
+                        <MaterialIcons name="add-reaction" size={34} color="#e3e2e6" />
                     </GestureDetector>
 
                     <GestureDetector gesture={map}> 
-                        <MaterialIcons name="map" size={34} color="#e3e2e6" />
+                        <MaterialIcons name="route" size={34} color="#e3e2e6" />
                     </GestureDetector>
                 </>
             )}
