@@ -13,9 +13,16 @@ import { isColor } from 'react-native-reanimated';
 
 function AllToolBar(props){
 
+    const closest_match = require('closest-match');
+    const iconNames = require('./icon_names.json');
+
+    const [search, setSearch] = useState('');
+
     const [fontSize, setFontSize] = useState(props.fontSize);
     const isBold = props.getSelectedBox(props.selectedBox)?.bold === 'bold';
     const isItalic = props.getSelectedBox(props.selectedBox)?.italic === 'italic';
+
+    const [matches, setMatches] = useState([]);
 
     const colorMap = {
         black: '#000000',
@@ -123,8 +130,12 @@ function AllToolBar(props){
     const addIcon = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-            console.log("add Icon")
-        }).runOnJS(true);
+            if (props.selectedBox !== null) {
+                console.log("add Icon");
+                props.setIsIconPressed(true);
+            }
+    }).runOnJS(true);
+
     const remove = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
@@ -156,8 +167,8 @@ function AllToolBar(props){
 
 
     return(
-        <ScrollView key={props.isAddTextPressed || props.isColorPressed ? "addTextOrColor" : "default"} style={styles.bar} horizontal={true} contentContainerStyle={styles.innerBar}> 
-            {!props.isAddTextPressed && !props.isColorPressed && (
+        <ScrollView key={props.isAddTextPressed || props.isColorPressed || props.isIconPressed ? "otherBar" : "default"} style={styles.bar} horizontal={true} contentContainerStyle={styles.innerBar}> 
+            {!props.isAddTextPressed && !props.isColorPressed && !props.isIconPressed && (
                 <>
                     <GestureDetector gesture={addBox}> 
                         <MaterialIcons name="add" size={34} color="#e3e2e6" fontWeight="bold"/> 
@@ -329,6 +340,36 @@ function AllToolBar(props){
                     </GestureDetector>
                 </>
             )}
+            {props.isIconPressed && (
+                <>
+                    <TextInput
+                        value={search}
+                        onChangeText={(search) => {
+                            const newMatches = closest_match.closestMatch(search, iconNames, true);
+                            console.log(newMatches);
+                            setMatches(newMatches);
+                            setSearch(search);
+                        }}
+                        style={{
+                            height: 34,
+                            width: 102,
+                            borderColor: 'gray',
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            backgroundColor: '#fff',
+                            textAlign: 'center',
+                        }}
+                    />
+
+                    {search.length > 0 && matches.map((match, index) => (
+                        <GestureDetector gesture={blackBoxColor} key={index}>
+                            <View>
+                                <MaterialIcons name={match} size={34} color="#e3e2e6" />
+                            </View>
+                        </GestureDetector>
+                    ))}
+                </>
+            )}
             
 
         </ScrollView>
@@ -343,11 +384,13 @@ export default function ToolBar(props){
     const [ tabActive, setTabActive ] = useState(false);
     const [isAddTextPressed, setIsAddTextPressed] = useState(false);
     const [isColorPressed, setIsColorPressed] = useState(false);
+    const [isIconPressed, setIsIconPressed] = useState(false);
 
     const handlePress = () => {
-        if (isAddTextPressed || isColorPressed) {
+        if (isAddTextPressed || isColorPressed || isIconPressed) {
             setIsAddTextPressed(false);
             setIsColorPressed(false);
+            setIsIconPressed(false);
         } else {
             setTabActive(!tabActive);
         }
@@ -360,7 +403,7 @@ export default function ToolBar(props){
                     <View style={[styles.showToolBar, tabActive && {borderTopRightRadius: 0, borderBottomRightRadius: 0, borderRightColor: "#e3e2e6", borderRightWidth: 5,}]}> 
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}> 
                             
-                        {(isAddTextPressed || isColorPressed) ? <MaterialIcons name="check" size={54} color="#e3e2e6" /> : (tabActive ? <MaterialIcons name="chevron-left" size={54} color="#e3e2e6" /> : <MaterialIcons name="chevron-right" size={54} color="#e3e2e6" />)}
+                        {(isAddTextPressed || isColorPressed || isIconPressed) ? <MaterialIcons name="check" size={54} color="#e3e2e6" /> : (tabActive ? <MaterialIcons name="chevron-left" size={54} color="#e3e2e6" /> : <MaterialIcons name="chevron-right" size={54} color="#e3e2e6" />)}
                         </View>
                     </View>
 
@@ -386,8 +429,10 @@ export default function ToolBar(props){
                 fontSize={props.getSelectedBox(props.selectedBox)?.fontSize}
                 isAddTextPressed={isAddTextPressed}
                 isColorPressed={isColorPressed}
+                isIconPressed={isIconPressed}
                 setIsAddTextPressed={setIsAddTextPressed}
                 setIsColorPressed={setIsColorPressed}
+                setIsIconPressed={setIsIconPressed}
                 
                 />}
             </View>
