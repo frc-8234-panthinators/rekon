@@ -199,11 +199,11 @@ function AllToolBar(props){
                     </GestureDetector>
 
                     <GestureDetector gesture={addIcon}> 
-                        <MaterialIcons name="emoji-emotions" size={34} color="#e3e2e6" />
+                        <MaterialIcons name="add-reaction" size={34} color="#e3e2e6" />
                     </GestureDetector>
 
                     <GestureDetector gesture={map}> 
-                        <MaterialIcons name="map" size={34} color="#e3e2e6" />
+                        <MaterialIcons name="route" size={34} color="#e3e2e6" />
                     </GestureDetector>
                 </>
             )}
@@ -345,7 +345,7 @@ function AllToolBar(props){
                     <TextInput
                         value={search}
                         onChangeText={(search) => {
-                            const newMatches = closest_match.closestMatch(search, iconNames, true);
+                            const newMatches = closest_match.closestMatch(search.toLowerCase(), iconNames, true);
                             console.log(newMatches);
                             setMatches(newMatches);
                             setSearch(search);
