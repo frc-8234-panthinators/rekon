@@ -4,17 +4,17 @@ import { View, TextInput, Pressable, StyleSheet, Text } from 'react-native';
 export default function TextSection(props) {
   return (
     <View style={styles.numberSectionContainer}>
-        <View style={{flexDirection: 'column', flex: 1}}>
+      <View style={{flexDirection: 'column', flex: 1}}>
         <Text style={styles.header}>Number Section</Text>
-            <TextInput
+        <TextInput
             placeholder="Question"
-            value={props.content}
+            value={props.question}
             onChangeText={props.onChangeQuestion}
             style={styles.numberQuestion}
-            />
-            <Text style={styles.numberAnswer}>Number Answer</Text>
-        </View>
-        <Pressable style={{ borderWidth: 1, height: 50, justifyContent: 'center'}} onPress={props.onDelete}><Text>Delete</Text></Pressable>
+        />
+        <Text style={styles.numberAnswer}>Number Answer</Text>
+      </View>
+      <Pressable style={{ borderWidth: 1, height: 50, justifyContent: 'center' }} onPress={props.onDelete}><Text>Delete</Text></Pressable>
     </View>
   );
 }

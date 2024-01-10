@@ -4,9 +4,9 @@ import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
 export default function MultipleChoiceSection(props) {
   const [editIndex, setEditIndex] = useState(null);
 
-  useEffect(() => {
+  /*useEffect(() => {
     console.log('Options:', props.options);
-  }, [props.options]);
+  }, [props.options]);*/
 
 
   const handleAddOption = () => {
@@ -56,7 +56,7 @@ export default function MultipleChoiceSection(props) {
     };
 
     return (
-      <View>
+      <View style={styles.optionContainer}>
         <View style={styles.container}>
           <View style={styles.circle} />
           <TextInput
@@ -75,6 +75,12 @@ export default function MultipleChoiceSection(props) {
   return (
     <View style={styles.multipleChoiceSectionContainer}>
       <Text style={styles.header}>Multiple Choice Section</Text>
+      <TextInput
+        placeholder="Question"
+        value={props.question}
+        onChangeText={props.onChangeQuestion}
+        style={styles.multipleChoiceQuestion}       
+      />
       {props.options.map((option, index) => (
         <RadioButton
           key={index}
@@ -99,6 +105,14 @@ const styles = StyleSheet.create({
   multipleChoiceSectionContainer: {
     margin: 10,
   },
+  multipleChoiceQuestion: {
+    backgroundColor: '#E3E2E6',
+    padding: 10,
+    fontSize: 20,
+    borderRadius: 10,
+    marginRight: 5,
+    marginBottom: 10,
+  },
   pressables: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -114,7 +128,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
     marginLeft: 10,
     marginRight: 10,
   },
@@ -131,7 +144,6 @@ const styles = StyleSheet.create({
   textInput: {
     fontSize: 16,
     flex: 1,
-    borderWidth: 1,
   },
   deleteOption: {
     borderWidth: 2,
@@ -139,6 +151,9 @@ const styles = StyleSheet.create({
   warning: {
     color: 'red',
     marginHorizontal: 5,
-  }
+  },
+  optionContainer: {
+    paddingBottom: 10,
+  },
 });
 

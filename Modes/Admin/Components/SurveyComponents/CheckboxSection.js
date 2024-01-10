@@ -4,11 +4,6 @@ import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
 export default function CheckboxSection(props) {
   const [editIndex, setEditIndex] = useState(null);
 
-  useEffect(() => {
-    console.log('Options:', props.options);
-  }, [props.options]);
-
-
   const handleAddOption = () => {
     let optionNumber = props.options.length + 1;
     let newOption = `Option ${optionNumber}`;
@@ -56,16 +51,18 @@ export default function CheckboxSection(props) {
     };
 
     return (
-      <View style={styles.container}>
-        <View style={styles.checkbox} />
-        <TextInput
-          value={editText}
-          onChangeText={setEditText}
-          onEndEditing={handleEdit}
-          style={styles.textInput}
-        />
-        {isDuplicate && <Text style={styles.warning}>Duplicate cannot exist!</Text>}
-        <Pressable style={styles.deleteOption} onPress={onDelete}><Text>Delete</Text></Pressable>
+      <View style={styles.optionContainer}>
+        <View style={styles.container}>
+          <View style={styles.checkbox} />
+          <TextInput
+            value={editText}
+            onChangeText={setEditText}
+            onEndEditing={handleEdit}
+            style={styles.textInput}
+          />
+          <Pressable style={styles.deleteOption} onPress={onDelete}><Text>Delete</Text></Pressable>
+        </View>
+          {isDuplicate && <Text style={styles.warning}>Duplicate cannot exist!</Text>}
       </View>
     );
   };
@@ -73,6 +70,12 @@ export default function CheckboxSection(props) {
   return (
     <View style={styles.checkboxSectionContainer}>
       <Text style={styles.header}>Checkbox Section</Text>
+      <TextInput
+        placeholder="Question"
+        value={props.question}
+        onChangeText={props.onChangeQuestion}
+        style={styles.checkboxQuestion}       
+      />
       {props.options.map((option, index) => (
         <Checkbox
           key={index}
@@ -97,6 +100,14 @@ const styles = StyleSheet.create({
   checkboxSectionContainer: {
     margin: 10,
   },
+  checkboxQuestion: {
+    backgroundColor: '#E3E2E6',
+    padding: 10,
+    fontSize: 20,
+    borderRadius: 10,
+    marginRight: 5,
+    marginBottom: 10,
+  },
   pressables: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -112,7 +123,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
     marginLeft: 10,
     marginRight: 10,
   },
@@ -134,7 +144,11 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   warning: {
-    borderWidth: 1,
-  }
+    color: 'red',
+    marginHorizontal: 5,
+  },
+  optionContainer: {
+    paddingBottom: 10,
+  },
 });
 

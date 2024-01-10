@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { ScrollView, Pressable, Text, Modal, Button, View, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, Pressable, Text, Modal, View, StyleSheet, Dimensions } from 'react-native';
 
 import TextSection from './SurveyComponents/TextSection';
 import NumberSection from './SurveyComponents/NumberSection';
 import MultipleChoiceSection from './SurveyComponents/MultipleChoiceSection';
 import CheckboxSection from './SurveyComponents/CheckboxSection';
+import SliderSection from './SurveyComponents/SliderSection';
+import PictureSection from './SurveyComponents/PictureSection';
 
 export default function MatchForm(){
 
@@ -27,6 +29,31 @@ export default function MatchForm(){
     newSections[index].options = newOptions;
     setSections(newSections);
   };
+
+  //logs the question types and its properties in the console
+  sections.forEach((section, index) => {
+    console.log('   New Update')
+    console.log(`Section ${index + 1}:`);
+    console.log(`Type: ${section.type}`);
+    console.log(`Question: ${section.question}`);
+
+    if (section.minimum) {
+      console.log(`Minimum: ${section.minimum}`)
+    }
+
+    if (section.maximum) {
+      console.log(`Maximum: ${section.maximum}`)
+    }
+
+    if (section.options && section.options.length > 0) {
+      console.log('Options:');
+      section.options.forEach((option, i) => {
+        console.log(`  Option ${i + 1}: ${option}`);
+      });
+    }
+  });
+  
+  
 
   return(
     <View style={styles.container}>
@@ -62,6 +89,16 @@ export default function MatchForm(){
                   <Text>Add Number Section</Text>
                 </View>
               </Pressable>
+              <Pressable style={styles.modalPressables} onPress={() => addSection('slider')}>
+                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+                  <Text>Add Slider Section</Text>
+                </View>
+              </Pressable>
+              <Pressable style={styles.modalPressables} onPress={() => addSection('picture')}>
+                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+                  <Text>Add Picture Section</Text>
+                </View>
+              </Pressable>
               <Pressable style={[styles.modalPressables, {marginTop: 20}]} onPress={() => setModalVisible(false)}>
                 <Text>Cancel</Text>
               </Pressable>
@@ -73,11 +110,11 @@ export default function MatchForm(){
           <View key={index} style={styles.sections}>
             {section.type === 'text' && (
               <TextSection
-                content={section.content}
+                question={section.question}
                 onChangeQuestion={(textQuestion) => {
-                  console.log('Text Question: ', textQuestion);
+                  //console.log('Text Question: ', textQuestion);
                   const newSections = [...sections];
-                  newSections[index].content = textQuestion;
+                  newSections[index].question = textQuestion;
                   setSections(newSections);
                 }}
                 onDelete={() => deleteSection(index)}
@@ -85,6 +122,12 @@ export default function MatchForm(){
             )}
             {section.type === 'multiple-choice' && (
               <MultipleChoiceSection
+                question={section.question}
+                onChangeQuestion={(multipleChoiceQuestion) => {
+                  const newSections = [...sections];
+                  newSections[index].question = multipleChoiceQuestion;
+                  setSections(newSections);
+                }}
                 options={section.options}
                 onUpdateOptions={(newOptions) => updateOptions(index, newOptions)}
                 onDelete={() => deleteSection(index)}
@@ -92,11 +135,11 @@ export default function MatchForm(){
             )}
             {section.type === 'number' && (
               <NumberSection
-                content={section.content}
+                question={section.question}
                 onChangeQuestion={(numberQuestion) => {
-                  console.log('Number Question: ', numberQuestion)
+                  //console.log('Number Question: ', numberQuestion)
                   const newSections = [...sections];
-                  newSections[index].content = numberQuestion;
+                  newSections[index].question = numberQuestion;
                   setSections(newSections);
                 }}
                 onDelete={() => deleteSection(index)}
@@ -104,8 +147,48 @@ export default function MatchForm(){
             )}
             {section.type === 'checkbox' && (
               <CheckboxSection
+              question={section.question}
+              onChangeQuestion={(checkboxQuestion) => {
+                const newSections = [...sections];
+                newSections[index].question = checkboxQuestion;
+                setSections(newSections);
+              }}
                 options={section.options}
                 onUpdateOptions={(newOptions) => updateOptions(index, newOptions)}
+                onDelete={() => deleteSection(index)}
+              />
+            )}
+            {section.type === 'slider' && (
+              <SliderSection
+                question={section.question}
+                minimum={section.minimum}
+                maximum={section.maximum}
+                onChangeQuestion={(sliderQuestion) => {
+                  const newSections = [...sections];
+                  newSections[index].question = sliderQuestion;
+                  setSections(newSections);
+                }}
+                onChangeMin={(minimum) => {
+                  const newSections = [...sections];
+                  newSections[index].minimum = minimum;
+                  setSections(newSections);
+                }}
+                onChangeMax={(maximum) => {
+                  const newSections = [...sections];
+                  newSections[index].maximum = maximum;
+                  setSections(newSections);
+                }}
+                onDelete={() => deleteSection(index)}
+              />
+            )}
+            {section.type === 'picture' && (
+              <PictureSection
+                question={section.question}
+                onChangeQuestion={(pictureQuestion) => {
+                  const newSections = [...sections];
+                  newSections[index].question = pictureQuestion;
+                  setSections(newSections);
+                }}
                 onDelete={() => deleteSection(index)}
               />
             )}
