@@ -259,11 +259,11 @@ function AllToolBar(props){
                     />
 
                     <GestureDetector gesture={bold}> 
-                        <FontAwesome name="bold" size={34} color={isBold ? '#48BBD8' : '#e3e2e6'} />
+                        <MaterialIcons name="format-bold" size={42} color={isBold ? '#48BBD8' : '#e3e2e6'} />
                     </GestureDetector>
 
                     <GestureDetector gesture={italic}> 
-                        <FontAwesome name="italic" size={34} color={isItalic ? '#48BBD8' : '#e3e2e6'} />
+                        <MaterialIcons name="format-italic" size={42} color={isItalic ? '#48BBD8' : '#e3e2e6'} />
                     </GestureDetector>
 
                     <GestureDetector gesture={blackTextColor}>
