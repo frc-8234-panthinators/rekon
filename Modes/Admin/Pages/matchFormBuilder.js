@@ -39,9 +39,16 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
        }
 
+    function changeIconSize(id, iconSize) {
+        let newBoxes = boxes.map(box =>
+            box.id === id ? {...box, iconSize: iconSize} : box
+        );
+        setBoxes(newBoxes);
+    }
+
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: ''}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: '', iconColor: '#000000', iconSize: 50}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
@@ -155,9 +162,10 @@ export default function MatchFormLayout(){
         let selectedBoxItalic = boxes.find(box => box.id === selectedBox)?.italic;
         let selectedBoxIcon = boxes.find(box => box.id === selectedBox)?.icon;
         let selectedBoxIconColor = boxes.find(box => box.id === selectedBox)?.iconColor;
+        let selectedBoxIconSize = boxes.find(box => box.id === selectedBox)?.iconSize;
 
         if (selectedBox !== null) {
-            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor}];
+            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor, iconSize: selectedBoxIconSize}];
             let nextBox = nextBoxId + 1
             setNextBoxId(nextBox)
             setBoxes(newBoxes);
@@ -203,8 +211,7 @@ export default function MatchFormLayout(){
                     italic={box.italic}
                     icon={box.icon}
                     iconColor={box.iconColor}
-                    iconHeight={box.iconHeight}
-                    iconWidth={box.iconWidth}
+                    iconSize={box.iconSize}
                     selectedBox={selectedBox}
                     zIndex={box.id === selectedBox ? 2 : 1}
                     onSelect={handleBoxSelect} 
@@ -231,6 +238,7 @@ export default function MatchFormLayout(){
                 changeFontColor={changeFontColor}
                 changeIcon={changeIcon}
                 changeIconColor={changeIconColor}
+                changeIconSize={changeIconSize}
                 isBold={isBold}
                 isItalic={isItalic}
                 toggleBold={toggleBold}

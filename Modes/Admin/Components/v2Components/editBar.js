@@ -418,6 +418,25 @@ function AllToolBar(props){
                         <MaterialIcons name={"search"} size={34} color="#e3e2e6"/>
                     </GestureDetector>
 
+                    <TextInput
+                        keyboardType='numeric'
+                        value={props.iconSize ? props.iconSize.toString() : ''}
+                        onChangeText={(newIconSize) => {
+                            console.log('New icon size:', newIconSize);
+                            props.changeIconSize(props.selectedBox, newIconSize);
+                        }}
+                        placeholder='px'
+                        style={{
+                            height: 34,
+                            width: 34,
+                            borderColor: 'gray',
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            backgroundColor: '#fff',
+                            textAlign: 'center',
+                        }}
+                    />
+
                     <GestureDetector gesture={blackIconColor}>
                         <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#000000"
                         }}/>
@@ -508,8 +527,10 @@ export default function ToolBar(props){
                     duplicate={props.duplicate}
                     colorChange={props.colorChange}
                     textAdder={props.textAdder}
-                    setFontSize={props.setFontSize} 
+                    setFontSize={props.setFontSize}
+                    setIconSize={props.setIconSize}
                     changeFontSize={props.changeFontSize}
+                    changeIconSize={props.changeIconSize}
                     changeFontColor={props.changeFontColor}
                     changeIcon={props.changeIcon}
                     changeIconColor={props.changeIconColor}
@@ -519,6 +540,7 @@ export default function ToolBar(props){
                     toggleItalic={props.toggleItalic}
                     icon={props.getSelectedBox(props.selectedBox)?.icon}
                     text={props.getSelectedBox(props.selectedBox)?.text}
+                    iconSize={props.getSelectedBox(props.selectedBox)?.iconSize}
                     fontSize={props.getSelectedBox(props.selectedBox)?.fontSize}
                     isAddTextPressed={isAddTextPressed}
                     isColorPressed={isColorPressed}
