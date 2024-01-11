@@ -154,9 +154,10 @@ export default function MatchFormLayout(){
         let selectedBoxBold = boxes.find(box => box.id === selectedBox)?.bold;
         let selectedBoxItalic = boxes.find(box => box.id === selectedBox)?.italic;
         let selectedBoxIcon = boxes.find(box => box.id === selectedBox)?.icon;
+        let selectedBoxIconColor = boxes.find(box => box.id === selectedBox)?.iconColor;
 
         if (selectedBox !== null) {
-            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon}];
+            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor}];
             let nextBox = nextBoxId + 1
             setNextBoxId(nextBox)
             setBoxes(newBoxes);

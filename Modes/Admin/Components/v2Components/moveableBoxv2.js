@@ -56,16 +56,19 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
       if (newX + width.value > Dimensions.get("window").width) {
         //console.log("Right Side!");
         newX = Math.round((Dimensions.get("window").width - width.value) / gridSize) * gridSize;
-      } else if (newX < 0) {
+      } else if (newY + height.value > Dimensions.get("window").height - (gridSize * 2)) {
+        console.log("Lower Side!");
+        newY = Math.round(((Dimensions.get("window").height - height.value) / gridSize) - 2) * gridSize;
+      }
+
+      if (newX < 0) {
         //console.log("Left Side!");
         newX = 0;
       } else if (newY < 0) {
         //console.log("Upper Side!");
         newY = 0;
-      } else if (newY + height.value > Dimensions.get("window").height - (gridSize * 2)) {
-        console.log("Lower Side!");
-        newY = Math.round(((Dimensions.get("window").height - height.value) / gridSize) - 2) * gridSize;
       }
+
       translatex.value = withTiming(newX);
       translatey.value = withTiming(newY);
       setInitY(newY);
