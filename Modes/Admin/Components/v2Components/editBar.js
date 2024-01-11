@@ -5,7 +5,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import colors from '../../../../colors';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { isColor } from 'react-native-reanimated';
-
+import Fuse from 'fuse.js';
 
 
 
@@ -15,6 +15,10 @@ function AllToolBar(props){
 
     const closest_match = require('closest-match');
     const iconNames = require('./icon_names.json');
+
+    const searchEngine = new Fuse(iconNames, {
+        keys: ['name', 'id'],
+    });
 
     const [search, setSearch] = useState('');
 
@@ -345,9 +349,10 @@ function AllToolBar(props){
                     <TextInput
                         value={search}
                         onChangeText={(search) => {
-                            const newMatches = closest_match.closestMatch(search.toLowerCase(), iconNames, true);
-                            console.log(newMatches);
-                            setMatches(newMatches);
+                            let results = searchEngine.search(search).map((match) => match.item.id);
+                            results = results.slice(0, 5);
+                            console.log(results);
+                            setMatches(results);
                             setSearch(search);
                         }}
                         style={{
