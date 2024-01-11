@@ -26,7 +26,7 @@ function ModeStack()  {
 
 export default function App() {
   useEffect(() => {
-    LogBox.ignoreAllLogs(); 
+    LogBox.ignoreAllLogs();
   }, [])
   return(
     <NavigationContainer>

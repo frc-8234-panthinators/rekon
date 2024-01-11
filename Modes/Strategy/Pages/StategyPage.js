@@ -16,6 +16,7 @@ import YearPicker from './YearPicker';
 import ErrorPage from '../../CommonComponents/ErrorPage';
 import TemplateBuilder from './TemplateBuilder';
 import MathJax from '../Components/MathJax';
+import DataVis from './DataVisV2';
 
 
 
@@ -71,7 +72,7 @@ function MyTabs() {
               backgroundColor: (Colors.secondary)
            }}}/>
             <Tab.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
-			<Tab.Screen name="StratSettings" component={StratSettings} />
+			<Tab.Screen name="DataVis" component={DataVis} />
 		</Tab.Navigator>
 	);
 }
