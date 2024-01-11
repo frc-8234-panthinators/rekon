@@ -17,8 +17,12 @@ export default function MatchFormLayout(){
     const [fontSize, setFontSize] = useState();
     const [isBold, setIsBold] = useState(false);
     const [isItalic, setIsItalic] = useState(false);
+    
+    const [icon, setIcon] = useState();
+    const [doesIconAlreadyExist, setDoesIconAlreadyExist] = useState(false)
 
     const [boxes, setBoxes] = useState([]);
+    const gridSize = (Dimensions.get("window").width - ((Dimensions.get("window").width / 8) / 5)) / 8
 
     /*useEffect(() => {
         console.log(fontSize);
@@ -35,9 +39,16 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
        }
 
+    function changeIconSize(id, iconSize) {
+        let newBoxes = boxes.map(box =>
+            box.id === id ? {...box, iconSize: iconSize} : box
+        );
+        setBoxes(newBoxes);
+    }
+
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal'}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: '', iconColor: '#000000', iconSize: 50}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
@@ -80,6 +91,14 @@ export default function MatchFormLayout(){
         }
     }, [boxes, selectedBox]);
 
+    useEffect(() => {
+        console.log(boxes);
+        if (selectedBox !== null) {
+            const selectedBoxIcon = boxes.find(box => box.id === selectedBox)?.icon;
+            setIcon(selectedBoxIcon);
+        }
+    }, [boxes, selectedBox]);
+
     function setBoxPos(id, newX, newY) {
         let newBoxes = boxes.map(box =>
             box.id === id ? {...box, x: newX, y: newY} : box
@@ -111,6 +130,22 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
     }
 
+    function changeIcon(id, newIcon) {
+        console.log(`Changing box icon to ${newIcon} for id ${id}`)
+        let newBoxes = boxes.map(box =>
+            box.id === id ? {...box, icon: newIcon} : box
+        )
+        setBoxes(newBoxes);
+    }
+
+    function changeIconColor(id, newColor) {
+        console.log(`Changing icon color to ${newColor}`);
+        let newBoxes = boxes.map(box =>
+            box.id === id ? {...box, iconColor: newColor} : box
+        )
+        setBoxes(newBoxes);
+    }
+
     function duplicate() {
         let selectedBoxWidth = boxes.find(box => box.id === selectedBox)?.width;
         let selectedBoxHeight = boxes.find(box => box.id === selectedBox)?.height;
@@ -125,9 +160,12 @@ export default function MatchFormLayout(){
         let selectedBoxFontColor = boxes.find(box => box.id === selectedBox)?.fontColor;
         let selectedBoxBold = boxes.find(box => box.id === selectedBox)?.bold;
         let selectedBoxItalic = boxes.find(box => box.id === selectedBox)?.italic;
+        let selectedBoxIcon = boxes.find(box => box.id === selectedBox)?.icon;
+        let selectedBoxIconColor = boxes.find(box => box.id === selectedBox)?.iconColor;
+        let selectedBoxIconSize = boxes.find(box => box.id === selectedBox)?.iconSize;
 
         if (selectedBox !== null) {
-            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic}];
+            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor, iconSize: selectedBoxIconSize}];
             let nextBox = nextBoxId + 1
             setNextBoxId(nextBox)
             setBoxes(newBoxes);
@@ -141,6 +179,11 @@ export default function MatchFormLayout(){
         const selectedBox = boxes.find(box => box.id === id);
         if (selectedBox) {
             setInputText(selectedBox.text);
+        }
+        if (selectedBox.icon !== '') {
+            setDoesIconAlreadyExist(true);
+        } else {
+            setDoesIconAlreadyExist(false);
         }
         console.log(id)
      }
@@ -166,7 +209,11 @@ export default function MatchFormLayout(){
                     fontColor={box.fontColor}
                     bold={box.bold}
                     italic={box.italic}
-                    selectedBox={selectedBox} 
+                    icon={box.icon}
+                    iconColor={box.iconColor}
+                    iconSize={box.iconSize}
+                    selectedBox={selectedBox}
+                    zIndex={box.id === selectedBox ? 2 : 1}
                     onSelect={handleBoxSelect} 
                     onRemove={removeBox} 
                     onMove={setBoxPos} 
@@ -174,7 +221,28 @@ export default function MatchFormLayout(){
                 )
             })}
             
-            <ToolBar add={addBox} remove={removeBox} selectedBox={selectedBox} getSelectedBox={getSelectedBox} duplicate={duplicate} colorChange={colorChange} textAdder={textAdder} fontSize={fontSize} setFontSize={setFontSize} changeFontSize={changeFontSize} changeFontColor={changeFontColor} isBold={isBold} isItalic={isItalic} toggleBold={toggleBold} toggleItalic={toggleItalic}/>
+            <ToolBar
+                add={addBox}
+                remove={removeBox}
+                selectedBox={selectedBox}
+                getSelectedBox={getSelectedBox}
+                duplicate={duplicate}
+                colorChange={colorChange}
+                textAdder={textAdder}
+                fontSize={fontSize}
+                icon={icon}
+                doesIconAlreadyExist={doesIconAlreadyExist}
+                setFontSize={setFontSize}
+                setDoesIconAlreadyExist={setDoesIconAlreadyExist}
+                changeFontSize={changeFontSize}
+                changeFontColor={changeFontColor}
+                changeIcon={changeIcon}
+                changeIconColor={changeIconColor}
+                changeIconSize={changeIconSize}
+                isBold={isBold}
+                isItalic={isItalic}
+                toggleBold={toggleBold}
+                toggleItalic={toggleItalic}/>
             <Modal
                 animationType="slide"
                 transparent={true}

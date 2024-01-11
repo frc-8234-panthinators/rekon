@@ -6,15 +6,17 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import React, {useState, useEffect} from 'react';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color, text, fontSize, fontColor, bold, italic}) {
+export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHeight, boxWidth, boxX, boxY, color, text, fontSize, fontColor, bold, italic, icon, zIndex, iconColor, iconSize}) {
   // Declare state variables for the initial position of the object
   const [initX, setInitX] = useState(0);
   const [initY, setInitY] = useState(0);
   const [initWidth, setInitWidth] = useState(100);
   const [initHeight, setInitHeight] = useState(100);
   //const gridSize = Dimensions.get("window").width / 4;
-  const gridSize = 50;
+  const gridSize = (Dimensions.get("window").width - ((Dimensions.get("window").width / 8) / 5)) / 8;
+  const gridSizeForSpacing = Dimensions.get("window").width / 8
 
   // Use shared values for the translation of the object
   const translatex = useSharedValue(initX);
@@ -43,31 +45,35 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
       translatey.value = initY + e.translationY;
     }).runOnJS(true)
     .onEnd((e) => {
+      let newX = Math.round(translatex.value / gridSize) * gridSize;
+      let newY = Math.round(translatey.value / gridSize) * gridSize;
+
       // Update the initial position with the current translation
-      translatex.value = withTiming(Math.round(translatex.value / gridSize) * gridSize, /*undefined, checkX()*/ );
-      translatey.value = withTiming(Math.round(translatey.value / gridSize) * gridSize);
-      if (translatex.value + width.value >= Dimensions.get("window").width) {
+      translatex.value = withTiming(newX, /*undefined, checkX()*/ );
+      translatey.value = withTiming(newY);
+      console.log(newY + height.value)
+      console.log(Dimensions.get('window').height)
+      if (newX + width.value > Dimensions.get("window").width) {
         //console.log("Right Side!");
-        translatex.value = withTiming(Math.round(initX / gridSize) * gridSize);
-        translatey.value = withTiming(Math.round(initY / gridSize) * gridSize);
-      } else if (translatex.value <= 0) {
-        //console.log("Left Side!");
-        translatex.value = withTiming(Math.round(initX / gridSize) * gridSize);
-        translatey.value = withTiming(Math.round(initY / gridSize) * gridSize);
-      } else if (translatey.value <= 0) {
-        //console.log("Upper Side!");
-        translatex.value = withTiming(Math.round(initX / gridSize) * gridSize);
-        translatey.value = withTiming(Math.round(initY / gridSize) * gridSize);
-      } else if (translatey.value + height.value >= Dimensions.get("window").height - 160) {
-        //console.log("Lower Side!");
-        translatex.value = withTiming(Math.round(initX / gridSize) * gridSize);
-        translatey.value = withTiming(Math.round(initY / gridSize) * gridSize);
-      } else {
-        setInitY(translatey.value);
-        setInitX(translatex.value);
+        newX = Math.round((Dimensions.get("window").width - width.value) / gridSize) * gridSize;
+      } else if (newY + height.value > Dimensions.get("window").height - (gridSize * 2)) {
+        console.log("Lower Side!");
+        newY = Math.round(((Dimensions.get("window").height - height.value) / gridSize) - 2) * gridSize;
       }
-      onMove(id, Math.round(initX / gridSize) * gridSize, Math.round(initY / gridSize) * gridSize)
-      console.log(fontSize)
+
+      if (newX < 0) {
+        //console.log("Left Side!");
+        newX = 0;
+      } else if (newY < 0) {
+        //console.log("Upper Side!");
+        newY = 0;
+      }
+
+      translatex.value = withTiming(newX);
+      translatey.value = withTiming(newY);
+      setInitY(newY);
+      setInitX(newX);
+      onMove(id, newX, newY)
     });
 
 
@@ -94,19 +100,19 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
       let newWidth = initWidth - e.translationX;
       let newHeight = initHeight - e.translationY;
 
-      newWidth = Math.max(50, newWidth); // minimum width
-      newWidth = Math.min(300, newWidth); // maximum width
-      newHeight = Math.max(50, newHeight); // minimum height
-      newHeight = Math.min(300, newHeight); // maximum height
+      newWidth = Math.max(gridSize, newWidth); // minimum width
+      newWidth = Math.min(gridSize * 6, newWidth); // maximum width
+      newHeight = Math.max(gridSize, newHeight); // minimum height
+      newHeight = Math.min(gridSize * 6, newHeight); // maximum height
 
       // Update the width and height values
       width.value = newWidth >= 0 ? newWidth : 0;
       height.value = newHeight >= 0 ? newHeight : 0;
 
-      if (newHeight !== 50 && newHeight !== 300) {
+      if (newHeight !== gridSize && newHeight !== gridSize * 6) {
         translatey.value = initY + e.translationY;
       }
-      if (newWidth !== 50 && newWidth !== 300) {
+      if (newWidth !== gridSize && newWidth !== gridSize * 6) {
         translatex.value = initX + e.translationX;
       }
       
@@ -122,8 +128,8 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
 
       setInitWidth(width.value);
       setInitHeight(height.value);
-      setInitX(translatex.value);
-      setInitY(translatey.value);
+      setInitX(Math.round(translatex.value / gridSize) * gridSize);
+      setInitY(Math.round(translatey.value / gridSize) * gridSize);
 
       onScale(id, Math.round(width.value / gridSize) * gridSize, Math.round(height.value / gridSize) * gridSize)
 
@@ -145,11 +151,12 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     backgroundColor: color,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: zIndex,
 
 
     transform: [
-      { translateX: translatex.value + 10 },
-      { translateY: translatey.value + 10 },
+      { translateX: translatex.value + gridSizeForSpacing / 5 },
+      { translateY: translatey.value + gridSizeForSpacing / 5 },
     ],
   }));
 
@@ -158,16 +165,33 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
 
   
 
-      <GestureDetector gesture={composed}> 
-        
-          <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
-            <Text style={{fontSize: isNaN(parseInt(fontSize)) ? 0 : parseInt(fontSize), color: fontColor, fontWeight: bold, fontStyle: italic}}>{text}</Text>
-            <GestureDetector gesture={grow}>
-              <Animated.View style={id === selectedBox && styles.topLeftDot} />
-            </GestureDetector> 
-          </Animated.View> 
-          
+    <GestureDetector gesture={composed}> 
+
+    
+
+
+
+    <Animated.View style={[styles.box, style, id === selectedBox && styles.borderChange]}>
+      <View style={{overflow: 'hidden', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'}}>
+        {icon.length != 0 && <MaterialIcons name={icon} size={isNaN(parseInt(iconSize)) ? 0 : parseInt(iconSize)} color={iconColor} />}
+        {text.length != 0 && <Text style={{fontSize: isNaN(parseInt(fontSize)) ? 0 : parseInt(fontSize), color: fontColor, fontWeight: bold, fontStyle: italic, }}>{text}</Text>}
+      </View>
+
+      <GestureDetector gesture={grow}>
+            <Animated.View style={id === selectedBox && styles.topLeftDot} />
       </GestureDetector>
+    
+    </Animated.View> 
+
+
+    
+
+
+
+
+
+    
+</GestureDetector>
 
 
 
@@ -193,10 +217,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#b58df1',
     borderRadius: 10,
     //marginBottom: 30,
+    //overflow: 'hidden'
+  
     
 
   },
-
 
 
   bar: {
@@ -205,6 +230,7 @@ const styles = StyleSheet.create({
     height: 400,
     backgroundColor: 'blue',
     position: 'absolute',
+    
 },
 
   topLeftDot: {
@@ -216,6 +242,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -12.5,
     left: -12.5,
+
  
 },
 

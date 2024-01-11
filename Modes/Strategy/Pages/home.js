@@ -28,11 +28,16 @@ import MatchFormLayout from '../../Admin/Pages/matchFormBuilder';
 
 const background = '#1a1b1e'
 
-function Test() {
+function Search(props) {
+	const gotoTestStackScreen = () => {
+		props.navigation.navigate('AutoMap');
+	};
 	return (
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-			<Text>Test!</Text>
-		</View>
+    <Pressable onPress={gotoTestStackScreen}>
+      <Text>
+        PRESS ME
+      </Text>
+    </Pressable>
 	);
 }
 
@@ -159,7 +164,7 @@ function MyTabs() {
 			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
-            <Tab.Screen name="Search" component={MatchForm} />
+            <Tab.Screen name="Search" component={Search} />
 			<Tab.Screen name="Settings" component={Resize}  options={{headerShown:false}} />
 		</Tab.Navigator>
 	);
@@ -198,6 +203,7 @@ const [tabActive, setTabActive] = useState(false);
                 /* headerRight: () => (<Pressable style={{ marginRight: 30 }} onPress={editBarShow}>
                                       <MaterialIcons name="edit" size={24} color="black" />
                 </Pressable>) */ }} /> 
+                <Stack.Screen name="AutoMap" component={MatchForm} />
   </Stack.Navigator>
 		
 	);
