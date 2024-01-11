@@ -106,7 +106,8 @@ function AllToolBar(props){
             .onStart(() => {
                 console.log(`changing icon to ${icon}`);
                 props.changeIcon(props.selectedBox, icon)
-            }).runOnJS(true);
+                props.setDoesIconAlreadyExist(true);
+        }).runOnJS(true);
     }
 
     const blackTextColor = changeTextColor('black');
@@ -142,7 +143,36 @@ function AllToolBar(props){
             if (props.selectedBox !== null) {
                 console.log("add Icon");
                 props.setIsIconPressed(true);
+                if (props.icon !== '') {
+                    props.setDoesIconAlreadyExist(true);
+                }
             }
+    }).runOnJS(true);
+
+    const changeIconColor = (colorName) => {
+        return Gesture.Tap()
+            .maxDuration(250)
+            .onStart(() => {
+                console.log(`change icon color to ${colorName}`);
+                props.changeIconColor(props.selectedBox, colorMap[colorName]);
+        }).runOnJS(true);
+    };
+
+    const blackIconColor = changeIconColor('black');
+    const whiteIconColor = changeIconColor('white');
+    const redIconColor = changeIconColor('red');
+    const yellowIconColor = changeIconColor('yellow');
+    const blueIconColor = changeIconColor('blue');
+    const orangeIconColor = changeIconColor('orange');
+    const greenIconColor = changeIconColor('green');
+    const purpleIconColor = changeIconColor('purple');
+    
+    const changeToSearch = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            console.log("Changing to search");
+            props.setChangeToSearch(true);
+            props.setDoesIconAlreadyExist(false);
     }).runOnJS(true);
 
     const remove = Gesture.Tap()
@@ -351,7 +381,7 @@ function AllToolBar(props){
                     </GestureDetector>
                 </>
             )}
-            {props.isIconPressed && (
+            {props.isIconPressed && !props.doesIconAlreadyExist && (
                 <>
                     <TextInput
                         value={search}
@@ -382,6 +412,53 @@ function AllToolBar(props){
                     ))}
                 </>
             )}
+            {props.isIconPressed && props.doesIconAlreadyExist && (
+                <>
+                    <GestureDetector gesture={changeToSearch}>
+                        <MaterialIcons name={"search"} size={34} color="#e3e2e6"/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={blackIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#000000"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={whiteIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#FFFFFF"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={redIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#FF0000"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={orangeIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#FFA500"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={yellowIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#FFFF00"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={greenIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#00FF00"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={blueIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#0000FF"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={purpleIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#800080"
+                        }}/>
+                    </GestureDetector>
+                </>
+            )}
             
 
         </ScrollView>
@@ -397,6 +474,7 @@ export default function ToolBar(props){
     const [isAddTextPressed, setIsAddTextPressed] = useState(false);
     const [isColorPressed, setIsColorPressed] = useState(false);
     const [isIconPressed, setIsIconPressed] = useState(false);
+    const [changeToSearch, setChangeToSearch] = useState(false);
 
     const handlePress = () => {
         if (isAddTextPressed || isColorPressed || isIconPressed) {
@@ -410,7 +488,7 @@ export default function ToolBar(props){
 
     return( 
 
-            <View style={{height: '100%', width: '100%'}}>
+            <View style={{height: '100%', width: '100%', zIndex: 3}}>
                 <Pressable style={{position: 'absolute', bottom: 20, left: 20, }} onPress={handlePress}>  
                     <View style={[styles.showToolBar, tabActive && {borderTopRightRadius: 0, borderBottomRightRadius: 0, borderRightColor: "#e3e2e6", borderRightWidth: 5,}]}> 
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}> 
@@ -423,30 +501,35 @@ export default function ToolBar(props){
                 </Pressable>
                 {tabActive && <AllToolBar
                 
-                add={props.add}
-                remove={props.remove}
-                selectedBox={props.selectedBox}
-                getSelectedBox={props.getSelectedBox}
-                duplicate={props.duplicate}
-                colorChange={props.colorChange}
-                textAdder={props.textAdder}
-                setFontSize={props.setFontSize} 
-                changeFontSize={props.changeFontSize}
-                changeFontColor={props.changeFontColor}
-                changeIcon={props.changeIcon}
-                isBold={props.isBold}
-                isItalic={props.isItalic}
-                toggleBold={props.toggleBold}
-                toggleItalic={props.toggleItalic}
-                icon={props.getSelectedBox(props.selectedBox)?.icon}
-                text={props.getSelectedBox(props.selectedBox)?.text}
-                fontSize={props.getSelectedBox(props.selectedBox)?.fontSize}
-                isAddTextPressed={isAddTextPressed}
-                isColorPressed={isColorPressed}
-                isIconPressed={isIconPressed}
-                setIsAddTextPressed={setIsAddTextPressed}
-                setIsColorPressed={setIsColorPressed}
-                setIsIconPressed={setIsIconPressed}
+                    add={props.add}
+                    remove={props.remove}
+                    selectedBox={props.selectedBox}
+                    getSelectedBox={props.getSelectedBox}
+                    duplicate={props.duplicate}
+                    colorChange={props.colorChange}
+                    textAdder={props.textAdder}
+                    setFontSize={props.setFontSize} 
+                    changeFontSize={props.changeFontSize}
+                    changeFontColor={props.changeFontColor}
+                    changeIcon={props.changeIcon}
+                    changeIconColor={props.changeIconColor}
+                    isBold={props.isBold}
+                    isItalic={props.isItalic}
+                    toggleBold={props.toggleBold}
+                    toggleItalic={props.toggleItalic}
+                    icon={props.getSelectedBox(props.selectedBox)?.icon}
+                    text={props.getSelectedBox(props.selectedBox)?.text}
+                    fontSize={props.getSelectedBox(props.selectedBox)?.fontSize}
+                    isAddTextPressed={isAddTextPressed}
+                    isColorPressed={isColorPressed}
+                    isIconPressed={isIconPressed}
+                    changeToSearch={changeToSearch}
+                    doesIconAlreadyExist={props.doesIconAlreadyExist}
+                    setIsAddTextPressed={setIsAddTextPressed}
+                    setIsColorPressed={setIsColorPressed}
+                    setIsIconPressed={setIsIconPressed}
+                    setChangeToSearch={setChangeToSearch}
+                    setDoesIconAlreadyExist={props.setDoesIconAlreadyExist}
                 
                 />}
             </View>

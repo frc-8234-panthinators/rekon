@@ -19,8 +19,10 @@ export default function MatchFormLayout(){
     const [isItalic, setIsItalic] = useState(false);
     
     const [icon, setIcon] = useState();
+    const [doesIconAlreadyExist, setDoesIconAlreadyExist] = useState(false)
 
     const [boxes, setBoxes] = useState([]);
+    const gridSize = (Dimensions.get("window").width - ((Dimensions.get("window").width / 8) / 5)) / 8
 
     /*useEffect(() => {
         console.log(fontSize);
@@ -39,7 +41,7 @@ export default function MatchFormLayout(){
 
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: 100, height: 100,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: ''}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: ''}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
@@ -129,6 +131,14 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
     }
 
+    function changeIconColor(id, newColor) {
+        console.log(`Changing icon color to ${newColor}`);
+        let newBoxes = boxes.map(box =>
+            box.id === id ? {...box, iconColor: newColor} : box
+        )
+        setBoxes(newBoxes);
+    }
+
     function duplicate() {
         let selectedBoxWidth = boxes.find(box => box.id === selectedBox)?.width;
         let selectedBoxHeight = boxes.find(box => box.id === selectedBox)?.height;
@@ -161,6 +171,11 @@ export default function MatchFormLayout(){
         if (selectedBox) {
             setInputText(selectedBox.text);
         }
+        if (selectedBox.icon !== '') {
+            setDoesIconAlreadyExist(true);
+        } else {
+            setDoesIconAlreadyExist(false);
+        }
         console.log(id)
      }
 
@@ -186,7 +201,11 @@ export default function MatchFormLayout(){
                     bold={box.bold}
                     italic={box.italic}
                     icon={box.icon}
-                    selectedBox={selectedBox} 
+                    iconColor={box.iconColor}
+                    iconHeight={box.iconHeight}
+                    iconWidth={box.iconWidth}
+                    selectedBox={selectedBox}
+                    zIndex={box.id === selectedBox ? 2 : 1}
                     onSelect={handleBoxSelect} 
                     onRemove={removeBox} 
                     onMove={setBoxPos} 
@@ -204,10 +223,13 @@ export default function MatchFormLayout(){
                 textAdder={textAdder}
                 fontSize={fontSize}
                 icon={icon}
+                doesIconAlreadyExist={doesIconAlreadyExist}
                 setFontSize={setFontSize}
+                setDoesIconAlreadyExist={setDoesIconAlreadyExist}
                 changeFontSize={changeFontSize}
                 changeFontColor={changeFontColor}
                 changeIcon={changeIcon}
+                changeIconColor={changeIconColor}
                 isBold={isBold}
                 isItalic={isItalic}
                 toggleBold={toggleBold}
