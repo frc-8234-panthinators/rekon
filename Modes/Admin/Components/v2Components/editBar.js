@@ -189,6 +189,7 @@ function AllToolBar(props){
         .maxDuration(250)
         .onStart(() => {
             console.log("Map")
+           
     }).runOnJS(true);
     const color = Gesture.Tap()
         .maxDuration(250)
@@ -499,6 +500,7 @@ export default function ToolBar(props){
     const [isColorPressed, setIsColorPressed] = useState(false);
     const [isIconPressed, setIsIconPressed] = useState(false);
     const [changeToSearch, setChangeToSearch] = useState(false);
+   
 
     const handlePress = () => {
         if (isAddTextPressed || isColorPressed || isIconPressed) {
@@ -551,6 +553,9 @@ export default function ToolBar(props){
                     isColorPressed={isColorPressed}
                     isIconPressed={isIconPressed}
                     changeToSearch={changeToSearch}
+
+
+
                     doesIconAlreadyExist={props.doesIconAlreadyExist}
                     setIsAddTextPressed={setIsAddTextPressed}
                     setIsColorPressed={setIsColorPressed}
@@ -559,6 +564,8 @@ export default function ToolBar(props){
                     setDoesIconAlreadyExist={props.setDoesIconAlreadyExist}
                 
                 />}
+
+                
             </View>
 
             
