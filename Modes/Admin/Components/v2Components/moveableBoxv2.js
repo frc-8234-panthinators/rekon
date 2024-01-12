@@ -22,6 +22,13 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
   const translatex = useSharedValue(initX);
   const translatey = useSharedValue(initY);
 
+  useEffect(() => {
+    translatex.value = withTiming(boxX);
+    translatey.value = withTiming(boxY);
+    width.value = withTiming(boxWidth);
+    height.value = withTiming(boxHeight);
+  }, [boxX, boxY, boxWidth, boxHeight]);
+
   function checkX() {
     let newX = translatex.value;
     console.log('callback')

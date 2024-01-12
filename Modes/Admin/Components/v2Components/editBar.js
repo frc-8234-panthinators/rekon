@@ -55,13 +55,15 @@ function AllToolBar(props){
     const redo = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-            console.log("redo")
+            console.log("redo");
+            props.redoLastAction();
     }).runOnJS(true);
 
     const undo = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-            console.log("undo")
+            console.log("undo");
+            props.undoLastAction();
     }).runOnJS(true);
 
     const addText = Gesture.Tap()
@@ -534,6 +536,10 @@ export default function ToolBar(props){
                     duplicate={props.duplicate}
                     colorChange={props.colorChange}
                     textAdder={props.textAdder}
+                    boxes={props.boxes}
+                    undoLastAction={props.undoLastAction}
+                    redoLastAction={props.redoLastAction}
+                    setBoxes={props.setBoxes}
                     setFontSize={props.setFontSize}
                     setIconSize={props.setIconSize}
                     changeFontSize={props.changeFontSize}
