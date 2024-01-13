@@ -23,10 +23,13 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
   const translatey = useSharedValue(initY);
 
   useEffect(() => {
-    translatex.value = withTiming(boxX);
-    translatey.value = withTiming(boxY);
+    translatex.value = withTiming(Math.round(boxX / gridSize) * gridSize);
+    translatey.value = withTiming(Math.round(boxY / gridSize) * gridSize);
     width.value = withTiming(boxWidth);
     height.value = withTiming(boxHeight);
+    setInitX(Math.round(boxX / gridSize) * gridSize)
+    setInitY(Math.round(boxY / gridSize) * gridSize)
+    console.log(`boxX: ${boxX}, boxY: ${boxY}`)
   }, [boxX, boxY, boxWidth, boxHeight]);
 
   function checkX() {
@@ -138,7 +141,7 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
       setInitX(Math.round(translatex.value / gridSize) * gridSize);
       setInitY(Math.round(translatey.value / gridSize) * gridSize);
 
-      onScale(id, Math.round(width.value / gridSize) * gridSize, Math.round(height.value / gridSize) * gridSize)
+      onScale(id, Math.round(width.value / gridSize) * gridSize, Math.round(height.value / gridSize) * gridSize, Math.round(translatex.value / gridSize) * gridSize, Math.round(translatey.value / gridSize) * gridSize)
 
     }).runOnJS(true);
 

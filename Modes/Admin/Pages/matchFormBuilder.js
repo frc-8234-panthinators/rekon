@@ -24,6 +24,7 @@ export default function MatchFormLayout(){
     const [boxes, setBoxes] = useState([]);
     const prevBoxesRef = useRef();
     const [history, setHistory] = useState([]);
+    const [shouldRecordHistory, setShouldRecordHistory] = useState(true);
     const [redoHistory, setRedoHistory] = useState([])
     const gridSize = (Dimensions.get("window").width - ((Dimensions.get("window").width / 8) / 5)) / 8
 
@@ -39,6 +40,10 @@ export default function MatchFormLayout(){
         console.log('history:', history)
     }, [history])
 
+    useEffect(() => {
+        console.log('redoHistory', redoHistory)
+    }, [redoHistory])
+
     const findDifferences = (prevObj, newObj) => {
         const changes = {};
         Object.keys(newObj).forEach(key => {
@@ -47,11 +52,9 @@ export default function MatchFormLayout(){
             return;
           }
           if (prevObj[key] !== newObj[key]) {
-            // Store the change as a string describing the change
-            if (typeof newObj[key] === 'string') {
-                changes[key] = `From ${prevObj[key]} to ${newObj[key]}`
-            } else {
-                changes[key] = newObj[key] - prevObj[key];
+            if (newObj[key] !== prevObj[key]) {
+                // Store the change as a string describing the change
+                changes[key] = `${prevObj[key]} to ${newObj[key]}`
             }
           }
         });
@@ -59,7 +62,14 @@ export default function MatchFormLayout(){
     };
 
     useEffect(() => {
+        if (!shouldRecordHistory) {
+            setShouldRecordHistory(true);
+            prevBoxesRef.current = boxes;
+            return;
+        }
         const prevBoxes = prevBoxesRef.current || [];
+        
+        setRedoHistory([]);
       
         // Detect added boxes
         const addedBoxes = boxes.filter(box => !prevBoxes.some(prevBox => prevBox.id === box.id));
@@ -95,106 +105,77 @@ export default function MatchFormLayout(){
         prevBoxesRef.current = boxes;
       }, [boxes]);
 
-    const undoLastAction = () => {
+      const undoLastAction = () => {
         if (history.length === 0) {
             // No actions to undo
             return;
         }
-
-        // Take the last action from the history
+    
+        setShouldRecordHistory(false);
+    
         const lastAction = history[history.length - 1];
-
-        // Determine the type of action and reverse it
-        switch (lastAction.type) {
+        applyAction(lastAction, 'undo');
+    
+        setHistory(history.slice(0, -1));
+        setRedoHistory([...redoHistory, lastAction]);
+    };
+    
+    const redoLastAction = () => {
+        if (redoHistory.length === 0) {
+            // No actions to redo
+            return;
+        }
+    
+        setShouldRecordHistory(false);
+    
+        const lastAction = redoHistory[redoHistory.length - 1];
+        applyAction(lastAction, 'redo');
+    
+        setRedoHistory(redoHistory.slice(0, -1));
+        setHistory([...history, lastAction]);
+    };
+    
+    const applyAction = (action, type) => {
+        let newBoxes;
+        switch (action.type) {
             case 'add':
-                // To undo an add, we remove the box that was added
-                setBoxes(boxes.filter(box => box.id !== lastAction.box.id));
+                newBoxes = type === 'undo' ? boxes.filter(box => box.id !== action.box.id) : [...boxes, action.box];
                 break;
             case 'remove':
-                // To undo a remove, we add the box back to the boxes array
-                setBoxes([...boxes, lastAction.box]);
+                newBoxes = type === 'undo' ? [...boxes, action.box] : boxes.filter(box => box.id !== action.box.id);
                 break;
             case 'update':
-                // To undo an update, we revert the changes of the specific box
-                setBoxes(boxes.map(box => {
-                    if (box.id === lastAction.id) {
-                        // Revert changes for this box
-                        const revertedBox = { ...box };
-                        Object.keys(lastAction.changes).forEach(key => {
-                            if (typeof lastAction.changes[key] === 'string') {
-                                // Assuming the change format is "From <value1> to <value2>"
-                                const changeParts = lastAction.changes[key].match(/From (.*) to (.*)/);
-                                if (changeParts && changeParts.length === 3) {
-                                    revertedBox[key] = changeParts[1]; // Extract the 'from' value
-                                }
-                            } else {
-                                // For numeric changes, subtract the change from the current value
-                                revertedBox[key] -= lastAction.changes[key];
-                            }
-                        });
-                        console.log('Reverted box:', revertedBox)
-                        return revertedBox;
+                newBoxes = boxes.map(box => {
+                    if (box.id === action.id) {
+                        const updatedBox = { ...box };
+                        if (action.changes && typeof action.changes === 'object') {
+                            Object.keys(action.changes).forEach(key => {
+                                //if (typeof action.changes[key] === 'string') {
+                                    const values = action.changes[key].split(" to ");
+                                    if (type === 'undo') {
+                                        updatedBox[key] = values[0];
+                                    } else if (type === 'redo') {
+                                        updatedBox[key] = values[1];
+                                    }
+                                    console.log(`values[0]: ${values[0]}, values[1]: ${values[1]}`)
+                                /*} else {
+                                    console.log(`box[key]: ${box[key]}, action.changes[key]: ${action.changes[key]}`)
+                                    // If the value is not a string, it should be a numeric difference
+                                    updatedBox[key] = type === 'undo' ? box[key] - action.changes[key] : box[key] + action.changes[key];
+                                }*/
+                            });
+                        }
+                        return updatedBox;
                     }
-                    return box; // No changes for other boxes
-                }));
+                    return box;
+                });
                 break;
             default:
                 // Handle other action types if necessary
                 break;
         }
-        // Remove the last action from history and add it to redoHistory
-        setHistory(history.slice(0, -1));
-        setRedoHistory([...redoHistory, lastAction]);
-    }
-
-    const redoLastAction = () => {
-        if (redoHistory.length === 0) {
-          // No actions to redo
-          return;
-        }
-      
-        // Take the last action from the redo stack
-        const lastAction = redoHistory[redoHistory.length - 1];
-        // Remove the last action from the redo stack
-        setRedoHistory(redoHistory.slice(0, -1));
-      
-        // Apply the last action to the boxes state
-        switch (lastAction.type) {
-          case 'add':
-            // To redo an add, we add the box back to the boxes array
-            setBoxes([...boxes, lastAction.box]);
-            break;
-          case 'remove':
-            // To redo a remove, we remove the box from the boxes array
-            setBoxes(boxes.filter(box => box.id !== lastAction.box.id));
-            break;
-          case 'update':
-            // To redo an update, we apply the changes to the specific box
-            setBoxes(boxes.map(box => {
-                if (box.id === lastAction.id) {
-                    // Apply changes to this box
-                    const updatedBox = { ...box };
-                    Object.keys(lastAction.changes).forEach(key => {
-                        if (typeof lastAction.changes[key] === 'string') {
-                            updatedBox[key] = lastAction.changes[key].split(", to: ")[1]; // Extract the 'to' value
-                        } else {
-                            // Handle non-string values appropriately
-                            updatedBox[key] = lastAction.changes[key]; // Use the original value if it's not a string
-                        }
-                    });                    
-                    return updatedBox;
-                }
-                return box; // No changes for other boxes
-              }));
-            break;
-          default:
-            // Handle other action types if necessary
-            break;
-        }
-      
-        // Add the last action back to the history
-        setHistory([...history, lastAction]);
-      };
+        setBoxes(newBoxes);
+    };
 
 
     function changeFontSize(id, fontSize) {
@@ -271,9 +252,9 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
     }
 
-    function setBoxScale(id, newW, newH) {
+    function setBoxScale(id, newW, newH, newX, newY) {
         let newBoxes = boxes.map(box =>
-            box.id === id ? {...box, width: newW, height: newH} : box
+            box.id === id ? {...box, width: newW, height: newH, x: newX, y: newY} : box
         );
         setBoxes(newBoxes);
     }
@@ -315,8 +296,8 @@ export default function MatchFormLayout(){
         let selectedBoxWidth = boxes.find(box => box.id === selectedBox)?.width;
         let selectedBoxHeight = boxes.find(box => box.id === selectedBox)?.height;
 
-        let selectedBoxX = boxes.find(box => box.id === selectedBox)?.x;
-        let selectedBoxY = boxes.find(box => box.id === selectedBox)?.y;
+        /*let selectedBoxX = boxes.find(box => box.id === selectedBox)?.x;
+        let selectedBoxY = boxes.find(box => box.id === selectedBox)?.y;*/
 
         let selectedBoxColor = boxes.find(box => box.id === selectedBox)?.color;
 
@@ -330,7 +311,7 @@ export default function MatchFormLayout(){
         let selectedBoxIconSize = boxes.find(box => box.id === selectedBox)?.iconSize;
 
         if (selectedBox !== null) {
-            let newBoxes = [...boxes, {id: nextBoxId, x: selectedBoxX, y: selectedBoxY, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor, iconSize: selectedBoxIconSize}];
+            let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor, iconSize: selectedBoxIconSize}];
             let nextBox = nextBoxId + 1
             setNextBoxId(nextBox)
             setBoxes(newBoxes);
