@@ -8,6 +8,7 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 import AdminSettings from './adminSettings'; 
 import MyTabBar from '../Components/AdminTabBar';
+import AdminHomepage from './AdminHome'
 
 
 import PitScouting from '../../Scouting/Pages/PitScouting';// get rid of this later
@@ -59,9 +60,8 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="AdminHome" component={SettingsScreen}  options={{ headerStyle: {
-              backgroundColor: (Colors.tab)
-           }}}/>
+			<Tab.Screen name="AdminHome" component={AdminHomepage} options={{headerShown:false}} 
+           />
             <Tab.Screen name="Search" component={PitScouting} options={{headerShown:false}}/>
 			<Tab.Screen name="AdminSettings" component={AdminSettings} />
 		</Tab.Navigator>
@@ -76,7 +76,7 @@ export default function Admin() {
 	return (
 		
 			<Stack.Navigator initialRouteName="Tabs" independant={true}   screenOptions={{
-                cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
+                cardStyle: { backgroundColor: (Colors.background) }  // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
       	        <Stack.Screen name="Test" component={TestScreen} />
