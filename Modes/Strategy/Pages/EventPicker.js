@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     event: {
-        backgroundColor: Colors.secondary,
+        backgroundColor: Colors.secondaryDim,
         borderRadius: 10,
         minHeight: Dimensions.get('window').height * 0.3,
         width: '100%',
@@ -92,12 +92,13 @@ const styles = StyleSheet.create({
         paddingTop: 0,
     },
     buttonText: {
-        color: Colors.text,
+        color: Colors.textDim,
         fontSize: normalize(25),
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         zIndex: 2,
         marginTop: 10,
+        fontStyle: 'italic'
     },
     buttonHeader: {
         color: Colors.text,

@@ -11,38 +11,33 @@ export default function WidgetCarousel(props) {
   const floatingWidgetPosition = useSharedValue({ x: 0, y: 0 });
   const [hasHeld, setHasHeld] = useState(false);
   const [selectedWidget, setSelectedWidget] = useState(null);
-  const [widgetIndex, setWidgetIndex] = useState(null)
 
-  const existingWidgets = props.existingWidgets;
-  const createPlaceholder = props.createPlaceholder;
-  const createWidget = props.createWidget;
-  const refreshMidpoints = props.refreshMidpoints;
+  const floatingWidget = props.floatingWidget;
+  const endDrag = props.onEnd;
+  const update = props.update;
   
   const dragGesture = Gesture.LongPress({ minDurationMs: 1000 })
     .runOnJS(true)
     .shouldCancelWhenOutside(false)
-    .maxDistance(100000)
+    .maxDistance(10000000000)
     .onStart((event) => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       setFloatingWidgetVisible(true);
       floatingWidgetPosition.value = { x: event.x, y: event.y };
       setHasHeld(true);
-      refreshMidpoints();
+      floatingWidget.value = { x: event.x, y: event.y, type: selectedWidget, held: true }
     })
     .onTouchesMove((event) => {
       if (!hasHeld) return;
       floatingWidgetPosition.value = { x: event.allTouches[0].x, y: event.allTouches[0].y };
-
-      let index = existingWidgets.findIndex(widget => widget.midpoint > event.allTouches[0].y && widget.type != 'placeholder');
-      if (index == -1) index = existingWidgets.length;
-      
-      setWidgetIndex(index);
-      createPlaceholder(index);
+      floatingWidget.value = { x: event.allTouches[0].x, y: event.allTouches[0].y, type: selectedWidget, held: true }
+      update();
     })
     .onEnd(() => {
       setHasHeld(false);
       setFloatingWidgetVisible(false);
-      createWidget(selectedWidget, widgetIndex);
+      floatingWidget.value = { x: 0, y: 0, type: null, held: false }
+      endDrag(selectedWidget);
     });
 
   const selectLine = Gesture.LongPress({ minDurationMs: 900 })

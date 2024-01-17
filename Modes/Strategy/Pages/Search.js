@@ -33,7 +33,7 @@ export default function Search(props) {
                 {searchResults.map((result, index) => {
                     const team = result.item;
                     return (
-                        <TouchableOpacity style={[styles.event, index == 0 && {borderTopLeftRadius: 10, borderTopRightRadius: 10}, index == 4 && {borderBottomLeftRadius: 10, borderBottomRightRadius: 10}, index != 4 && {borderBottomColor: Colors.text, borderBottomWidth: 2,}]} onPress={() => {navigateToYearPick(team.team_number)}}>
+                        <TouchableOpacity style={[styles.event, index == 0 && {borderTopLeftRadius: 10, borderTopRightRadius: 10}, index == 4 && {borderBottomLeftRadius: 10, borderBottomRightRadius: 10}, index != 4 && {borderBottomColor: Colors.border, borderBottomWidth: 2,}]} onPress={() => {navigateToYearPick(team.team_number)}}>
                             <Text style={styles.teamNumber}>{team.team_number}</Text>
                             <View>
                                 <Text style={styles.buttonHeader}>{team.nickname}</Text>
