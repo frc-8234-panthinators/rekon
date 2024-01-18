@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import Colors from '../../../colors';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
 import { normalize } from '../../CommonComponents/fontScaler';
@@ -15,14 +15,39 @@ export default function DataVis({ route, navigation }) {
     const floatingWidget = useSharedValue({x: 0, y: 0, type: null, held: false});
     const [placeholderIndex, setPlaceholderIndex] = useState(0);
     const [widgetID, setWidgetID] = useState(0);
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [scrollCheckInterval, setScrollCheckInterval] = useState(null);
+    const scrollRef = React.useRef();
+    const scrollPositionRef = useRef(0);
+    const leftCarousel = useRef(false);
     
-    function updateDraggable() {
-        calculateInsertionIndex(floatingWidget.value.y);
+    function startDrag() {
+        scrollPositionRef.current = scrollPosition;
+        setScrollCheckInterval(setInterval(() => {
+            const screenHeight = Dimensions.get('window').height;
+            const calculatedY = floatingWidget.value.y + (screenHeight - 90);
+            let thresholdTop = screenHeight * 0.2;
+            let thresholdBottom = screenHeight * 0.8;
+            if (leftCarousel.current) {
+                if (calculatedY < thresholdTop) {
+                    scrollPositionRef.current -= 20;
+                } else if (calculatedY > thresholdBottom) {
+                    scrollPositionRef.current += 20;
+                }
+                scrollRef.current.scrollTo({ x: 0, y: scrollPositionRef.current});
+            }
+        }, 200))
     }
 
-    useEffect(() => {
-        console.log(JSON.stringify(widgets, null, 2))
-    }, [widgets]);
+    function updateDraggable() {
+        const screenHeight = Dimensions.get('window').height;
+        const calculatedY = floatingWidget.value.y + (screenHeight - 90) + scrollPosition;
+        calculateInsertionIndex(calculatedY);
+    }
+
+    function hasLeftCarousel() {
+        leftCarousel.current = true;
+    }
 
     function createNewWidget(widgetType, position) {
         const newWidgets = [...widgets];
@@ -34,7 +59,7 @@ export default function DataVis({ route, navigation }) {
     function calculateInsertionIndex(y) {
         const index = widgets.findIndex((widget, index) => {
             if (index === widgets.length - 1) {
-                return true; // Place the floatingWidget at the end if it's below all midpoints
+                return true;
             }
             const currentMidpoint = widget.midpoint;
             const nextMidpoint = widgets[index + 1].midpoint;
@@ -47,11 +72,14 @@ export default function DataVis({ route, navigation }) {
     function endDrag(widgetType) {
         createNewWidget(widgetType, placeholderIndex);
         setPlaceholderIndex(0);
+        clearInterval(scrollCheckInterval);
+        setScrollCheckInterval(null);
+        leftCarousel.current = false;
     }
     
     return (
         <View style={styles.rootVis}>
-            <ScrollView style={styles.rootVis} contentContainerStyle={{alignItems: 'center',}}>
+            <ScrollView ref={scrollRef} style={styles.rootVis} contentContainerStyle={{alignItems: 'center', paddingBottom: 240}} onScroll={(event) => {setScrollPosition(event.nativeEvent.contentOffset.y);}}>
                 {widgets.length == 1 && <Text style={{color: Colors.text}}>Try dragging a graph to the page!</Text>}
                 {widgets.map((widget, index) => {
                     return (
@@ -60,21 +88,21 @@ export default function DataVis({ route, navigation }) {
                             setTimeout(() => {
                                 if (placeholderIndex != 0) return;
                                 const newWidgets = [...widgets];
-                                newWidgets[index].midpoint = Math.round(layout.y + layout.height/2);
+                                newWidgets[index].midpoint = Math.round(layout.y + layout.height);
                                 setWidgets(newWidgets);
                             }, index);
                         }}>
-                            {index + 1 == placeholderIndex && placeholderIndex != 0 && <View style={styles.placeholder} />}
                             {widget.type != null && <View style={styles.widget} key={widget.id}>
-                                <Text style={{color: Colors.text}}>Type: {widget.type}</Text>
+                                <Text style={{color: Colors.text}}>Type: {widget.type} graph</Text>
                                 <Text style={{color: Colors.text}}>Position: {widget.midpoint}</Text>
                                 <Text style={{color: Colors.text}}>ID: {widget.id}</Text>
                             </View>}
+                            {index + 1 == placeholderIndex && placeholderIndex != 0 && <View style={styles.placeholder} />}
                         </View>
                     );
                 })}
             </ScrollView>
-            <WidgetCarousel update={updateDraggable} floatingWidget={floatingWidget} onEnd={endDrag}/>
+            <WidgetCarousel update={updateDraggable} leftCarousel={hasLeftCarousel} floatingWidget={floatingWidget} onEnd={endDrag} onStart={startDrag}/>
         </View>
     )
 }
