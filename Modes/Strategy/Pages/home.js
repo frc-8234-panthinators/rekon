@@ -1,5 +1,5 @@
 //import * as React from 'react';
-import { Text, View, Button, TouchableOpacity, Pressable} from 'react-native';
+import { Text, View, Button, TouchableOpacity, Pressable, Dimensions} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -57,12 +57,17 @@ function HomeScreen(props) {
 	const gotoTestStackScreen = () => {
 		props.navigation.navigate('Test');
 	};
+  const addPage = Gesture.Tap()
+    .maxDuration(250)
+    .onStart(() => {
+      gotoTestStackScreen()
+  })
 	return (
-    <Pressable onPress={gotoTestStackScreen}>
-      <Text>
-        PRESS ME
-      </Text>
-    </Pressable>
+    <View width={65} height={65} backgroundColor='#e3e2e6' position='absolute' bottom={50} right={50}>
+      <GestureDetector gesture={addPage}>
+        <MaterialIcons name='add' size={65} color='#000000'/>
+      </GestureDetector>
+    </View>
 	);
 }
 
@@ -173,6 +178,7 @@ function MyTabs() {
 
 import EditBar from '../../Admin/Components/v2Components/editBar';
 import React, { useState, useEffect } from 'react';
+import { Gesture, GestureDetector, ScrollView } from 'react-native-gesture-handler';
 
 
 

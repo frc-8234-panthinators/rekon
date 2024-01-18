@@ -36,13 +36,13 @@ export default function MatchFormLayout(){
         setBoxes(newBoxes);
     }, [fontSize]);*/
 
-    useEffect(() => {
+    /*useEffect(() => {
         console.log('history:', history)
     }, [history])
 
     useEffect(() => {
         console.log('redoHistory', redoHistory)
-    }, [redoHistory])
+    }, [redoHistory])*/
 
     const findDifferences = (prevObj, newObj) => {
         const changes = {};

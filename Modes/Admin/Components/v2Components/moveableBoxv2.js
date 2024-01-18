@@ -29,7 +29,6 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     height.value = withTiming(boxHeight);
     setInitX(Math.round(boxX / gridSize) * gridSize)
     setInitY(Math.round(boxY / gridSize) * gridSize)
-    console.log(`boxX: ${boxX}, boxY: ${boxY}`)
   }, [boxX, boxY, boxWidth, boxHeight]);
 
   function checkX() {
