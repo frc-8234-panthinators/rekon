@@ -3,6 +3,7 @@ import { Text, View, Button, TouchableOpacity, Pressable, Dimensions} from 'reac
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
@@ -27,6 +28,24 @@ import MatchFormLayout from '../../Admin/Pages/matchFormBuilder';
 
 
 const background = '#1a1b1e'
+
+const storeData = async (key, value) => {
+  try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(key, jsonValue);
+  } catch (e) {
+      console.error(e);
+  }
+};
+
+const getData = async (key) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(key);
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+      console.error(e);
+  }
+};
 
 function Search(props) {
 	const gotoTestStackScreen = () => {
@@ -57,14 +76,22 @@ function HomeScreen(props) {
   const [matchForms, setMatchForms] = useState([]);
   const [nextMatchFormId, setNextMatchFormId] = useState(0);
   const [currentBoxes, setCurrentBoxes] = useState();
+  const [testStoring, setTestStoring] = useState();
 
   useEffect(() => {
-    console.log(`matchForms: ${JSON.stringify(matchForms, null, 2)}`)
+    console.log(`matchForms: ${JSON.stringify(matchForms)}`);
+    const storeMatchFormsData = async() => {
+      await storeData(`matchForms`, [matchForms])
+      console.log(await getData(`matchForms`));
+      setTestStoring(await getData(`matchForms`));
+      console.log('testStoring:', testStoring)
+    }
+    storeMatchFormsData();
   }, [matchForms])
 
   const addMatch = Gesture.Tap()
     .maxDuration(250)
-    .onStart(() => {
+    .onStart(async () => {
       let newMatchForm = [...matchForms, {id: nextMatchFormId, boxes:[]}];
       let nextMatchForm = nextMatchFormId + 1;
       setNextMatchFormId(nextMatchForm);
@@ -93,21 +120,21 @@ function HomeScreen(props) {
             marginTop: 10,
             borderRadius: 10
           }}>
-            
-            <View size={50} borderRadius={10} position='absolute' right={25} top={25} backgroundColor={Colors.background}>
-              <GestureDetector gesture={goToMatchFormBuilder(matchForm.id)}>
-                <MaterialIcons name='edit' size={50} color='#e3e2e6'/>
-              </GestureDetector>
-            </View>
+
+            <GestureDetector gesture={goToMatchFormBuilder(matchForm.id)}>
+              <View size={50} borderRadius={10} position='absolute' right={25} top={25}>
+                  <MaterialIcons name='edit' size={50} color='#e3e2e6'/>
+              </View>
+            </GestureDetector>
           </View>
         ))}
       </ScrollView>
 
-      <View width={65} height={65} backgroundColor={Colors.background} position='absolute' bottom={50} right={50} borderRadius={10}>
-        <GestureDetector gesture={addMatch}>
-          <MaterialIcons name='add' size={65} color='#e3e2e6'/>
-        </GestureDetector>
-      </View>
+      <GestureDetector gesture={addMatch}>
+        <View width={65} height={65} backgroundColor={Colors.background} position='absolute' bottom={10} right={10} borderRadius={10}>
+            <MaterialIcons name='add' size={65} color='#e3e2e6'/>
+        </View>
+      </GestureDetector>
     </View>
 	);
 }
