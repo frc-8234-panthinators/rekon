@@ -7,6 +7,7 @@ import MultipleChoiceSection from './SurveyComponents/MultipleChoiceSection';
 import CheckboxSection from './SurveyComponents/CheckboxSection';
 import SliderSection from './SurveyComponents/SliderSection';
 import PictureSection from './SurveyComponents/PictureSection';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function MatchForm(){
 
@@ -212,8 +213,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sections: {
-    borderWidth: 1,
-    backgroundColor: '#8E9099',
+    //borderWidth: 1,
+    backgroundColor: '#3E4758CC',
     margin: 10,
     borderRadius: 10,
   },

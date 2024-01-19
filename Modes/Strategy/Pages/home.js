@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Button, TouchableOpacity } from 'react-native';
+import { Text, View, Pressable, Button, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -38,12 +38,15 @@ function TestScreen() {
 
 function HomeScreen(props) {
 	const gotoTestStackScreen = () => {
-		props.navigation.navigate('Test');
+		props.navigation.navigate('Form');
 	};
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
-			<Text>Home!</Text>
+			<Text style={{ color: 'white' }}>Home!</Text>
 			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
+      <Pressable style={{ backgroundColor: '#4F5062', borderRadius: 5 }} onPress={() => gotoTestStackScreen}>
+        <Text style={{ color: 'white' }}>Hello</Text>
+      </Pressable>
 		</View>
 	);
 }
@@ -160,12 +163,13 @@ export default function Strategy() {
                 cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
+        <Stack.Screen name="Form" component={MatchForm}  />
+                
+
 			</Stack.Navigator>
 		
 	);
 }
-
-
 
 
 /* import { Text, View, Button, TouchableOpacity } from 'react-native';
