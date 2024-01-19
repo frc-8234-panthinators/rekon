@@ -54,19 +54,60 @@ function Search(props) {
 }*/
 
 function HomeScreen(props) {
-	const gotoTestStackScreen = () => {
-		props.navigation.navigate('Test');
-	};
-  const addPage = Gesture.Tap()
+  const [matchForms, setMatchForms] = useState([]);
+  const [nextMatchFormId, setNextMatchFormId] = useState(0);
+  const [currentBoxes, setCurrentBoxes] = useState();
+
+  useEffect(() => {
+    console.log(`matchForms: ${JSON.stringify(matchForms, null, 2)}`)
+  }, [matchForms])
+
+  const addMatch = Gesture.Tap()
     .maxDuration(250)
     .onStart(() => {
-      gotoTestStackScreen()
-  })
+      let newMatchForm = [...matchForms, {id: nextMatchFormId, boxes:[]}];
+      let nextMatchForm = nextMatchFormId + 1;
+      setNextMatchFormId(nextMatchForm);
+      setMatchForms(newMatchForm);
+  }).runOnJS(true);
+
+  const goToMatchFormBuilder = (matchFormId) => {
+    return Gesture.Tap()
+      .maxDuration(250)
+      .onStart(() => {
+        props.navigation.navigate('Test', {matchFormId: matchFormId});
+      }).runOnJS(true);
+  }
+
 	return (
-    <View width={65} height={65} backgroundColor='#e3e2e6' position='absolute' bottom={50} right={50}>
-      <GestureDetector gesture={addPage}>
-        <MaterialIcons name='add' size={65} color='#000000'/>
-      </GestureDetector>
+    <View style={{flex: 1}}>
+      <ScrollView>
+        {matchForms.map((matchForm, index) => (
+          <View key={matchForm.id} style={{
+            flex: 1,
+            height: 100,
+            backgroundColor: '#000000',
+            marginBottom: 10,
+            marginLeft: 10,
+            marginRight: 10,
+            marginTop: 10,
+            borderRadius: 10
+          }}>
+            
+            <View size={50} borderRadius={10} position='absolute' right={25} top={25} backgroundColor={Colors.background}>
+              <GestureDetector gesture={goToMatchFormBuilder(matchForm.id)}>
+                <MaterialIcons name='edit' size={50} color='#e3e2e6'/>
+              </GestureDetector>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+
+      <View width={65} height={65} backgroundColor={Colors.background} position='absolute' bottom={50} right={50} borderRadius={10}>
+        <GestureDetector gesture={addMatch}>
+          <MaterialIcons name='add' size={65} color='#e3e2e6'/>
+        </GestureDetector>
+      </View>
     </View>
 	);
 }

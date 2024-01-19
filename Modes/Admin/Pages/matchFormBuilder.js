@@ -5,8 +5,9 @@ import Box from '../Components/v2Components/moveableBoxv2';
 import ToolBar from '../Components/v2Components/editBar';
 
 
-export default function MatchFormLayout(){
+export default function MatchFormLayout({route, navigation}){
 
+    const {matchFormId} = route.params;
 
     const [nextBoxId, setNextBoxId] = useState(0);
 
