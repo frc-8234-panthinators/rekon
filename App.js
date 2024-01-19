@@ -16,9 +16,9 @@ function ModeStack()  {
   return(
     <Stack.Navigator initialRouteName="Tabs" >
 
-      <Stack.Screen name="StratMode" component={Strategy} options={{animationEnabled: false, headerShown:false}}/>
-      <Stack.Screen name="AdminMode" component={Admin} options={{animationEnabled: false, headerShown:false}}/>
-      <Stack.Screen name="ScoutMode" component={Scouting} options={{animationEnabled: false,headerShown:false}}/>
+      <Stack.Screen name="StratMode" component={Strategy} options={{animationEnabled: false, headerShown: false}}/>
+      <Stack.Screen name="AdminMode" component={Admin} options={{animationEnabled: false, headerShown: false}}/>
+      <Stack.Screen name="ScoutMode" component={Scouting} options={{animationEnabled: false,headerShown: false}}/>
 
     </Stack.Navigator>
   )

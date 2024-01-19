@@ -102,7 +102,7 @@ export default function WidgetCarousel(props) {
   return (
     <Animated.View style={[styles.container, carouselAnimationStyle]}>
       <Pressable style={styles.openButton} onPress={() => setCarouselHidden(!carouselHidden)}>
-        <MaterialIcons name={'menu'} size={30} color={Colors.tabIcons}></MaterialIcons>
+        <MaterialIcons name={carouselHidden ? 'expand-less' : 'expand-more'} size={30} color={Colors.tabIcons}></MaterialIcons>
       </Pressable>
       <ScrollView style={styles.scrollContainer} horizontal={true} showsHorizontalScrollIndicator={false}>
         <GestureDetector gesture={lineWidgetGesture}>
