@@ -71,7 +71,7 @@ export default function MyTabBar({ state, descriptors, navigation }) {
                 flex: 1, 
                 alignItems:"center",
   
-                backgroundColor: isFocused ? Colors.background : 'transparent',
+                backgroundColor: isFocused ? Colors.tabSelected : 'transparent',
                 borderRadius: 100, 
                 padding: 5, 
                 margin: 20 }}
