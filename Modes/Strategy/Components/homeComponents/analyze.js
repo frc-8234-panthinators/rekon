@@ -42,7 +42,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: Colors.component,
+        backgroundColor: Colors.accent,
         width: windowWidth * 0.9,
         height: windowHeight * 0.085,
         borderRadius: 10,

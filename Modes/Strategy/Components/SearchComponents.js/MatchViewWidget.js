@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   ViewMatchButon: {
     borderRadius: 10,
-    backgroundColor: Colors.background, 
+    backgroundColor: Colors.accent, 
     marginLeft: 'auto',
     marginRight: 'auto',
     flexDirection: 'row',

@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   titleButton:{
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.accent,
     width: windowWidth * .38, // Adjust the width as a percentage of the screen width
     height: windowHeight * 0.07,
     marginLeft: 'auto',

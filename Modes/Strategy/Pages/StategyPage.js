@@ -63,7 +63,7 @@ export default function Strategy() {
 		
 			<Stack.Navigator initialRouteName="Tabs" independant={true}   screenOptions={{
                 cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
-              }}/*screenOptions={{headerShown: false}}*/>
+              }}/*screenOptions={{headerShown: backgroundfalse}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
       	        <Stack.Screen name="Test" component={TestScreen} />
 			</Stack.Navigator>
