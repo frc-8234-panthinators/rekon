@@ -202,6 +202,12 @@ function AllToolBar(props){
             }
     }).runOnJS(true);
 
+    const resetStorage = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            props.resetStorage();
+    }).runOnJS(true);
+
     const colorBoxStyle = {
         height: 34,
         width: 34,
@@ -226,6 +232,10 @@ function AllToolBar(props){
 
                     <GestureDetector gesture={redo}> 
                         <MaterialIcons name="redo" size={34} color="#e3e2e6" />
+                    </GestureDetector>
+
+                    <GestureDetector gesture={resetStorage}>
+                        <MaterialIcons name="loop" size={34} color="#e3e2e6"/>
                     </GestureDetector>
 
                     <GestureDetector gesture={remove}> 
@@ -568,6 +578,8 @@ export default function ToolBar(props){
                     setIsIconPressed={setIsIconPressed}
                     setChangeToSearch={setChangeToSearch}
                     setDoesIconAlreadyExist={props.setDoesIconAlreadyExist}
+
+                    resetStorage={props.resetStorage}
                 
                 />}
 

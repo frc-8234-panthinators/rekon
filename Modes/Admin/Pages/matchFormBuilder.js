@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView, Modal, TextInput, Button } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Box from '../Components/v2Components/moveableBoxv2';
 import ToolBar from '../Components/v2Components/editBar';
 
@@ -44,6 +45,42 @@ export default function MatchFormLayout({route, navigation}){
     useEffect(() => {
         console.log('redoHistory', redoHistory)
     }, [redoHistory])*/
+
+    useEffect(() => {
+        // Fetch the boxes array from AsyncStorage when the component mounts
+        AsyncStorage.getItem(`matchForms_${matchFormId}`).then(jsonValue => {
+          const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
+          setBoxes(boxes); // Update the state with the fetched boxes array
+        }).catch(error => {
+          console.error('Failed to fetch boxes:', error);
+        });
+        AsyncStorage.getItem(`nextBoxId_${matchFormId}`).then(jsonValue => {
+            const nextBoxId = jsonValue != null ? JSON.parse(jsonValue) : 0;
+            setNextBoxId(nextBoxId);
+        }).catch(error => {
+            console.error('Failed to fetch nextBoxId: ', error);
+        })
+    }, [matchFormId]);
+
+    useEffect(() => {
+        // Convert the updated boxes array to a string
+        const jsonValue = JSON.stringify(boxes);
+      
+        // Store the updated boxes array in AsyncStorage
+        AsyncStorage.setItem(`matchForms_${matchFormId}`, jsonValue).then(() => {
+          console.log('Updated boxes stored successfully');
+        }).catch(error => {
+          console.error('Failed to store updated boxes:', error);
+        });
+    }, [boxes]);
+
+    useEffect(() => {
+        AsyncStorage.setItem(`nextBoxId_${matchFormId}`, JSON.stringify(nextBoxId)).then(() => {
+            console.log('Updated nextBoxId succesfully');
+        }).catch(error => {
+          console.error('Failed to save nextBoxId:', error);
+        });
+    }, [nextBoxId]);
 
     const findDifferences = (prevObj, newObj) => {
         const changes = {};
@@ -178,6 +215,14 @@ export default function MatchFormLayout({route, navigation}){
         setBoxes(newBoxes);
     };
 
+
+    function resetStorage() {
+        AsyncStorage.clear().then(() => {
+            console.log('AsyncStorage is now clear');
+        }).catch(error => {
+            console.error('Failed to clear AsyncStorage:', error);
+        });
+    }
 
     function changeFontSize(id, fontSize) {
         let newBoxes = boxes.map(box =>
@@ -393,7 +438,9 @@ export default function MatchFormLayout({route, navigation}){
                 isBold={isBold}
                 isItalic={isItalic}
                 toggleBold={toggleBold}
-                toggleItalic={toggleItalic}/>
+                toggleItalic={toggleItalic}
+                
+                resetStorage={resetStorage}/>
             <Modal
                 animationType="slide"
                 transparent={true}

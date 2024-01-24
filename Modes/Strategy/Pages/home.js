@@ -1,5 +1,5 @@
 //import * as React from 'react';
-import { Text, View, Button, TouchableOpacity, Pressable, Dimensions} from 'react-native';
+import { Text, View, Button, TouchableOpacity, Pressable, Dimensions, TextInput} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -29,24 +29,6 @@ import MatchFormLayout from '../../Admin/Pages/matchFormBuilder';
 
 const background = '#1a1b1e'
 
-const storeData = async (key, value) => {
-  try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem(key, jsonValue);
-  } catch (e) {
-      console.error(e);
-  }
-};
-
-const getData = async (key) => {
-  try {
-    const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch (e) {
-      console.error(e);
-  }
-};
-
 function Search(props) {
 	const gotoTestStackScreen = () => {
 		props.navigation.navigate('AutoMap');
@@ -75,24 +57,31 @@ function Search(props) {
 function HomeScreen(props) {
   const [matchForms, setMatchForms] = useState([]);
   const [nextMatchFormId, setNextMatchFormId] = useState(0);
-  const [currentBoxes, setCurrentBoxes] = useState();
-  const [testStoring, setTestStoring] = useState();
+  const [doubleTapped, setDoubleTapped] = useState(false);
 
   useEffect(() => {
-    console.log(`matchForms: ${JSON.stringify(matchForms)}`);
-    const storeMatchFormsData = async() => {
-      await storeData(`matchForms`, [matchForms])
-      console.log(await getData(`matchForms`));
-      setTestStoring(await getData(`matchForms`));
-      console.log('testStoring:', testStoring)
-    }
-    storeMatchFormsData();
+    AsyncStorage.getItem('matchForms').then(jsonValue => {
+      const matchForms = jsonValue != null ? JSON.parse(jsonValue) : [];
+      setMatchForms(matchForms); // Update the state with the fetched boxes array
+    }).catch(error => {
+      console.error('Failed to fetch boxes:', error);
+    });
+  }, [])
+
+  useEffect(() => {
+    const jsonValue = JSON.stringify(matchForms);
+
+    AsyncStorage.setItem('matchForms', jsonValue).then(() => {
+      console.log('Updated pages stored successfully');
+    }).catch(error => {
+      console.error('Failed to store updated pages:', error);
+    });
   }, [matchForms])
 
   const addMatch = Gesture.Tap()
     .maxDuration(250)
     .onStart(async () => {
-      let newMatchForm = [...matchForms, {id: nextMatchFormId, boxes:[]}];
+      let newMatchForm = [...matchForms, {id: nextMatchFormId, boxes: null}];
       let nextMatchForm = nextMatchFormId + 1;
       setNextMatchFormId(nextMatchForm);
       setMatchForms(newMatchForm);
@@ -102,9 +91,19 @@ function HomeScreen(props) {
     return Gesture.Tap()
       .maxDuration(250)
       .onStart(() => {
-        props.navigation.navigate('Test', {matchFormId: matchFormId});
-      }).runOnJS(true);
+        props.navigation.navigate('Test', {
+          matchFormId: matchFormId,
+        });
+    }).runOnJS(true);
   }
+
+  const doubleTap = Gesture.Tap()
+    .maxDelay(250)
+    .numberOfTaps(1)
+    .onStart(() => {
+      console.log('Double Tapped!');
+      setDoubleTapped(!doubleTapped);
+    }).runOnJS(true);
 
 	return (
     <View style={{flex: 1}}>
@@ -120,6 +119,37 @@ function HomeScreen(props) {
             marginTop: 10,
             borderRadius: 10
           }}>
+            <View style={{
+                flex: 1,
+                  marginLeft: 60,
+                  marginRight: 135,
+                  marginTop: 10,
+                  marginBottom: 10,
+                  backgroundColor: '#ffffff',
+                  borderRadius: 10
+                  }}>
+              <GestureDetector gesture={doubleTap}>
+
+              {doubleTapped ? (
+                  <TextInput style={{
+                    flex: 1,
+                    backgroundColor: '#ff00ff',
+                    borderRadius: 10
+                  }}
+                    editable={doubleTapped}
+                    onEndEditing={setDoubleTapped(!doubleTapped)}
+                  />
+                ) : (
+                  <Text style={{
+                    flex: 1,
+                    marginLeft: 60,
+                    marginRight: 135,
+                    backgroundColor: '#ffff00',
+                  }}>
+                  </Text>
+                )}
+              </GestureDetector>
+              </View>
 
             <GestureDetector gesture={goToMatchFormBuilder(matchForm.id)}>
               <View size={50} borderRadius={10} position='absolute' right={25} top={25}>
