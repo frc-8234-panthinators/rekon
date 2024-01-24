@@ -6,7 +6,7 @@ export default function TextSection(props) {
 
   return (
     <View style={styles.textSectionContainer}>
-      <MaterialIcons  name="drag-indicator" size={30} color="red" onPress={props.onDelete} style={{marginBottom: 5, transform: [{ rotate: '90deg' }],}} />
+      <MaterialIcons  name="drag-indicator" size={30} color="red" onPress={null} style={{marginBottom: 5, transform: [{ rotate: '90deg' }],}} />
               <TextInput
           placeholder="Question"
           value={props.question}

@@ -38,14 +38,13 @@ function TestScreen() {
 
 function HomeScreen(props) {
 	const gotoTestStackScreen = () => {
-		props.navigation.navigate('Form');
+		props.navigation.navigate('Pit Form');
 	};
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
 			<Text style={{ color: 'white' }}>Home!</Text>
-			<Button title="Go to test stack screen" onPress={gotoTestStackScreen} />
-      <Pressable style={{ backgroundColor: '#4F5062', borderRadius: 5 }} onPress={() => gotoTestStackScreen}>
-        <Text style={{ color: 'white' }}>Hello</Text>
+      <Pressable style={{ backgroundColor: '#4F5062', borderRadius: 5, padding: 10,}} onPress={gotoTestStackScreen}>
+        <Text style={{ color: 'white' }}>Go to Pit Form Builder</Text>
       </Pressable>
 		</View>
 	);
@@ -163,7 +162,7 @@ export default function Strategy() {
                 cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
-        <Stack.Screen name="Form" component={MatchForm}  />
+        <Stack.Screen name="Pit Form" component={MatchForm}  />
                 
 
 			</Stack.Navigator>

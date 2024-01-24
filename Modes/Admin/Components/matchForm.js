@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, Pressable, Text, Modal, View, StyleSheet, Dimensions } from 'react-native';
 
 import TextSection from './SurveyComponents/TextSection';
@@ -8,11 +8,39 @@ import CheckboxSection from './SurveyComponents/CheckboxSection';
 import SliderSection from './SurveyComponents/SliderSection';
 import PictureSection from './SurveyComponents/PictureSection';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function MatchForm(){
 
   const [sections, setSections] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const sectionsString = await AsyncStorage.getItem('sections');
+        const sectionsArray = JSON.parse(sectionsString);
+        setSections(sectionsArray);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    const saveSections = async () => {
+      try {
+        const sectionsString = JSON.stringify(sections);
+        await AsyncStorage.setItem('sections', sectionsString);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    saveSections();
+    console.log(sections);
+  }, [sections]);
 
   const addSection = (sectionType, sectionOptions = []) => {
     setSections([...sections, { type: sectionType, options: sectionOptions }]);
@@ -75,6 +103,11 @@ export default function MatchForm(){
                   <Text>Add Text Section</Text>
                 </View>
               </Pressable>
+              <Pressable style={styles.modalPressables} onPress={() => addSection('number')}>
+                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+                  <Text>Add Number Section</Text>
+                </View>
+              </Pressable>
               <Pressable style={styles.modalPressables} onPress={() => addSection('multiple-choice', ['Option 1', 'Option 2'])}>
                 <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
                   <Text>Add Multiple Choice Section</Text>
@@ -83,11 +116,6 @@ export default function MatchForm(){
               <Pressable style={styles.modalPressables} onPress={() => addSection('checkbox', ['Option 1', 'Option 2'])}>
                 <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
                   <Text>Add Checkbox Section</Text>
-                </View>
-              </Pressable>
-              <Pressable style={styles.modalPressables} onPress={() => addSection('number')}>
-                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
-                  <Text>Add Number Section</Text>
                 </View>
               </Pressable>
               <Pressable style={styles.modalPressables} onPress={() => addSection('slider')}>
@@ -100,7 +128,7 @@ export default function MatchForm(){
                   <Text>Add Picture Section</Text>
                 </View>
               </Pressable>
-              <Pressable style={[styles.modalPressables, {marginTop: 20}]} onPress={() => setModalVisible(false)}>
+              <Pressable style={[styles.modalPressables, {marginTop: 10}]} onPress={() => setModalVisible(false)}>
                 <Text>Cancel</Text>
               </Pressable>
             </View>
@@ -119,6 +147,18 @@ export default function MatchForm(){
                   setSections(newSections);
                 }}
                 onDelete={() => deleteSection(index)}
+                />
+                )}
+            {section.type === 'number' && (
+              <NumberSection
+                question={section.question}
+                onChangeQuestion={(numberQuestion) => {
+                  //console.log('Number Question: ', numberQuestion)
+                  const newSections = [...sections];
+                  newSections[index].question = numberQuestion;
+                  setSections(newSections);
+                }}
+                onDelete={() => deleteSection(index)}
               />
             )}
             {section.type === 'multiple-choice' && (
@@ -133,19 +173,7 @@ export default function MatchForm(){
                 onUpdateOptions={(newOptions) => updateOptions(index, newOptions)}
                 onDelete={() => deleteSection(index)}
               />
-            )}
-            {section.type === 'number' && (
-              <NumberSection
-                question={section.question}
-                onChangeQuestion={(numberQuestion) => {
-                  //console.log('Number Question: ', numberQuestion)
-                  const newSections = [...sections];
-                  newSections[index].question = numberQuestion;
-                  setSections(newSections);
-                }}
-                onDelete={() => deleteSection(index)}
-              />
-            )}
+              )}
             {section.type === 'checkbox' && (
               <CheckboxSection
               question={section.question}
@@ -255,5 +283,6 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 10,
     borderWidth: 1,
+    marginVertical: 5,
   },
 });

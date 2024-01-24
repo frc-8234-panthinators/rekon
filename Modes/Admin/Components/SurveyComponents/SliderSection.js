@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, TextInput, StyleSheet, Text, View } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function SliderSection(props) {
     const [ valuesCorrect, setValuesCorrect ] = useState(true);
@@ -51,7 +52,7 @@ export default function SliderSection(props) {
                     style={styles.sliderQuestion}
                 />
 
-                <Text styles={{}}>Set min and max values</Text>
+                <Text style={{color: 'white'}}>Set min and max values</Text>
                 <View style={styles.limitsContainer}>
                     <TextInput //set minimum value
                         placeholder="min"
@@ -72,14 +73,13 @@ export default function SliderSection(props) {
                 </View>
                     {!valuesCorrect && <Text style={styles.warning}>Minimum has to be less than Maximum</Text>}
             </View>
-            <Pressable style={{ borderWidth: 1, height: 50, justifyContent: 'center' }} onPress={props.onDelete}><Text>Delete</Text></Pressable>
+            <MaterialIcons name="delete" size={30} color="red" onPress={props.onDelete} />
         </View>
     )
 }
 
 const styles = StyleSheet.create ({
     sliderSectionContainer: {
-        borderWidth: 1,
         margin: 10,
         flexDirection: 'row',
         alignItems: 'center',
@@ -87,6 +87,7 @@ const styles = StyleSheet.create ({
     header: {
         marginBottom: 5,
         fontSize: 20,
+        color: 'white'
     },
     sliderQuestion: {
         backgroundColor: '#E3E2E6',

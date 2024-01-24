@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function CheckboxSection(props) {
   const [editIndex, setEditIndex] = useState(null);
@@ -60,7 +61,7 @@ export default function CheckboxSection(props) {
             onEndEditing={handleEdit}
             style={styles.textInput}
           />
-          <Pressable style={styles.deleteOption} onPress={onDelete}><Text>Delete</Text></Pressable>
+          <MaterialIcons name="close" size={30} color="red" onPress={onDelete} />
         </View>
           {isDuplicate && <Text style={styles.warning}>Duplicate cannot exist!</Text>}
       </View>
@@ -119,6 +120,7 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 10,
     fontSize: 20,
+    color: 'white',
   },
   container: {
     flexDirection: 'row',
@@ -131,7 +133,7 @@ const styles = StyleSheet.create({
     width: 20,
     borderRadius: 3,
     borderWidth: 2,
-    borderColor: '#000',
+    borderColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 5,
@@ -139,6 +141,7 @@ const styles = StyleSheet.create({
   textInput: {
     fontSize: 16,
     flex: 1,
+    color: 'white',
   },
   deleteOption: {
     borderWidth: 2,

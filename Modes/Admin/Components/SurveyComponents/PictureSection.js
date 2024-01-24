@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TextInput, Text, Pressable, StyleSheet } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function PictureSection(props) {
     return (
@@ -16,7 +17,7 @@ export default function PictureSection(props) {
                     <Text style={styles.cameraIcon}>Photo Here</Text>
                 </View>
             </View>
-            <Pressable style={{ borderWidth: 1, height: 50, justifyContent: 'center' }} onPress={props.onDelete}><Text>Delete</Text></Pressable>
+            <MaterialIcons name="delete" size={30} color="red" onPress={props.onDelete}/>
         </View>
     );
 }
@@ -30,6 +31,7 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 20,
         marginBottom: 10,
+        color: 'white',
     },
     pictureQuestion: {
         backgroundColor: '#E3E2E6',
