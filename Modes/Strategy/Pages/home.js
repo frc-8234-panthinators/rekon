@@ -85,6 +85,13 @@ function HomeScreen(props) {
         console.error('Failed to fetch nextMatchFormId from storage:', error);
       });
 
+      AsyncStorage.getItem('selectedMatchForm').then(jsonValue => {
+        const selectedMatchForm = jsonValue != null ? JSON.parse(jsonValue) : 0;
+        setSelectedMatchForm(selectedMatchForm);
+      }).catch(error => {
+        console.error('Failed to fetch selectedMatchForm from storage:', error);
+      });
+
     }, [])
   );
 
@@ -107,13 +114,23 @@ function HomeScreen(props) {
     .catch(error => {
         console.error('Failed to save nextMatchFormId to storage:', error);
     });
-  })
+  }, [nextMatchFormId])
+
+  useEffect(() => {
+    const jsonValue = JSON.stringify(selectedMatchForm);
+    AsyncStorage.setItem('selectedMatchForm', jsonValue).then(() => {
+      console.log('Saved selectedMatchForm to storage');
+    }).catch(error => {
+      console.error('Failed to store selectedMatchForm to storage:', error);
+    });
+  }, [selectedMatchForm])
 
   const addMatch = Gesture.Tap()
     .maxDuration(250)
     .onStart(() => {
       let newMatchForm = [...matchForms, {id: nextMatchFormId, name: '', showTextInput: false}];
       let nextMatchForm = nextMatchFormId + 1;
+      setSelectedMatchForm(nextMatchFormId);
       setNextMatchFormId(nextMatchForm);
       setMatchForms(newMatchForm);
   }).runOnJS(true);
@@ -121,8 +138,9 @@ function HomeScreen(props) {
   const removeMatch = Gesture.Tap()
     .maxDuration(250)
     .onStart(() => {
-      setMatchForms(matchForms.filter(matchForm => matchForm.id !== selectedMatchForm));
-      setSelectedMatchForm(null);
+      const newMatchForms = matchForms.filter(matchForm => matchForm.id !== selectedMatchForm);
+      setSelectedMatchForm(Math.max(...newMatchForms.map(matchForm => matchForm.id)));
+      setMatchForms(newMatchForms);
   }).runOnJS(true);
 
   const goToMatchFormBuilder = (matchFormId) => {
@@ -132,6 +150,7 @@ function HomeScreen(props) {
         props.navigation.navigate('Test', {
           matchFormId: matchFormId,
         });
+        setSelectedMatchForm(matchFormId);
     }).runOnJS(true);
   }
 

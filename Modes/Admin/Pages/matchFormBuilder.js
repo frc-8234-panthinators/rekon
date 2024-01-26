@@ -1,18 +1,23 @@
-import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView, Modal, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Dimensions, ScrollView, Modal, TextInput, Button, ActivityIndicator } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Box from '../Components/v2Components/moveableBoxv2';
 import ToolBar from '../Components/v2Components/editBar';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 
 export default function MatchFormLayout({route, navigation}){
 
     const {matchFormId} = route.params;
+    const [isLoading, setIsLoading] = useState(true);
 
     const [nextBoxId, setNextBoxId] = useState(0);
 
-    const [modalVisible, setModalVisible] = useState(false);
+    const [mapScreen, setMapScreen] = useState(false);
+    const [mapScreenHeight, setMapScreenHeight] = useSharedValue(0);
+
     const [inputText, setInputText] = useState('');
     const [selectedBoxId, setSelectedBoxId] = useState(null);
 
@@ -240,7 +245,7 @@ export default function MatchFormLayout({route, navigation}){
 
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: '', iconColor: '#000000', iconSize: 50}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: '', iconColor: '#000000', iconSize: 50, page: ''}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
@@ -280,12 +285,6 @@ export default function MatchFormLayout({route, navigation}){
         if (selectedBox !== null) {
             const selectedBoxFontSize = boxes.find(box => box.id === selectedBox)?.fontSize;
             setFontSize(selectedBoxFontSize);
-        }
-    }, [boxes, selectedBox]);
-
-    useEffect(() => {
-        console.log(boxes);
-        if (selectedBox !== null) {
             const selectedBoxIcon = boxes.find(box => box.id === selectedBox)?.icon;
             setIcon(selectedBoxIcon);
         }
@@ -355,9 +354,10 @@ export default function MatchFormLayout({route, navigation}){
         let selectedBoxIcon = boxes.find(box => box.id === selectedBox)?.icon;
         let selectedBoxIconColor = boxes.find(box => box.id === selectedBox)?.iconColor;
         let selectedBoxIconSize = boxes.find(box => box.id === selectedBox)?.iconSize;
+        let selectedBoxPage = boxes.find(box => box.id === selectedBox)?.page;
 
         if (selectedBox !== null) {
-            let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor, iconSize: selectedBoxIconSize}];
+            let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor, iconSize: selectedBoxIconSize, page: selectedBoxPage}];
             let nextBox = nextBoxId + 1
             setNextBoxId(nextBox)
             setBoxes(newBoxes);
@@ -383,103 +383,95 @@ export default function MatchFormLayout({route, navigation}){
     function getSelectedBox(id) {
         return boxes.find(box => box.id === id);
     }
+
+    const mapScreenStyle = useAnimatedStyle(() => ({
+        height: mapScreenHeight
+    }))
+
+    useEffect(() => {
+        if (isLoading === true) {
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 1000)
+        }
+    }, [navigation])
+
     return(
         <View style={{width: '100%', height: '100%'}}>
-            {boxes.map((box, index) => {
-                return (
-                    <Box 
-                    
-                    key={box.id} 
-                    id={box.id} 
-                    boxX={box.x} 
-                    boxY={box.y} 
-                    boxHeight={box.height} 
-                    boxWidth={box.width} 
-                    color={box.color}
-                    text={box.text}
-                    fontSize={box.fontSize}
-                    fontColor={box.fontColor}
-                    bold={box.bold}
-                    italic={box.italic}
-                    icon={box.icon}
-                    iconColor={box.iconColor}
-                    iconSize={box.iconSize}
-                    selectedBox={selectedBox}
-                    zIndex={box.id === selectedBox ? 2 : 1}
-                    onSelect={handleBoxSelect} 
-                    onRemove={removeBox} 
-                    onMove={setBoxPos} 
-                    onScale={setBoxScale}/>
-                )
-            })}
-            
-            <ToolBar
-                add={addBox}
-                remove={removeBox}
-                selectedBox={selectedBox}
-                getSelectedBox={getSelectedBox}
-                duplicate={duplicate}
-                colorChange={colorChange}
-                textAdder={textAdder}
-                boxes={boxes}
-                fontSize={fontSize}
-                icon={icon}
-                undoLastAction={undoLastAction}
-                redoLastAction={redoLastAction}
-                doesIconAlreadyExist={doesIconAlreadyExist}
-                setBoxes={setBoxes}
-                setFontSize={setFontSize}
-                setDoesIconAlreadyExist={setDoesIconAlreadyExist}
-                changeFontSize={changeFontSize}
-                changeFontColor={changeFontColor}
-                changeIcon={changeIcon}
-                changeIconColor={changeIconColor}
-                changeIconSize={changeIconSize}
-                isBold={isBold}
-                isItalic={isItalic}
-                toggleBold={toggleBold}
-                toggleItalic={toggleItalic}
-                
-                resetStorage={resetStorage}/>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={{marginTop: 250}}>
-                    <View>
-                        <TextInput
-                            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                            onChangeText={text => setInputText(text)}
-                            value={inputText}
-                        />
 
-                        <View style={{margin: 20}}>
-                            <Button
-                                onPress={() => {
-                                    let newBoxes = boxes.map(box =>
-                                        box.id === selectedBoxId ? {...box, text: inputText} : box
-                                    );
-                                    setBoxes(newBoxes);
-                                    setModalVisible(!modalVisible);
-                                }}
-                                title="Submit"
-                                color="#841584"
-                            />
-                            <Button
-                                onPress={() => {
-                                    setModalVisible(!modalVisible);
-                                }}
-                                title="Cancel"
-                                color="#841584"
-                            />
-                        </View>
+            {isLoading && boxes.length === 0 && 
+                <Modal style={{flex: 1}}>
+                    <View style={{flex: 1, backgroundColor: '#000000'}}>
+                        <ActivityIndicator color='#ffffff'  size='large' style={{flex: 1}}>
+
+                        </ActivityIndicator>
                     </View>
-                </View>
-            </Modal>
-        </View>
+                </Modal>}
+
+            {mapScreen && 
+                <Modal style={{height: mapScreenHeight, width: '100%'}}>
+                    <View style={{flex: 1, backgroundColor: '#000000'}}>
+
+                    </View>
+                </Modal>
+            }
+
+        {boxes.map((box, index) => {
+            return (
+                <Box 
+                
+                key={box.id} 
+                id={box.id} 
+                boxX={box.x} 
+                boxY={box.y} 
+                boxHeight={box.height} 
+                boxWidth={box.width} 
+                color={box.color}
+                text={box.text}
+                fontSize={box.fontSize}
+                fontColor={box.fontColor}
+                bold={box.bold}
+                italic={box.italic}
+                icon={box.icon}
+                iconColor={box.iconColor}
+                iconSize={box.iconSize}
+                selectedBox={selectedBox}
+                zIndex={box.id === selectedBox ? 2 : 1}
+                onSelect={handleBoxSelect} 
+                onRemove={removeBox} 
+                onMove={setBoxPos} 
+                onScale={setBoxScale}/>
+            )
+        })}
+        
+        <ToolBar
+            add={addBox}
+            remove={removeBox}
+            selectedBox={selectedBox}
+            getSelectedBox={getSelectedBox}
+            duplicate={duplicate}
+            colorChange={colorChange}
+            textAdder={textAdder}
+            boxes={boxes}
+            fontSize={fontSize}
+            icon={icon}
+            undoLastAction={undoLastAction}
+            redoLastAction={redoLastAction}
+            doesIconAlreadyExist={doesIconAlreadyExist}
+            setBoxes={setBoxes}
+            setFontSize={setFontSize}
+            setDoesIconAlreadyExist={setDoesIconAlreadyExist}
+            changeFontSize={changeFontSize}
+            changeFontColor={changeFontColor}
+            changeIcon={changeIcon}
+            changeIconColor={changeIconColor}
+            changeIconSize={changeIconSize}
+            isBold={isBold}
+            isItalic={isItalic}
+            toggleBold={toggleBold}
+            toggleItalic={toggleItalic}
+            
+            resetStorage={resetStorage}/>
+    </View>
     )
 }

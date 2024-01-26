@@ -27,8 +27,8 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
     translatey.value = withTiming(Math.round(boxY / gridSize) * gridSize);
     width.value = withTiming(boxWidth);
     height.value = withTiming(boxHeight);
-    setInitX(Math.round(boxX / gridSize) * gridSize)
-    setInitY(Math.round(boxY / gridSize) * gridSize)
+    setInitX(Math.round(boxX / gridSize) * gridSize);
+    setInitY(Math.round(boxY / gridSize) * gridSize);
   }, [boxX, boxY, boxWidth, boxHeight]);
 
   function checkX() {
