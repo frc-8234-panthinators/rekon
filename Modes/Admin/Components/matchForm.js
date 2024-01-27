@@ -11,7 +11,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export default function MatchForm(){
+export default function MatchForm({ navigation }){
 
   const [sections, setSections] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -82,10 +82,13 @@ export default function MatchForm(){
     }
   });
   
-  
 
+  
   return(
     <View style={styles.container}>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', margin: 10, }}>
+        <MaterialIcons name="visibility" size={30} color="white" backgroundColor="#3E4758CC" onPress={() => navigation.navigate('Preview Form', {sections} )} /> 
+      </View>    
       <ScrollView>
 
         <Modal

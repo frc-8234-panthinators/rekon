@@ -9,7 +9,7 @@ import * as NavigationBar from 'expo-navigation-bar';
 //import Home from './Modes/Strategy/Pages/home';
 
 import MatchForm from '../../Admin/Components/matchForm';
-
+import PreviewForm from '../../Admin/Components/previewForm';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
@@ -163,6 +163,7 @@ export default function Strategy() {
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
         <Stack.Screen name="Pit Form" component={MatchForm}  />
+        <Stack.Screen name="Preview Form" component={PreviewForm} />
                 
 
 			</Stack.Navigator>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pressable, TextInput, StyleSheet, Text, View } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
@@ -6,6 +6,11 @@ export default function SliderSection(props) {
     const [ valuesCorrect, setValuesCorrect ] = useState(true);
     const [minimumValue, setMinimumValue] = useState(null);
     const [maximumValue, setMaximumValue] = useState(null);
+
+    useEffect(() => {
+        setMinimumValue(props.minimum);
+        setMaximumValue(props.maximum);
+    }, [props.minValue, props.maximum]);
 
     const editMin = (input) => {
         setValuesCorrect(true);
