@@ -72,7 +72,6 @@ function HomeScreen(props) {
       AsyncStorage.getItem('matchForms').then(jsonValue => {
         const matchForms = jsonValue != null ? JSON.parse(jsonValue) : [];
         setMatchForms(matchForms); // Update the state with the fetched matchForms array
-        setMatchForms(matchForms);
       }).catch(error => {
         console.error('Failed to fetch matchForms:', error);
       });
@@ -175,6 +174,20 @@ function HomeScreen(props) {
     setMatchForms(newMatchForms);
   }
 
+  function resetAsyncStorage() {
+    AsyncStorage.clear().then(() => {
+        console.log('AsyncStorage is now clear');
+    }).catch(error => {
+        console.error('Failed to clear AsyncStorage:', error);
+    });
+  }
+
+  const resetStorage = Gesture.Tap()
+    .maxDuration(250)
+    .onStart(() => {
+      resetAsyncStorage();
+  }).runOnJS(true);
+
 	return (
     <View style={{flex: 1}}>
       <ScrollView>
@@ -246,6 +259,12 @@ function HomeScreen(props) {
       <GestureDetector gesture={removeMatch}>
         <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 10, borderRadius: 10}}>
           <MaterialIcons name='remove' size={65} color='#e3e2e6'/>
+        </View>
+      </GestureDetector>
+
+      <GestureDetector gesture={resetStorage}>
+        <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 140, borderRadius: 10}}>
+          <MaterialIcons name='loop' size={65} color='#e3e2e6'/>
         </View>
       </GestureDetector>
     </View>

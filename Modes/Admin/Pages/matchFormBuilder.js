@@ -5,18 +5,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Box from '../Components/v2Components/moveableBoxv2';
 import ToolBar from '../Components/v2Components/editBar';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 
 export default function MatchFormLayout({route, navigation}){
 
-    const {matchFormId} = route.params;
+    const { matchFormId } = route.params;
+
     const [isLoading, setIsLoading] = useState(true);
 
     const [nextBoxId, setNextBoxId] = useState(0);
 
     const [mapScreen, setMapScreen] = useState(false);
-    const [mapScreenHeight, setMapScreenHeight] = useSharedValue(0);
+    const mapScreenHeight = useSharedValue(0);
 
     const [inputText, setInputText] = useState('');
     const [selectedBoxId, setSelectedBoxId] = useState(null);
@@ -29,6 +31,7 @@ export default function MatchFormLayout({route, navigation}){
     const [doesIconAlreadyExist, setDoesIconAlreadyExist] = useState(false)
 
     const [boxes, setBoxes] = useState([]);
+    const [matchForms, setMatchForms] = useState([]);
     const prevBoxesRef = useRef();
     const [history, setHistory] = useState([]);
     const [shouldRecordHistory, setShouldRecordHistory] = useState(true);
@@ -65,7 +68,17 @@ export default function MatchFormLayout({route, navigation}){
         }).catch(error => {
             console.error('Failed to fetch nextBoxId: ', error);
         })
+        AsyncStorage.getItem('matchForms').then(jsonValue => {
+            const matchForms = jsonValue != null ? JSON.parse(jsonValue) : [];
+            setMatchForms(matchForms); // Update the state with the fetched matchForms array
+        }).catch(error => {
+            console.error('Failed to fetch matchForms:', error);
+        });
     }, [matchFormId]);
+
+    useEffect(() => {
+        console.log(`matchForms: ${JSON.stringify(matchForms)}`);
+    }, [matchForms])
 
     useEffect(() => {
         // Convert the updated boxes array to a string
@@ -384,8 +397,42 @@ export default function MatchFormLayout({route, navigation}){
         return boxes.find(box => box.id === id);
     }
 
+    function map() {
+        setMapScreen(true);
+    }
+
+    const selectPage = (id, page) => {
+        return Gesture.Tap()
+            .maxDuration(250)
+            .onStart(() => {
+                console.log(`Selected page with name ${page}`);
+                let newBoxes = boxes.map(box =>
+                    box.id === id ? {...box, page: page} : box
+                )
+                setBoxes(newBoxes);
+        }).runOnJS(true);
+    }
+
+    const closeMapScreen = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            setMapScreen(false);
+        }).runOnJS(true);
+    
+    useEffect(() => {
+        if (mapScreen === true) {
+            mapScreenHeight.value = withTiming(Dimensions.get('window').height / 2);
+        } else {
+            mapScreenHeight.value = withTiming(0);
+        }
+    }, [mapScreen])
+
     const mapScreenStyle = useAnimatedStyle(() => ({
-        height: mapScreenHeight
+        height: mapScreenHeight.value,
+        width: '100%',
+        bottom: 0,
+        position: 'absolute',
+        backgroundColor: '#000000'
     }))
 
     useEffect(() => {
@@ -394,12 +441,12 @@ export default function MatchFormLayout({route, navigation}){
                 setIsLoading(false);
             }, 1000)
         }
-    }, [navigation])
+    }, [])
 
     return(
         <View style={{width: '100%', height: '100%'}}>
 
-            {isLoading && boxes.length === 0 && 
+            {isLoading && boxes.length !== 0 && 
                 <Modal style={{flex: 1}}>
                     <View style={{flex: 1, backgroundColor: '#000000'}}>
                         <ActivityIndicator color='#ffffff'  size='large' style={{flex: 1}}>
@@ -409,11 +456,36 @@ export default function MatchFormLayout({route, navigation}){
                 </Modal>}
 
             {mapScreen && 
-                <Modal style={{height: mapScreenHeight, width: '100%'}}>
-                    <View style={{flex: 1, backgroundColor: '#000000'}}>
+                <Animated.View style={mapScreenStyle}>
+                    <GestureDetector gesture={closeMapScreen}>
+                        <View style={{size: 34, position: 'absolute', top: 10, left: 10, marginBottom: 44}}>
+                            <MaterialIcons name='check' size={34} color='#e3e2e6'/>
+                        </View>
+                    </GestureDetector>
 
-                    </View>
-                </Modal>
+                    <ScrollView style={{flex: 1, marginTop: 44}}>
+                        {matchForms.map((matchForm, index) => (
+                            <GestureDetector key={matchForm.id} gesture={selectPage(selectedBox, matchForm.name)}>
+                                <View style={{
+                                    flex: 1,
+                                    height: 100,
+                                    backgroundColor: '#312541',
+                                    marginBottom: 10,
+                                    marginLeft: 10,
+                                    marginRight: 10,
+                                    marginTop: 10,
+                                    borderRadius: 10,
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
+                                    <Text style={{color: '#e3e2e6', fontSize: 50}}>
+                                        {matchForm.name}
+                                    </Text>
+                                </View>
+                            </GestureDetector>
+                        ))}
+                    </ScrollView>
+                </Animated.View>
             }
 
         {boxes.map((box, index) => {
@@ -444,7 +516,7 @@ export default function MatchFormLayout({route, navigation}){
             )
         })}
         
-        <ToolBar
+        {!mapScreen && <ToolBar
             add={addBox}
             remove={removeBox}
             selectedBox={selectedBox}
@@ -470,8 +542,10 @@ export default function MatchFormLayout({route, navigation}){
             isItalic={isItalic}
             toggleBold={toggleBold}
             toggleItalic={toggleItalic}
+            map={map}
             
             resetStorage={resetStorage}/>
+        }
     </View>
     )
 }

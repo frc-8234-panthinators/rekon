@@ -184,15 +184,17 @@ function AllToolBar(props){
     const remove = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-            console.log("Delete")
+            console.log("Delete");
             props.remove(props.selectedBox);
     }).runOnJS(true);
+
     const map = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
-            console.log("Map")
-           
+            console.log("Map");
+            props.map();
     }).runOnJS(true);
+
     const color = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
@@ -561,6 +563,7 @@ export default function ToolBar(props){
                     isItalic={props.isItalic}
                     toggleBold={props.toggleBold}
                     toggleItalic={props.toggleItalic}
+                    map={props.map}
                     icon={props.getSelectedBox(props.selectedBox)?.icon}
                     text={props.getSelectedBox(props.selectedBox)?.text}
                     iconSize={props.getSelectedBox(props.selectedBox)?.iconSize}
