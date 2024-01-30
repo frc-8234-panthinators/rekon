@@ -54,6 +54,71 @@ function Search(props) {
 	);
 }*/
 
+function Preview(props) {
+  const [selectedMatchForm, setSelectedMatchForm] = useState(null);
+  const [boxes, setBoxes] = useState([]);
+  const gridSizeForSpacing = Dimensions.get("window").width / 8;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      AsyncStorage.getItem('selectedMatchForm').then(jsonValue => {
+        const selectedMatchForm = jsonValue != null ? JSON.parse(jsonValue) : 0;
+        setSelectedMatchForm(selectedMatchForm);
+      }).catch(error => {
+        console.error('Failed to fetch selectedMatchForm from storage:', error);
+      });
+  
+      AsyncStorage.getItem(`matchForms_${selectedMatchForm}`).then(jsonValue => {
+        const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
+        setBoxes(boxes); // Update the state with the fetched boxes array
+      }).catch(error => {
+        console.error('Failed to fetch boxes:', error);
+      });
+
+    }, [])
+  );
+
+  useEffect(() => {
+    AsyncStorage.getItem('selectedMatchForm').then(jsonValue => {
+      const selectedMatchForm = jsonValue != null ? JSON.parse(jsonValue) : 0;
+      setSelectedMatchForm(selectedMatchForm);
+    }).catch(error => {
+      console.error('Failed to fetch selectedMatchForm from storage:', error);
+    });
+
+    AsyncStorage.getItem(`matchForms_${selectedMatchForm}`).then(jsonValue => {
+      const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
+      setBoxes(boxes); // Update the state with the fetched boxes array
+    }).catch(error => {
+      console.error('Failed to fetch boxes:', error);
+    });
+  }, [selectedMatchForm])
+
+  return(
+    <View>
+      {boxes.map((box, index) => (
+        <View style={{
+          height: box.height - 10,
+          width: box.width - 10,
+          left: box.x + gridSizeForSpacing,
+          top: box.y + gridSizeForSpacing,
+          backgroundColor: box.color,
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: box.zIndex,
+          borderRadius: 10,
+          key: box.id
+          }}>
+          <View style={{overflow: 'hidden', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'}}>
+            {box.icon.length != 0 && <MaterialIcons name={box.icon} size={isNaN(parseInt(box.iconSize)) ? 0 : parseInt(box.iconSize)} color={box.iconColor} />}
+            {box.text.length != 0 && <Text style={{fontSize: isNaN(parseInt(box.fontSize)) ? 0 : parseInt(box.fontSize), color: box.fontColor, fontWeight: box.bold, fontStyle: box.italic, }}>{box.text}</Text>}
+          </View>
+        </View>
+      ))}
+    </View>
+  )
+}
+
 function HomeScreen(props) {
   const [matchForms, setMatchForms] = useState([]);
   const [nextMatchFormId, setNextMatchFormId] = useState(0);
@@ -125,14 +190,17 @@ function HomeScreen(props) {
   }, [selectedMatchForm])
 
   const addMatch = Gesture.Tap()
-    .maxDuration(250)
-    .onStart(() => {
-      let newMatchForm = [...matchForms, {id: nextMatchFormId, name: '', showTextInput: false}];
-      let nextMatchForm = nextMatchFormId + 1;
-      setSelectedMatchForm(nextMatchFormId);
-      setNextMatchFormId(nextMatchForm);
-      setMatchForms(newMatchForm);
-  }).runOnJS(true);
+  .maxDuration(250)
+  .onStart(() => {
+     let nextMatchForm = nextMatchFormId + 1;
+     while (matchForms.some(matchForm => matchForm.name === `Page ${nextMatchForm}`)) {
+       nextMatchForm++;
+     }
+     setNextMatchFormId(nextMatchForm);
+     let newMatchForm = [...matchForms, {id: nextMatchForm, name: `Page ${nextMatchForm}`, showTextInput: false}];
+     setSelectedMatchForm(nextMatchForm);
+     setMatchForms(newMatchForm);
+ }).runOnJS(true);
 
   const removeMatch = Gesture.Tap()
     .maxDuration(250)
@@ -168,10 +236,16 @@ function HomeScreen(props) {
   }
 
   function changeMatchFormName(id, name) {
-    let newMatchForms = matchForms.map(matchForm =>
+    const nameExists = matchForms.some(matchForm => matchForm.name === name && matchForm.id !== id);
+
+    if (!nameExists) {
+      let newMatchForms = matchForms.map(matchForm =>
         matchForm.id === id ? {...matchForm, name: name} : matchForm
-    );
-    setMatchForms(newMatchForms);
+      );
+      setMatchForms(newMatchForms);
+    } else {
+      alert("Name already exists");
+    }
   }
 
   function resetAsyncStorage() {
@@ -186,6 +260,12 @@ function HomeScreen(props) {
     .maxDuration(250)
     .onStart(() => {
       resetAsyncStorage();
+  }).runOnJS(true);
+
+  const preview = Gesture.Tap()
+    .maxDuration(250)
+    .onStart(() => {
+      props.navigation.navigate("Preview");
   }).runOnJS(true);
 
 	return (
@@ -216,7 +296,7 @@ function HomeScreen(props) {
                   {matchForms.find(form => form.id === matchForm.id)?.showTextInput ? (
                     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                       <TextInput
-                        style={{color: '#e3e2e6', fontSize: 50}}
+                        style={{color: '#e3e2e6', fontSize: 24}}
                         autoFocus
                         onBlur={() => {
                           let newMatchForms = matchForms.map(matchForm =>
@@ -232,7 +312,7 @@ function HomeScreen(props) {
                     </View>
                   ) : (
                     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                      <Text style={{color: '#e3e2e6', fontSize: matchForms.find(form => form.id === matchForm.id)?.name === '' ? 13 : 50, textAlign: 'center'}}>
+                      <Text style={{color: '#e3e2e6', fontSize: matchForms.find(form => form.id === matchForm.id)?.name === '' ? 13 : 24, textAlign: 'center'}}>
                         {matchForms.find(form => form.id === matchForm.id)?.name || 'Double click to change name'}
                       </Text>
                     </View>
@@ -265,6 +345,12 @@ function HomeScreen(props) {
       <GestureDetector gesture={resetStorage}>
         <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 140, borderRadius: 10}}>
           <MaterialIcons name='loop' size={65} color='#e3e2e6'/>
+        </View>
+      </GestureDetector>
+
+      <GestureDetector gesture={preview}>
+        <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 205, borderRadius: 10}}>
+          <MaterialIcons name='preview' size={65} color='#e3e2e6'/>
         </View>
       </GestureDetector>
     </View>
@@ -410,6 +496,7 @@ const [tabActive, setTabActive] = useState(false);
                                       <MaterialIcons name="edit" size={24} color="black" />
                 </Pressable>) */ }} /> 
                 <Stack.Screen name="AutoMap" component={MatchForm} />
+                <Stack.Screen name="Preview" component={Preview} />
   </Stack.Navigator>
 		
 	);

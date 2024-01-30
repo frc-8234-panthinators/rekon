@@ -398,7 +398,9 @@ export default function MatchFormLayout({route, navigation}){
     }
 
     function map() {
-        setMapScreen(true);
+        if (selectedBox !== null) {
+            setMapScreen(true);
+        }
     }
 
     const selectPage = (id, page) => {
@@ -432,7 +434,8 @@ export default function MatchFormLayout({route, navigation}){
         width: '100%',
         bottom: 0,
         position: 'absolute',
-        backgroundColor: '#000000'
+        backgroundColor: '#000000',
+        zIndex: 4
     }))
 
     useEffect(() => {
@@ -455,7 +458,6 @@ export default function MatchFormLayout({route, navigation}){
                     </View>
                 </Modal>}
 
-            {mapScreen && 
                 <Animated.View style={mapScreenStyle}>
                     <GestureDetector gesture={closeMapScreen}>
                         <View style={{size: 34, position: 'absolute', top: 10, left: 10, marginBottom: 44}}>
@@ -463,30 +465,29 @@ export default function MatchFormLayout({route, navigation}){
                         </View>
                     </GestureDetector>
 
-                    <ScrollView style={{flex: 1, marginTop: 44}}>
-                        {matchForms.map((matchForm, index) => (
-                            <GestureDetector key={matchForm.id} gesture={selectPage(selectedBox, matchForm.name)}>
-                                <View style={{
-                                    flex: 1,
-                                    height: 100,
-                                    backgroundColor: '#312541',
-                                    marginBottom: 10,
-                                    marginLeft: 10,
-                                    marginRight: 10,
-                                    marginTop: 10,
-                                    borderRadius: 10,
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}>
-                                    <Text style={{color: '#e3e2e6', fontSize: 50}}>
-                                        {matchForm.name}
-                                    </Text>
-                                </View>
-                            </GestureDetector>
-                        ))}
-                    </ScrollView>
-                </Animated.View>
-            }
+                <ScrollView style={{flex: 1, marginTop: 44}}>
+                    {matchForms.map((matchForm, index) => (
+                        <GestureDetector key={matchForm.id} gesture={selectPage(selectedBox, matchForm.name)}>
+                            <View style={{
+                                flex: 1,
+                                height: 100,
+                                backgroundColor: '#312541',
+                                marginBottom: 10,
+                                marginLeft: 10,
+                                marginRight: 10,
+                                marginTop: 10,
+                                borderRadius: 10,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}>
+                                <Text style={{color: '#e3e2e6', fontSize: 50}}>
+                                    {matchForm.name}
+                                </Text>
+                            </View>
+                        </GestureDetector>
+                    ))}
+                </ScrollView>
+            </Animated.View>
 
         {boxes.map((box, index) => {
             return (
@@ -516,7 +517,7 @@ export default function MatchFormLayout({route, navigation}){
             )
         })}
         
-        {!mapScreen && <ToolBar
+        <ToolBar
             add={addBox}
             remove={removeBox}
             selectedBox={selectedBox}
@@ -545,7 +546,6 @@ export default function MatchFormLayout({route, navigation}){
             map={map}
             
             resetStorage={resetStorage}/>
-        }
     </View>
     )
 }
