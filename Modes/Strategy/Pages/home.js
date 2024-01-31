@@ -91,13 +91,17 @@ function Preview({ navigation }) {
       .maxDuration(250)
       .onStart(() => {
         if (box.page) {
-          const matchForm = matchForms.find(form => form.name === box.page);
-          AsyncStorage.getItem(`matchForms_${matchForm.id}`).then(jsonValue => {
-            const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
-            setBoxes(boxes); // Update the state with the fetched boxes array
-          }).catch(error => {
-            console.error('Failed to fetch boxes:', error);
-          });
+          const matchForm = matchForms.find(form => form.id === box.page);
+          if (matchForm) {
+            AsyncStorage.getItem(`matchForms_${matchForm.id}`).then(jsonValue => {
+              const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
+              setBoxes(boxes); // Update the state with the fetched boxes array
+            }).catch(error => {
+              console.error('Failed to fetch boxes:', error);
+            });
+          } else {
+            alert('The original page that it has been mapped to has been deleted!');
+          }
         }
       }).runOnJS(true);
   }
@@ -137,6 +141,7 @@ function HomeScreen(props) {
   const [matchForms, setMatchForms] = useState([]);
   const [nextMatchFormId, setNextMatchFormId] = useState(0);
   const [selectedMatchForm, setSelectedMatchForm] = useState(null);
+  const [changingName, setChangingName] = useState(false);
 
   useEffect(() => {
     console.log(`matchForms: ${JSON.stringify(matchForms)}`);
@@ -246,6 +251,7 @@ function HomeScreen(props) {
         );
         setMatchForms(newMatchForms);
         setSelectedMatchForm(id);
+        setChangingName(true);
       }).runOnJS(true);
   }
 
@@ -317,6 +323,7 @@ function HomeScreen(props) {
                             matchForm.id ={...matchForm, showTextInput: false}
                           );
                           setMatchForms(newMatchForms);
+                          setChangingName(false);
                         }}
                         defaultValue={matchForms.find(form => form.id === matchForm.id)?.name || ''}
                         onChangeText={text => {
@@ -344,29 +351,31 @@ function HomeScreen(props) {
         ))}
       </ScrollView>
 
-      <GestureDetector gesture={addMatch}>
-        <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 75, borderRadius: 10}}>
-            <MaterialIcons name='add' size={65} color='#e3e2e6'/>
-        </View>
-      </GestureDetector>
+      {!changingName && <View>
+        <GestureDetector gesture={addMatch}>
+          <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 75, borderRadius: 10}}>
+              <MaterialIcons name='add' size={65} color='#e3e2e6'/>
+          </View>
+        </GestureDetector>
 
-      <GestureDetector gesture={removeMatch}>
-        <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 10, borderRadius: 10}}>
-          <MaterialIcons name='remove' size={65} color='#e3e2e6'/>
-        </View>
-      </GestureDetector>
+        <GestureDetector gesture={removeMatch}>
+          <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 10, borderRadius: 10}}>
+            <MaterialIcons name='remove' size={65} color='#e3e2e6'/>
+          </View>
+        </GestureDetector>
 
-      <GestureDetector gesture={resetStorage}>
-        <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 140, borderRadius: 10}}>
-          <MaterialIcons name='loop' size={65} color='#e3e2e6'/>
-        </View>
-      </GestureDetector>
+        <GestureDetector gesture={resetStorage}>
+          <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 140, borderRadius: 10}}>
+            <MaterialIcons name='loop' size={65} color='#e3e2e6'/>
+          </View>
+        </GestureDetector>
 
-      <GestureDetector gesture={preview}>
-        <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 205, borderRadius: 10}}>
-          <MaterialIcons name='preview' size={65} color='#e3e2e6'/>
-        </View>
-      </GestureDetector>
+        <GestureDetector gesture={preview}>
+          <View style={{width: 65, height: 65, backgroundColor: Colors.background, position: 'absolute', bottom: 10, right: 205, borderRadius: 10}}>
+            <MaterialIcons name='preview' size={65} color='#e3e2e6'/>
+          </View>
+        </GestureDetector>
+      </View>}
     </View>
 	);
 }

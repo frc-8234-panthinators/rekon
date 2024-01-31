@@ -261,7 +261,7 @@ function AllToolBar(props){
                     </GestureDetector>
 
                     <GestureDetector gesture={map}> 
-                        <MaterialIcons name="link" size={34} color="#e3e2e6" />
+                        <MaterialIcons name="map" size={34} color="#e3e2e6" />
                     </GestureDetector>
                 </>
             )}

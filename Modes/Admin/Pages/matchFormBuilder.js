@@ -407,7 +407,7 @@ export default function MatchFormLayout({route, navigation}){
         return Gesture.Tap()
             .maxDuration(250)
             .onStart(() => {
-                console.log(`Selected page with name ${page}`);
+                console.log(`Selected page with id ${page}`);
                 let newBoxes = boxes.map(box =>
                     box.id === id ? {...box, page: page} : box
                 )
@@ -419,7 +419,7 @@ export default function MatchFormLayout({route, navigation}){
         .maxDuration(250)
         .onStart(() => {
             setMapScreen(false);
-        }).runOnJS(true);
+    }).runOnJS(true);
     
     useEffect(() => {
         if (mapScreen === true) {
@@ -442,7 +442,7 @@ export default function MatchFormLayout({route, navigation}){
         if (isLoading === true) {
             setTimeout(() => {
                 setIsLoading(false);
-            }, 1000)
+            }, 350)
         }
     }, [])
 
@@ -456,7 +456,12 @@ export default function MatchFormLayout({route, navigation}){
 
                         </ActivityIndicator>
                     </View>
-                </Modal>}
+                </Modal>
+            }
+
+            <View style={{position: 'absolute', 'top': 0, 'right': 0, size: 34, backgroundColor: '#000000'}}>
+                <MaterialIcons name='undo' size={34}/>
+            </View>
 
                 <Animated.View style={mapScreenStyle}>
                     <GestureDetector gesture={closeMapScreen}>
@@ -467,7 +472,7 @@ export default function MatchFormLayout({route, navigation}){
 
                 <ScrollView style={{flex: 1, marginTop: 44}}>
                     {matchForms.map((matchForm, index) => (
-                        <GestureDetector key={matchForm.id} gesture={selectPage(selectedBox, matchForm.name)}>
+                        <GestureDetector key={matchForm.id} gesture={selectPage(selectedBox, matchForm.id)}>
                             <View style={{
                                 flex: 1,
                                 height: 100,
