@@ -54,66 +54,80 @@ function Search(props) {
 	);
 }*/
 
-function Preview(props) {
+function Preview({ navigation }) {
   const [selectedMatchForm, setSelectedMatchForm] = useState(null);
   const [boxes, setBoxes] = useState([]);
+  const [matchForms, setMatchForms] = useState([]);
   const gridSizeForSpacing = Dimensions.get("window").width / 8;
 
   useFocusEffect(
     React.useCallback(() => {
+      AsyncStorage.getItem('matchForms').then(jsonValue => {
+        const matchForms = jsonValue != null ? JSON.parse(jsonValue) : [];
+        setMatchForms(matchForms); // Update the state with the fetched matchForms array
+      }).catch(error => {
+        console.error('Failed to fetch matchForms:', error);
+      });
+
       AsyncStorage.getItem('selectedMatchForm').then(jsonValue => {
         const selectedMatchForm = jsonValue != null ? JSON.parse(jsonValue) : 0;
         setSelectedMatchForm(selectedMatchForm);
+
+        AsyncStorage.getItem(`matchForms_${selectedMatchForm}`).then(jsonValue => {
+          const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
+          setBoxes(boxes); // Update the state with the fetched boxes array
+        }).catch(error => {
+          console.error('Failed to fetch boxes:', error);
+        });
       }).catch(error => {
         console.error('Failed to fetch selectedMatchForm from storage:', error);
-      });
-  
-      AsyncStorage.getItem(`matchForms_${selectedMatchForm}`).then(jsonValue => {
-        const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
-        setBoxes(boxes); // Update the state with the fetched boxes array
-      }).catch(error => {
-        console.error('Failed to fetch boxes:', error);
       });
 
     }, [])
   );
 
-  useEffect(() => {
-    AsyncStorage.getItem('selectedMatchForm').then(jsonValue => {
-      const selectedMatchForm = jsonValue != null ? JSON.parse(jsonValue) : 0;
-      setSelectedMatchForm(selectedMatchForm);
-    }).catch(error => {
-      console.error('Failed to fetch selectedMatchForm from storage:', error);
-    });
+  const goToMatchForm = (box) => {
+    return Gesture.Tap()
+      .maxDuration(250)
+      .onStart(() => {
+        if (box.page) {
+          const matchForm = matchForms.find(form => form.name === box.page);
+          AsyncStorage.getItem(`matchForms_${matchForm.id}`).then(jsonValue => {
+            const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
+            setBoxes(boxes); // Update the state with the fetched boxes array
+          }).catch(error => {
+            console.error('Failed to fetch boxes:', error);
+          });
+        }
+      }).runOnJS(true);
+  }
 
-    AsyncStorage.getItem(`matchForms_${selectedMatchForm}`).then(jsonValue => {
-      const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
-      setBoxes(boxes); // Update the state with the fetched boxes array
-    }).catch(error => {
-      console.error('Failed to fetch boxes:', error);
-    });
-  }, [selectedMatchForm])
+  useEffect(() => {
+    console.log(`boxes: ${JSON.stringify(boxes)}`)
+  }, [boxes])
 
   return(
     <View>
       {boxes.map((box, index) => (
-        <View style={{
-          height: box.height - 10,
-          width: box.width - 10,
-          left: box.x + gridSizeForSpacing,
-          top: box.y + gridSizeForSpacing,
-          backgroundColor: box.color,
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: box.zIndex,
-          borderRadius: 10,
-          key: box.id
-          }}>
-          <View style={{overflow: 'hidden', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'}}>
-            {box.icon.length != 0 && <MaterialIcons name={box.icon} size={isNaN(parseInt(box.iconSize)) ? 0 : parseInt(box.iconSize)} color={box.iconColor} />}
-            {box.text.length != 0 && <Text style={{fontSize: isNaN(parseInt(box.fontSize)) ? 0 : parseInt(box.fontSize), color: box.fontColor, fontWeight: box.bold, fontStyle: box.italic, }}>{box.text}</Text>}
+        <GestureDetector key={box.id} gesture={goToMatchForm(box)}>
+          <View style={{
+            height: box.height - 10,
+            width: box.width - 10,
+            left: box.x + gridSizeForSpacing / 5,
+            top: box.y + gridSizeForSpacing / 5,
+            backgroundColor: box.color,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            zIndex: box.zIndex,
+            borderRadius: 10
+            }}>
+            <View style={{overflow: 'hidden', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'}}>
+              {box.icon.length != 0 && <MaterialIcons name={box.icon} size={isNaN(parseInt(box.iconSize)) ? 0 : parseInt(box.iconSize)} color={box.iconColor} />}
+              {box.text.length != 0 && <Text style={{fontSize: isNaN(parseInt(box.fontSize)) ? 0 : parseInt(box.fontSize), color: box.fontColor, fontWeight: box.bold, fontStyle: box.italic, }}>{box.text}</Text>}
+            </View>
           </View>
-        </View>
+        </GestureDetector>
       ))}
     </View>
   )
