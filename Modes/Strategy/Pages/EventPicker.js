@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     event: {
-        backgroundColor: Colors.secondaryDim,
+        backgroundColor: Colors.secondary,
         borderRadius: 10,
         minHeight: Dimensions.get('window').height * 0.3,
         width: '100%',

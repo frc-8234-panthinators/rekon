@@ -16,7 +16,7 @@ import YearPicker from './YearPicker';
 import ErrorPage from '../../CommonComponents/ErrorPage';
 import TemplateBuilder from './TemplateBuilder';
 import MathJax from '../Components/MathJax';
-import DataVis from './DataVisV2';
+import DataVis from './DataTemplateBuilder';
 
 
 
@@ -72,7 +72,7 @@ function MyTabs() {
               backgroundColor: (Colors.secondary)
            }}}/>
             <Tab.Screen name="Search" component={SearchScreen} options={{ headerShown: false }}/>
-			<Tab.Screen name="DataVis" component={DataVis} />
+			<Tab.Screen name="StratSettings" component={StratSettings} />
 		</Tab.Navigator>
 	);
 }
@@ -89,7 +89,7 @@ export default function Strategy() {
 				<Stack.Screen name="EventPicker" component={EventPicker} options={{headerShown:false}}/>
 				<Stack.Screen name="YearPicker" component={YearPicker} options={{headerShown:false}}/>
 				<Stack.Screen name="VisualView" component={VisualView} options={{headerShown:false}}/>
-				<Stack.Screen name="TemplateBuilder" component={TemplateBuilder} options={{headerShown:false}}/>
+				<Stack.Screen name="DataVisTemplateBuilder" component={DataVis} options={{headerShown:false}}/>
 				<Stack.Screen name="ErrorPage" component={ErrorPage} options={{headerShown:false}}/>
       	        <Stack.Screen name="Test" component={TestScreen} options={{headerShown:false}}/>
 			</Stack.Navigator>

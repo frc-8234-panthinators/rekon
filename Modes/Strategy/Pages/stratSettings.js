@@ -10,7 +10,10 @@ import ModeSwitch from '../../CommonComponents/modeSwitch';
 
 export default function StratSettings(props) {
 	return(
-        <ModeSwitch page='StratMode' navigation={props.navigation}> </ModeSwitch>
+        <View style={{flex: 1}}>
+            <ModeSwitch page='StratMode' navigation={props.navigation}> </ModeSwitch>
+            <Button title="Go to builder" onPress={() => props.navigation.navigate('DataVisTemplateBuilder')} />
+        </View>
     )
 }
 

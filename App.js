@@ -1,6 +1,7 @@
 import Strategy from './Modes/Strategy/Pages/StategyPage';
 import Admin from './Modes/Admin/Pages/AdminPage';
 import Scouting from './Modes/Scouting/Pages/ScoutPage';
+import 'expo-dev-client'; 
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';

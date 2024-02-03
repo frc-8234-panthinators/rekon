@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator, Pressable } from 'react-native';
 import Colors from '../../../colors';
-import {LineChart, PieChart} from "react-native-chart-kit";
 import { useState } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'

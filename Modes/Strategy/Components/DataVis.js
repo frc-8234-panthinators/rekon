@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { StatusBar, StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator, Pressable, Modal } from 'react-native';
 import Colors from '../../../colors';
-import {LineChart, PieChart} from "react-native-chart-kit";
 import { useState } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
@@ -9,6 +8,7 @@ import { normalize } from '../../CommonComponents/fontScaler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WidgetCarousel from './WidgetCarousel';
 import ColorPicker from 'react-native-wheel-color-picker';
+import * as Progress from 'react-native-progress';
 
 const storeData = async (key, value) => {
     try {
@@ -59,6 +59,7 @@ export default function VisualView({ route, navigation }) {
     const [startColor, setStartColor] = useState('#000000');
     const [activeColor, setActiveColor] = useState(0);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [loadingProgress, setLoadingProgress] = useState(0);
     const team = route.params.teamId;
     const event = route.params.event;
     const year = route.params.year;
@@ -79,7 +80,7 @@ export default function VisualView({ route, navigation }) {
                 const data = await ky.get(`${Constants.API_URL}/getTeamMatchData?team=${team}&event=${event}`).json();
                 if (data.error) {
                     navigation.navigate('ErrorPage', {error: `The server has encountered an unhandled exception:\n${data.error}\n${data.message}`});
-                    return;
+                    return;false
                 } else if (data.message) {
                     setNoData(true);
                     return;
@@ -97,8 +98,6 @@ export default function VisualView({ route, navigation }) {
                 setNoTemplate(true);
                 console.log('no template');
             } else {
-                setIsLoading(false);
-                setNoTemplate(false);
                 setTemplate(template);
                 setVisLoaded(false);
             }
@@ -109,9 +108,14 @@ export default function VisualView({ route, navigation }) {
         return unsubscribe;
     }, [navigation]);
 
-    if (!visLoaded && template.length != 0) {
+    React.useEffect(() => {
+        if (tbaData.length == 0) {
+            console.log('no data');
+            return;
+        }
         let graphs = [];
         for (const dataPoint of template) {
+            console.log(dataPoint.label)
             const graphData = {
                 "title": dataPoint.label,
                 "labels": [],
@@ -193,9 +197,13 @@ export default function VisualView({ route, navigation }) {
             }
             graphs.push(graphData);
         }
+        if (graphs.length == 0) {
+            setVisLoaded(false);
+            return;
+        }
         setVisData({graphs: graphs})
-        setVisLoaded(true);
-    }
+        setIsLoading(false);
+    }, [template]);
 
     if (noTemplate) {
         return (
@@ -221,15 +229,14 @@ export default function VisualView({ route, navigation }) {
     if (isLoading) {
         return (
             <View style={styles.center}>
-                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.text} />
+                <Progress.Pie progress={loadingProgress} size={50} />
             </View>
         )
-    } else if (template.length != 0 && visLoaded) {
+    } else if (template.length != 0 && !isLoading) {
         return (
-            <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView}>
+            <ScrollView key='rootView' vertical={true} contentContainerStyle={styles.rootView} onScroll={lazyLoad}>
                 <View style={styles.subRootView}>
                     {visData.graphs.map((graphData, index) => {
-                        console.log(graphData)
                         if (graphData.type == "line") {
                             return(
                                 <View style={styles.viewWrapper} horizontal={true}>
@@ -326,7 +333,7 @@ export default function VisualView({ route, navigation }) {
                             }}/>
                     </Modal>
                     <Pressable style={styles.button} onPress={() => {navigation.navigate('TemplateBuilder', {year: year, event: event, team: team})}}><Text style={styles.text}>Add new data point</Text></Pressable>
-                    <Pressable style={styles.button} onPress={resetTemplate}><Text style={styles.text}>Reset Template</Text></Pressable>
+                    <Pressable style={styles.button} onPress={() => {resetTemplate}}><Text style={styles.text}>Reset Template</Text></Pressable>
                 </View>
             </ScrollView>
         );

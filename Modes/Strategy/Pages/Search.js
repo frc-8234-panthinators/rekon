@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         zIndex: 2,
     },
     event: {
-        backgroundColor: Colors.secondaryDim,
+        backgroundColor: Colors.secondary,
         minHeight: Dimensions.get('window').height * 0.10,
         width: '100%',
         padding: 20,

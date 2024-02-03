@@ -18,11 +18,17 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.frc8234.scoutinator",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "softwareKeyboardLayoutMode": "pan"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f99928ca-7954-421e-8f3f-bb96955c88eb"
+      }
     }
   }
 }

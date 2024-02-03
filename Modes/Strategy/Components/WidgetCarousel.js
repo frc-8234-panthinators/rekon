@@ -7,23 +7,26 @@ import * as Haptics from 'expo-haptics';
 import { create } from 'mathjs';
 import Colors from '../../../colors';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 
 export default function WidgetCarousel(props) {
   const [floatingWidgetVisible, setFloatingWidgetVisible] = useState(false);
   const floatingWidgetPosition = useSharedValue({ x: 0, y: 0 });
-  const carouselPosition = useSharedValue(-210)
+  const carouselPosition = useSharedValue(-220)
   const [hasHeld, setHasHeld] = useState(false);
-  const [selectedWidget, setSelectedWidget] = useState(null);
+  const [selectedWidget, setSelectedWidget] = useState('line');
   const [carouselHidden, setCarouselHidden] = useState(true);
   const floatingWidget = props.floatingWidget;
   const endDrag = props.onEnd;
   const update = props.update;
   const startDrag = props.onStart;
   const leftCarousel = props.leftCarousel;
+  const isCarouselHidden = props.isCarouselHidden;
   
   useEffect(() => {
+    isCarouselHidden(carouselHidden);
     if (carouselHidden) {
-      carouselPosition.value = withTiming(-210);
+      carouselPosition.value = withTiming(-220);
     } else {
       carouselPosition.value = withTiming(0);
     }
@@ -46,7 +49,6 @@ export default function WidgetCarousel(props) {
       floatingWidgetPosition.value = { x: event.allTouches[0].absoluteX, y: event.allTouches[0].absoluteY - (Dimensions.get('window').height - 300) + carouselPosition.value};
       floatingWidget.value = { x: event.allTouches[0].absoluteX, y: event.allTouches[0].absoluteY - (Dimensions.get('window').height - 300) + carouselPosition.value, type: selectedWidget, held: true }
 
-      console.log(event.allTouches[0].y)
       if (!carouselHidden && event.allTouches[0].y < 0) {
         setCarouselHidden(true);
         leftCarousel();
@@ -61,30 +63,51 @@ export default function WidgetCarousel(props) {
       setCarouselHidden(false);
     });
 
-  const selectLine = Gesture.LongPress({ minDurationMs: 900 })
+  const selectLine = Gesture.LongPress({ minDurationMs: 500 })
     .runOnJS(true)
     .onStart((event) => {
       console.log('line selected')
       setSelectedWidget('line');
     });
 
-  const selectPie = Gesture.LongPress({ minDurationMs: 900 })
+  const selectPie = Gesture.LongPress({ minDurationMs: 500 })
     .runOnJS(true)
     .onStart((event) => {
       console.log('pie selected')
       setSelectedWidget('pie');
     })
   
-  const selectBar = Gesture.LongPress({ minDurationMs: 900 })
+  const selectBar = Gesture.LongPress({ minDurationMs: 500 })
     .runOnJS(true)
     .onStart((event) => {
       console.log('bar selected')
       setSelectedWidget('bar');
     })
 
-  const lineWidgetGesture = Gesture.Simultaneous(selectLine, dragGesture);
-  const pieWidgetGesture = Gesture.Simultaneous(selectPie, dragGesture);
-  const barWidgetGesture = Gesture.Simultaneous(selectBar, dragGesture);
+  const tapLine = Gesture.Tap()
+    .runOnJS(true)
+    .maxDuration(200)
+    .onEnd((event) => {
+      endDrag('line', 'tap');
+    });
+
+  const tapPie = Gesture.Tap()
+    .runOnJS(true)
+    .maxDuration(200)
+    .onEnd((event) => {
+      endDrag('pie', 'tap');
+    });
+
+  const tapBar = Gesture.Tap()
+    .runOnJS(true)
+    .maxDuration(200)
+    .onEnd((event) => {
+      endDrag('bar', 'tap');
+    });
+
+  const lineWidgetGesture = Gesture.Simultaneous(selectLine, dragGesture, tapLine);
+  const pieWidgetGesture = Gesture.Simultaneous(selectPie, dragGesture, tapPie);
+  const barWidgetGesture = Gesture.Simultaneous(selectBar, dragGesture, tapBar);
 
   const floatingWidgetStyle = useAnimatedStyle(() => {
     return {
@@ -101,23 +124,23 @@ export default function WidgetCarousel(props) {
 
   return (
     <Animated.View style={[styles.container, carouselAnimationStyle]}>
-      <Pressable style={styles.openButton} onPress={() => setCarouselHidden(!carouselHidden)}>
+      <Pressable hitSlop={30} style={styles.openButton} onPress={() => setCarouselHidden(!carouselHidden)}>
         <MaterialIcons name={carouselHidden ? 'expand-less' : 'expand-more'} size={30} color={Colors.tabIcons}></MaterialIcons>
       </Pressable>
       <ScrollView style={styles.scrollContainer} horizontal={true} showsHorizontalScrollIndicator={false}>
         <GestureDetector gesture={lineWidgetGesture}>
           <View style={[styles.widget,]}>
-            <Text>Line Graph</Text>
+            <Image source={require('./WidgetAssets/line.png')} style={{width: 200, height: 200}}></Image>
           </View>
         </GestureDetector>
         <GestureDetector gesture={pieWidgetGesture}>
           <View style={styles.widget}>
-            <Text>Pie Graph</Text>
+            <Image source={require('./WidgetAssets/pie.png')} style={{width: 200, height: 200}}></Image>
           </View>
         </GestureDetector>
         <GestureDetector gesture={barWidgetGesture}>
           <View style={styles.widget}>
-            <Text>Bar Graph</Text>
+            <Image source={require('./WidgetAssets/bar.png')} style={{width: 200, height: 200}}></Image>
           </View>
         </GestureDetector>
         <View style={styles.widget}>
@@ -129,7 +152,15 @@ export default function WidgetCarousel(props) {
       </ScrollView>
       {floatingWidgetVisible && (
         <Animated.View style={[styles.floatingWidget, floatingWidgetStyle]}>
-          <Text>{selectedWidget}</Text>
+          {selectedWidget == 'line' && (
+            <Image source={require('./WidgetAssets/line.png')} style={{width: 200, height: 200}}></Image>
+          )}
+          {selectedWidget == 'pie' && (
+            <Image source={require('./WidgetAssets/pie.png')} style={{width: 200, height: 200}}></Image>
+          )}
+          {selectedWidget == 'bar' && (
+            <Image source={require('./WidgetAssets/bar.png')} style={{width: 200, height: 200}}></Image>
+          )}
         </Animated.View>
       )}
     </Animated.View>
@@ -150,7 +181,7 @@ const styles = StyleSheet.create({
   widget: {
     width: 200,
     height: 200,
-    backgroundColor: Colors.tabIcons,
+    backgroundColor: Colors.secondaryContainer,
     margin: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -160,13 +191,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 200,
     height: 200,
-    backgroundColor: 'gray',
+    backgroundColor: Colors.secondaryContainer,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 10,
   },
   openButton: {
     width: '100%',
-    height: 20,
-    alignItems: 'center'
+    height: 30,
+    alignItems: 'center',
+    backgroundColor: Colors.accent,
+    justifyContent: 'center',
   }
 });
