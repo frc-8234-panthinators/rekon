@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TextInput, Pressable, StyleSheet, Text } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function TextSection(props) {
+export default function NumberSection(props) {
 
   return (
     <View style={styles.numberSectionContainer}>

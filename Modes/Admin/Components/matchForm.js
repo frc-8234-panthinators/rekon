@@ -60,7 +60,7 @@ export default function MatchForm({ navigation }){
   };
 
   //logs the question types and its properties in the console
-  sections.forEach((section, index) => {
+  /*sections.forEach((section, index) => {
     console.log('   New Update')
     console.log(`Section ${index + 1}:`);
     console.log(`Type: ${section.type}`);
@@ -80,7 +80,7 @@ export default function MatchForm({ navigation }){
         console.log(`  Option ${i + 1}: ${option}`);
       });
     }
-  });
+  });*/
   
 
   
