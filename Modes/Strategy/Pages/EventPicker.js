@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StatusBar, StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
-import Colors from '../../../colors';
+import { useColors } from '../../../colors';
 import { useState, useEffect } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
@@ -9,6 +9,7 @@ import { normalize } from '../../CommonComponents/fontScaler';
 
 
 export default function EventPicker({ route, navigation }) {
+    const { Colors } = useColors();
     const team = route.params.teamId;
     const year = route.params.year;
     const [eventData, setEventData] = useState([]);
@@ -43,6 +44,59 @@ export default function EventPicker({ route, navigation }) {
         ) 
     }
 
+    const styles = StyleSheet.create({
+        rootView: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            paddingTop: StatusBar.currentHeight,
+        },
+        center: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        padding: {
+            width: '90%',
+            display: 'flex',
+            gap: 20,
+            alignItems: 'center',
+            marginTop: 20,
+            marginBottom: 20,
+        },
+        event: {
+            backgroundColor: Colors.secondary,
+            borderRadius: 10,
+            minHeight: Dimensions.get('window').height * 0.3,
+            width: '100%',
+            padding: 10,
+            paddingTop: 0,
+        },
+        buttonText: {
+            color: Colors.textDim,
+            fontSize: normalize(25),
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            zIndex: 2,
+            marginTop: 10,
+            fontStyle: 'italic'
+        },
+        buttonHeader: {
+            color: Colors.text,
+            fontSize: normalize(40),
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            zIndex: 2,
+            borderBottomColor: Colors.text,
+            borderBottomWidth: 2,
+            paddingBottom: 10,
+        },
+    });
+
     return (
         <ScrollView vertical={true} contentContainerStyle={styles.rootView}>
             <View style={styles.padding}>
@@ -58,56 +112,3 @@ export default function EventPicker({ route, navigation }) {
         </ScrollView>
     )
 }
-
-const styles = StyleSheet.create({
-    rootView: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        paddingTop: StatusBar.currentHeight,
-    },
-    center: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    padding: {
-        width: '90%',
-        display: 'flex',
-        gap: 20,
-        alignItems: 'center',
-        marginTop: 20,
-        marginBottom: 20,
-    },
-    event: {
-        backgroundColor: Colors.secondary,
-        borderRadius: 10,
-        minHeight: Dimensions.get('window').height * 0.3,
-        width: '100%',
-        padding: 10,
-        paddingTop: 0,
-    },
-    buttonText: {
-        color: Colors.textDim,
-        fontSize: normalize(25),
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        zIndex: 2,
-        marginTop: 10,
-        fontStyle: 'italic'
-    },
-    buttonHeader: {
-        color: Colors.text,
-        fontSize: normalize(40),
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        zIndex: 2,
-        borderBottomColor: Colors.text,
-        borderBottomWidth: 2,
-        paddingBottom: 10,
-    },
-});

@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { LogBox } from 'react-native';
 import { useEffect } from 'react';
+import { ColorProvider } from './colors';
 
 
 const Stack = createStackNavigator();
@@ -31,8 +32,10 @@ export default function App() {
   }, [])
   return(
     <NavigationContainer>
-      <ModeStack />
-      <StatusBar style="light" translucent={true}/>
+      <ColorProvider>
+        <ModeStack />
+        <StatusBar style="light" translucent={true}/>
+      </ColorProvider>
     </NavigationContainer>
   )
 }

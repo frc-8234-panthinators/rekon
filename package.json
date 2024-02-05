@@ -34,9 +34,11 @@
     "react-native-reanimated": "~3.3.0",
     "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "^3.29.0",
+    "react-native-svg": "^14.1.0",
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.2.2",
     "react-native-wheel-color-picker": "^1.2.0",
+    "tinycolor2": "^1.6.0",
     "victory-native": "^40.0.3"
   },
   "devDependencies": {

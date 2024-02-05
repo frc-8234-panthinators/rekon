@@ -2,7 +2,7 @@ import MathJax from "react-native-mathjax";
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { parse, evaluate } from "mathjs";
-import Colors from '../../../colors';
+import { useColors } from '../../../colors';
 const mmlOptions = {
     messageStyle: "none",
     extensions: ["tex2jax.js"],
@@ -29,6 +29,7 @@ const mmlOptions = {
 };
 
 export default function MathJaxComponent(props) {
+    const { Colors } = useColors();
     const [math, setMath] = useState(props.math);
     const [result, setResult] = useState('undefined');
 
@@ -42,8 +43,6 @@ export default function MathJaxComponent(props) {
             setMath(`$${props.math}$`);
         }
     }, [props.math]);
-
-    console.log('test');
     
     return (
         <View style={styles.container}>

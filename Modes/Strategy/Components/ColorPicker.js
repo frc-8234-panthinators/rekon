@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Modal, View, Pressable, Text } from 'react-native';
 import ColorPicker from 'react-native-wheel-color-picker';
-import Colors from '../../../colors';
+import { useColors } from '../../../colors';
 
 const ColorPickerPopup = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedColor, setSelectedColor] = useState('#000000');
+    const { Colors } = useColors();
 
     const changeColor = props.handleChange;
     const defaultColor = props.defaultColor;

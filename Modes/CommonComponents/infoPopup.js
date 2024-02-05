@@ -1,9 +1,10 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
-import Colors from '../../colors';
+import { useColors } from '../../colors';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const InfoPopup = ({ visible, children, onClose }) => {
+  const { Colors } = useColors();
   return (
     <Modal
       animationType="fade"

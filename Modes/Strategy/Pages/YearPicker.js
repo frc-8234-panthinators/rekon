@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { StatusBar, StyleSheet, Text, ActivityIndicator, View, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
-import Colors from '../../../colors';
+import { useColors } from '../../../colors';
 import { useState, useEffect } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
 import { LinearGradient } from 'expo-linear-gradient';
 import { normalize } from '../../CommonComponents/fontScaler';
 
-
-
 export default function YearPicker({ route, navigation }) {
+    const { Colors } = useColors();
     const team = route.params.teamId;
     const [yearData, setYearData] = useState([]);
     const [yearImages, setYearImages] = useState([]);
@@ -57,27 +56,27 @@ export default function YearPicker({ route, navigation }) {
 
     if (!doesTeamExist) {
         return (
-            <View style={styles.rootView}>
-                <Text style={styles.errorText}>Team does not exist</Text>
+            <View style={[styles.rootView, { backgroundColor: Colors.primary }]}>
+                <Text style={[styles.errorText, { color: Colors.text }]}>Team does not exist</Text>
             </View>
         )
     }
 
     if (isLoading) {
         return (
-            <View style={styles.center}>
-                <Text style={styles.messageText}>{serverMessage}</Text>
+            <View style={[styles.center, { backgroundColor: Colors.primary }]}>
+                <Text style={[styles.messageText, { color: Colors.text }]}>{serverMessage}</Text>
                 <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.text} />
             </View>
         ) 
     }
 
     return (
-        <ScrollView vertical={true} contentContainerStyle={styles.rootView}>
+        <ScrollView vertical={true} contentContainerStyle={[styles.rootView, { backgroundColor: Colors.primary }]}>
             <View style={styles.padding}>
                 {yearData.map((year, index) => {
                     return (
-                        <TouchableOpacity style={styles.year} onPress={() => {navigateToEventPick(year)}}>
+                        <TouchableOpacity style={[styles.year, { backgroundColor: Colors.secondary }]} onPress={() => {navigateToEventPick(year)}}>
                             {yearImages[index] !== "no_media" ? (
                                 <View style={styles.imageContainer}>
                                     <LinearGradient
@@ -90,7 +89,7 @@ export default function YearPicker({ route, navigation }) {
                                     />
                                 </View>
                             ) : null}
-                            <Text style={styles.buttonText}>{year}</Text>
+                            <Text style={[styles.buttonText, { color: Colors.text }]}>{year}</Text>
                         </TouchableOpacity>
                     );
                 })}
@@ -101,14 +100,12 @@ export default function YearPicker({ route, navigation }) {
 
 const styles = StyleSheet.create({
     rootView: {
-        backgroundColor: Colors.primary,
         width: '100%',
         display: 'flex',
         alignItems: 'center',
         paddingTop: StatusBar.currentHeight,
     },
     center: {
-        backgroundColor: Colors.primary,
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -124,13 +121,11 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     year: {
-        backgroundColor: Colors.secondary,
         borderRadius: 10,
         height: Dimensions.get('window').height * 0.3,
         width: '100%',
     },
     buttonText: {
-        color: Colors.text,
         fontSize: normalize(50),
         paddingLeft: 10,
         borderTopLeftRadius: 10,
@@ -138,12 +133,10 @@ const styles = StyleSheet.create({
         zIndex: 2,
     },
     errorText: {
-        color: Colors.text,
         padding: 5,
         fontSize: normalize(30),
     },
     messageText: {
-        color: Colors.text,
         padding: 5,
         fontSize: normalize(24),
     },

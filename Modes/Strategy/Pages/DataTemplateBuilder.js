@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, ScrollView, Dimensions, Pressable, Modal, TextInput, Switch } from 'react-native';
-import Colors from '../../../colors';
+import { useColors } from '../../../colors';
 import { useState, useEffect, useRef } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
@@ -36,6 +36,7 @@ const getData = async (key) => {
 };
 
 export default function DataVis({ route, navigation }) {
+    const { Colors } = useColors();
     const graphFont = useFont(inter, 12);
     const [widgets, setWidgets] = useState([{position: 0, type: null, midpoint: -10000}]);
     const floatingWidget = useSharedValue({x: 0, y: 0, type: null, held: false});
@@ -174,13 +175,65 @@ export default function DataVis({ route, navigation }) {
     }
 
 
-const DATA = Array.from({ length: 31 }, (_, i) => ({
-    day: i,
-    lowTmp: 20 + 10 * Math.random(),
-    highTmp: 40 + 30 * Math.random(),
-  }));
+    const DATA = Array.from({ length: 31 }, (_, i) => ({
+        day: i,
+        lowTmp: 20 + 10 * Math.random(),
+        highTmp: 40 + 30 * Math.random(),
+    }));
 
     const debouncedCalcVisible = debounce(calcVisibleWidgets, 500);
+
+    const styles = StyleSheet.create({
+        rootVis: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            padding: '2.5%',
+        },
+        header: {
+            marginTop: 50,
+            marginBottom: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingRight: '25%'
+        },
+        placeholder: {
+            borderColor: Colors.border,
+            borderWidth: 2,
+            borderRadius: 10,
+            backgroundColor: Colors.primary,
+            width: '100%',
+            height: 220,
+            borderRadius: 10,
+            padding: 10,
+            margin: 10,
+        },
+        widget: {
+            backgroundColor: Colors.secondary,
+            width: '100%',
+            minHeight: 220,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 10,
+        },
+        widgetContainer: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+        },
+        textInput: {
+            color: Colors.text,
+            fontSize: 20,
+            flexGrow: 1,
+            flexShrink: 1,
+            backgroundColor: Colors.secondaryDim,
+            borderRadius: 10,
+            padding: 10,
+        }
+    });
     
     return (
         <View style={styles.rootVis}>
@@ -303,55 +356,3 @@ const DATA = Array.from({ length: 31 }, (_, i) => ({
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    rootVis: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        padding: '2.5%',
-    },
-    header: {
-        marginTop: 50,
-        marginBottom: 10,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingRight: '25%'
-    },
-    placeholder: {
-        borderColor: Colors.border,
-        borderWidth: 2,
-        borderRadius: 10,
-        backgroundColor: Colors.primary,
-        width: '100%',
-        height: 220,
-        borderRadius: 10,
-        padding: 10,
-        margin: 10,
-    },
-    widget: {
-        backgroundColor: Colors.secondary,
-        width: '100%',
-        minHeight: 220,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 10,
-    },
-    widgetContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-    },
-    textInput: {
-        color: Colors.text,
-        fontSize: 20,
-        flexGrow: 1,
-        flexShrink: 1,
-        backgroundColor: Colors.secondaryDim,
-        borderRadius: 10,
-        padding: 10,
-    }
-});

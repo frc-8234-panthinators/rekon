@@ -3,20 +3,20 @@ import { Text, View, Button, TouchableOpacity, StyleSheet, TextInput } from 'rea
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Colors from '../../../colors';
+import { useColors } from '../../../colors';
+import { calcDiffFromTable, updateColorsFromCalc } from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
 
 import StratSettings from './stratSettings';
 import MyTabBar from '../Components/StratTabBar';
-import VisualView from '../Components/DataVis';
 import Search from './Search';
 import EventPicker from './EventPicker';
 import YearPicker from './YearPicker';
 import ErrorPage from '../../CommonComponents/ErrorPage';
-import TemplateBuilder from './TemplateBuilder';
 import MathJax from '../Components/MathJax';
 import DataVis from './DataTemplateBuilder';
+import { Circle } from '@shopify/react-native-skia';
 
 
 
@@ -28,33 +28,29 @@ function TestScreen() {
 	);
 }
 
-/*function HomeScreen() {
-  
-	return (
-    
- 
-		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.background }}>
-			<Text>Home!</Text>
-      <FontAwesome name="search" size={24} color="black" />
-		</View>
-	);
-}*/
-
 function HomeScreen(props) {
+	const { Colors } = useColors();
 	const [text, onChangeText] = React.useState("Useless Text");
 	const gotoTestStackScreen = () => {
 		props.navigation.navigate('Test');
 	};
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.primary)}}>
-			<Text style={{color:Colors.text}}>MathJax Test</Text>
-			<TextInput style={{ height: 40, borderColor: 'gray', borderWidth: 1, color:Colors.text, width: '90%' }} onChangeText={onChangeText} value={text} />
+			<Text style={{color: Colors.text}}>MathJax Test</Text>
+			<TextInput style={{ height: 40, borderColor: 'gray', borderWidth: 1, color: Colors.text, width: '90%' }} onChangeText={onChangeText} value={text} />
 			<MathJax math={text}></MathJax>
 		</View>
 	);
 }
 
 function SearchScreen(props) {
+	const { Colors } = useColors();
+	const styles = StyleSheet.create({
+		padding: {
+			backgroundColor: Colors.primary,
+			paddingTop: 50,
+		},
+	});
     return (
 		<View style={styles.padding}>
         	<Search navigation={props.navigation}/>
@@ -66,6 +62,7 @@ function SearchScreen(props) {
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
+	const { Colors } = useColors();
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
 			<Tab.Screen name="StratHome" component={HomeScreen}  options={{ headerStyle: {
@@ -80,6 +77,7 @@ function MyTabs() {
 const Stack = createStackNavigator();
 
 export default function Strategy() {
+	const { Colors } = useColors();
 	return (
 		
 			<Stack.Navigator initialRouteName="Tabs" independant={true}   screenOptions={{
@@ -88,7 +86,6 @@ export default function Strategy() {
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
 				<Stack.Screen name="EventPicker" component={EventPicker} options={{headerShown:false}}/>
 				<Stack.Screen name="YearPicker" component={YearPicker} options={{headerShown:false}}/>
-				<Stack.Screen name="VisualView" component={VisualView} options={{headerShown:false}}/>
 				<Stack.Screen name="DataVisTemplateBuilder" component={DataVis} options={{headerShown:false}}/>
 				<Stack.Screen name="ErrorPage" component={ErrorPage} options={{headerShown:false}}/>
       	        <Stack.Screen name="Test" component={TestScreen} options={{headerShown:false}}/>
@@ -96,10 +93,3 @@ export default function Strategy() {
 		
 	);
 }
-
-const styles = StyleSheet.create({
-	padding: {
-		backgroundColor: Colors.primary,
-		paddingTop: 50,
-	},
-});

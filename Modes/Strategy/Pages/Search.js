@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, Text, TextInput, View, ScrollView, Button, TouchableOpacity, Dimensions } from 'react-native';
-import Colors from '../../../colors';
+import { useColors } from '../../../colors';
 import { useState } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants';
@@ -10,6 +10,7 @@ import { debounce } from 'lodash';
 
 
 export default function Search(props) {
+    const { Colors } = useColors();
     const [searchResults, setSearchResults] = useState([]);
     
     const debouncedGetSearchResults = debounce(getSearchResults, 100);
@@ -25,7 +26,65 @@ export default function Search(props) {
         }
         props.navigation.navigate('YearPicker', {teamId: text});
     }
-    
+
+    const styles = StyleSheet.create({
+        rootView: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            minHeight: '100%',
+            display: 'flex',
+            padding: 10,
+            alignItems: 'center',
+        },
+        search: {
+            backgroundColor: Colors.secondary,
+            color: Colors.text,
+            padding: 10,
+            height: Dimensions.get('window').height * 0.10,
+            width: '100%',
+            borderRadius: 10,
+            fontSize: Dimensions.get('window').height * 0.05,
+        },
+        buttonText: {
+            color: Colors.textDim,
+            fontSize: normalize(15),
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            zIndex: 2,
+            marginTop: 10,
+        },
+        teamNumber: {
+            color: Colors.text,
+            fontSize: normalize(20),
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            zIndex: 2,
+        },
+        buttonHeader: {
+            color: Colors.text,
+            fontSize: normalize(20),
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            zIndex: 2,
+        },
+        event: {
+            backgroundColor: Colors.secondary,
+            minHeight: Dimensions.get('window').height * 0.10,
+            width: '100%',
+            padding: 20,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 20
+        },
+        searchResults: {
+            width: '100%',
+            display: 'flex',
+            gap: 0,
+            marginBottom: 20,
+            marginTop: 10,
+        }
+    });
+
     return (
         <View style={styles.rootView}>
             <TextInput style={styles.search} placeholder="Search" placeholderTextColor={Colors.text} onSubmitEditing={text => navigateToYearPick('')} onChangeText={text => {debouncedGetSearchResults(text)}}/>
@@ -45,62 +104,5 @@ export default function Search(props) {
             </ScrollView>
         </View>
     )
+    
 }
-
-const styles = StyleSheet.create({
-    rootView: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        minHeight: '100%',
-        display: 'flex',
-        padding: 10,
-        alignItems: 'center',
-    },
-    search: {
-        backgroundColor: Colors.secondary,
-        color: Colors.text,
-        padding: 10,
-        height: Dimensions.get('window').height * 0.10,
-        width: '100%',
-        borderRadius: 10,
-        fontSize: Dimensions.get('window').height * 0.05,
-    },
-    buttonText: {
-        color: Colors.textDim,
-        fontSize: normalize(15),
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        zIndex: 2,
-        marginTop: 10,
-    },
-    teamNumber: {
-        color: Colors.text,
-        fontSize: normalize(20),
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        zIndex: 2,
-    },
-    buttonHeader: {
-        color: Colors.text,
-        fontSize: normalize(20),
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        zIndex: 2,
-    },
-    event: {
-        backgroundColor: Colors.secondary,
-        minHeight: Dimensions.get('window').height * 0.10,
-        width: '100%',
-        padding: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 20
-    },
-    searchResults: {
-        width: '100%',
-        display: 'flex',
-        gap: 0,
-        marginBottom: 20,
-        marginTop: 10,
-    }
-});

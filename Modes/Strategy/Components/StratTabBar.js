@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import Colors from '../../../colors';
+import { useColors } from '../../../colors';
 import * as NavigationBar from 'expo-navigation-bar';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -11,6 +11,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 export default function MyTabBar({ state, descriptors, navigation }) {
+    const { Colors } = useColors();
     NavigationBar.setVisibilityAsync(false).then(() => {}).catch(() => {});
     NavigationBar.setBehaviorAsync('overlay-swipe').then(() => {}).catch(() => {});
     NavigationBar.setBackgroundColorAsync(Colors.primary).then(() => {}).catch(() => {});
