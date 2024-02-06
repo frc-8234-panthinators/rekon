@@ -16,12 +16,20 @@ export default function MatchFormLayout({route, navigation}){
     const [isLoading, setIsLoading] = useState(true);
 
     const [nextBoxId, setNextBoxId] = useState(0);
+    const [nextFunctionId, setNextFunctionId] = useState(0);
+    const [nextVariableId, setNextVariableId] = useState(0);
 
+    const [functions, setFunctions] = useState([]);
+    const [variables, setVariables] = useState([]);
     const [mapScreen, setMapScreen] = useState(false);
     const mapScreenHeight = useSharedValue(0);
+    const [homeMapScreen, setHomeMapScreen] = useState(true);
+    const [pageMapping, setPageMapping] = useState(false);
+    const [functionMapping, setFunctionMapping] = useState(false);
 
     const [inputText, setInputText] = useState('');
     const [selectedBoxId, setSelectedBoxId] = useState(null);
+    const [selectedFunctionId, setSelectedFunctionId] = useState(null);
 
     const [fontSize, setFontSize] = useState();
     const [isBold, setIsBold] = useState(false);
@@ -55,6 +63,14 @@ export default function MatchFormLayout({route, navigation}){
     }, [redoHistory])*/
 
     useEffect(() => {
+        console.log(`functions: ${JSON.stringify(functions)}`);
+    }, [functions])
+
+    useEffect(() => {
+        console.log(`variables: ${JSON.stringify(variables)}`);
+    }, [variables])
+
+    useEffect(() => {
         // Fetch the boxes array from AsyncStorage when the component mounts
         AsyncStorage.getItem(`matchForms_${matchFormId}`).then(jsonValue => {
           const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
@@ -67,6 +83,24 @@ export default function MatchFormLayout({route, navigation}){
             setNextBoxId(nextBoxId);
         }).catch(error => {
             console.error('Failed to fetch nextBoxId: ', error);
+        })
+        AsyncStorage.getItem(`nextFunctionId_${matchFormId}`).then(jsonValue => {
+            const nextFunctionId = jsonValue != null ? JSON.parse(jsonValue) : 0;
+            setNextFunctionId(nextFunctionId);
+        }).catch(error => {
+            console.error('Failed to fetch nextFunctionId: ', error);
+        })
+        AsyncStorage.getItem(`nextVariableId`).then(jsonValue => {
+            const nextVariableId = jsonValue != null ? JSON.parse(jsonValue) : 0;
+            setNextFunctionId(nextVariableId);
+        }).catch(error => {
+            console.error('Failed to fetch nextVariableId: ', error);
+        })
+        AsyncStorage.getItem(`variables`).then(jsonValue => {
+            const variables = jsonValue != null ? JSON.parse(jsonValue) : [];
+            setVariables(variables);
+        }).catch(error => {
+            console.error('Failed to fetch variables:', error);
         })
         AsyncStorage.getItem('matchForms').then(jsonValue => {
             const matchForms = jsonValue != null ? JSON.parse(jsonValue) : [];
@@ -99,6 +133,34 @@ export default function MatchFormLayout({route, navigation}){
           console.error('Failed to save nextBoxId:', error);
         });
     }, [nextBoxId]);
+
+    useEffect(() => {
+        AsyncStorage.setItem(`nextFunctionId_${matchFormId}`, JSON.stringify(nextFunctionId)).then(() => {
+            console.log('Updated nextFunctionId succesfully');
+        }).catch(error => {
+          console.error('Failed to save nextFunctionId:', error);
+        });
+    }, [nextFunctionId]);
+
+    useEffect(() => {
+        AsyncStorage.setItem(`nextVariableId`, JSON.stringify(nextVariableId)).then(() => {
+            console.log('Updated nextVariableId succesfully');
+        }).catch(error => {
+            console.error('Failed to save nextVariableIdL', error);
+        });
+    }, [nextVariableId]);
+
+    useEffect(() => {
+        AsyncStorage.setItem(`variables`, JSON.stringify(variables)).then(() => {
+            console.log('Updated variables succesfully');
+        }).catch(error => {
+            console.error('Failed to save variables:', error);
+        })
+    }, [variables])
+
+    useEffect(() => {
+        console.log(`selectedFunctionId: ${selectedFunctionId}`)
+    }, [selectedFunctionId])
 
     const findDifferences = (prevObj, newObj) => {
         const changes = {};
@@ -175,6 +237,13 @@ export default function MatchFormLayout({route, navigation}){
         setHistory(history.slice(0, -1));
         setRedoHistory([...redoHistory, lastAction]);
     };
+
+    useEffect(() => {
+        let newBoxes = boxes.map(box =>
+            box.id === selectedBox ? {...box, functions: functions} : box
+        );
+        setBoxes(newBoxes);
+    }, [functions])
     
     const redoLastAction = () => {
         if (redoHistory.length === 0) {
@@ -258,16 +327,33 @@ export default function MatchFormLayout({route, navigation}){
 
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: '', iconColor: '#000000', iconSize: 50, page: ''}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: '', iconColor: '#000000', iconSize: 50, page: '', functions: []}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
     }
 
     function removeBox() {
+        const boxToRemove = boxes.find(box => box.id === selectedBox);
+        if (boxToRemove && boxToRemove.functions) {
+            boxToRemove.functions.forEach(func => {
+                boxes.forEach(box => {
+                    if (box.id !== selectedBox && box.functions) {
+                        box.functions = box.functions.map(otherFunc => {
+                            if (otherFunc.varName === func.newVarName) {
+                                return {...otherFunc, newVarName: '', varName: ''};
+                            }
+                            return otherFunc;
+                        });
+                    }
+                });
+                const newVariables = variables.filter(variable => !getSelectedBox(selectedBox).functions.some(func => func.newVarName === variable.name));
+                setVariables(newVariables);
+            });
+        }
         setBoxes(boxes.filter(box => box.id !== selectedBox));
         setSelectedBox(null);
-      }
+    }
 
     function changeFontColor(id, fontColor) {
         let newBoxes = boxes.map(box =>
@@ -368,9 +454,10 @@ export default function MatchFormLayout({route, navigation}){
         let selectedBoxIconColor = boxes.find(box => box.id === selectedBox)?.iconColor;
         let selectedBoxIconSize = boxes.find(box => box.id === selectedBox)?.iconSize;
         let selectedBoxPage = boxes.find(box => box.id === selectedBox)?.page;
+        let selectedBoxFunctions = boxes.find(box => box.functions === selectedBox)?.functions;
 
         if (selectedBox !== null) {
-            let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor, iconSize: selectedBoxIconSize, page: selectedBoxPage}];
+            let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: selectedBoxWidth, height: selectedBoxHeight, color: selectedBoxColor, text: selectedBoxText, fontSize: selectedBoxFontSize, fontColor: selectedBoxFontColor, bold: selectedBoxBold, italic: selectedBoxItalic, icon: selectedBoxIcon, iconColor: selectedBoxIconColor, iconSize: selectedBoxIconSize, page: selectedBoxPage, functions: selectedBoxFunctions}];
             let nextBox = nextBoxId + 1
             setNextBoxId(nextBox)
             setBoxes(newBoxes);
@@ -380,18 +467,29 @@ export default function MatchFormLayout({route, navigation}){
     const [selectedBox, setSelectedBox] = useState(null);
 
     function handleBoxSelect(id) {
-        setSelectedBox(prevId => prevId === id ? null : id);
-        const selectedBox = boxes.find(box => box.id === id);
-        if (selectedBox) {
-            setInputText(selectedBox.text);
-        }
-        if (selectedBox.icon !== '') {
-            setDoesIconAlreadyExist(true);
-        } else {
-            setDoesIconAlreadyExist(false);
-        }
-        console.log(id)
-     }
+        setSelectedBox(prevId => {
+            if (prevId === id) {
+                setFunctions([]);
+                return null;
+            } else {
+                const selectedBox = boxes.find(box => box.id === id);
+                if (selectedBox) {
+                    setInputText(selectedBox.text);
+                    setFunctions(selectedBox.functions);
+                    setHomeMapScreen(true);
+                    setFunctionMapping(false);
+                    setPageMapping(false);
+                    if (selectedBox.icon !== '') {
+                        setDoesIconAlreadyExist(true);
+                    } else {
+                        setDoesIconAlreadyExist(false);
+                    }
+                }
+                return id;
+            }
+        });
+        console.log(id);
+    }
 
     function getSelectedBox(id) {
         return boxes.find(box => box.id === id);
@@ -407,12 +505,77 @@ export default function MatchFormLayout({route, navigation}){
         return Gesture.Tap()
             .maxDuration(250)
             .onStart(() => {
-                console.log(`Selected page with id ${page}`);
-                let newBoxes = boxes.map(box =>
-                    box.id === id ? {...box, page: page} : box
-                )
-                setBoxes(newBoxes);
+                if (page === -1) {
+                    console.log('Selected to not map to a page');
+                    let newBoxes = boxes.map(box =>
+                        box.id === id ? {...box, page: ''} : box
+                    )
+                    setBoxes(newBoxes);
+                } else {
+                    console.log(`Selected page with id ${page}`);
+                    let newBoxes = boxes.map(box =>
+                        box.id === id ? {...box, page: page} : box
+                    )
+                    setBoxes(newBoxes);
+                }
+                setPageMapping(false);
+                setHomeMapScreen(true);
         }).runOnJS(true);
+    }
+
+    const selectVariable = (variable) => {
+        return Gesture.Tap()
+            .maxDuration(250)
+            .onStart(() => {
+                let updatedFunctions =[...functions];
+                const functionIndex = updatedFunctions.findIndex(func => func.id === selectedFunctionId);
+                if (functionIndex !== -1) {
+                    updateVariables(updatedFunctions[functionIndex].newVarName, '');
+                    updatedFunctions[functionIndex].varName = variable.name;
+                    updatedFunctions[functionIndex].newVarName = '';
+                    setFunctions(updatedFunctions);
+                }
+        }).runOnJS(true)
+    }
+
+    const addFunction = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            if (selectedBox !== null) {
+                let newFunctions = [...functions, {id: nextFunctionId, operation: '', amount: 0, varName: '', newVarName: ''}];
+                let nextFunction = nextFunctionId + 1;
+                setNextFunctionId(nextFunction);
+                setFunctions(newFunctions);
+            }
+    }).runOnJS(true);
+
+    const setFunctionOperation = (operation) => {
+        return Gesture.Tap()
+            .maxDuration(250)
+            .onStart(() => {
+                let newFunctions = functions.map(func => 
+                    func.id === selectedFunctionId ? {...func, operation: operation} : func  
+                )
+                setFunctions(newFunctions);
+        }).runOnJS(true);
+    }
+
+    function updateVariables(prevName, name) {
+        let updatedVariables = [...variables];
+        const prevNameIndex = variables.findIndex(variable => variable.name === prevName);
+        if (prevNameIndex !== -1) {
+            if (name !== '') {
+                updatedVariables[prevNameIndex].name = name;
+            } else {
+                updatedVariables.splice(prevNameIndex, 1);
+            }
+        } else if (name !== '') {
+            updatedVariables.push({name: name, id: nextFunctionId});
+            let nextVariable = nextVariableId + 1;
+            setNextVariableId(nextVariable);
+        }
+
+        setVariables(updatedVariables);
     }
 
     const closeMapScreen = Gesture.Tap()
@@ -420,7 +583,32 @@ export default function MatchFormLayout({route, navigation}){
         .onStart(() => {
             setMapScreen(false);
     }).runOnJS(true);
-    
+
+    const openPageMapping = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            setPageMapping(true);
+            setHomeMapScreen(false);
+    }).runOnJS(true);
+
+    const openHomeMapScreen = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            setHomeMapScreen(true);
+            setPageMapping(false);
+            setFunctionMapping(false);
+    }).runOnJS(true);
+
+    const openFunctionMapping = (functionId) => {
+        return Gesture.Tap()
+            .maxDuration(250)
+            .onStart(() => {
+                setSelectedFunctionId(functionId);
+                setFunctionMapping(true);
+                setHomeMapScreen(false);
+        }).runOnJS(true);
+    }
+
     useEffect(() => {
         if (mapScreen === true) {
             mapScreenHeight.value = withTiming(Dimensions.get('window').height / 2);
@@ -434,7 +622,7 @@ export default function MatchFormLayout({route, navigation}){
         width: '100%',
         bottom: 0,
         position: 'absolute',
-        backgroundColor: '#000000',
+        backgroundColor: '#312541',
         zIndex: 4
     }))
 
@@ -459,39 +647,193 @@ export default function MatchFormLayout({route, navigation}){
                 </Modal>
             }
 
-            <View style={{position: 'absolute', 'top': 0, 'right': 0, size: 34, backgroundColor: '#000000'}}>
-                <MaterialIcons name='undo' size={34}/>
-            </View>
-
-                <Animated.View style={mapScreenStyle}>
-                    <GestureDetector gesture={closeMapScreen}>
-                        <View style={{size: 34, position: 'absolute', top: 10, left: 10, marginBottom: 44}}>
-                            <MaterialIcons name='check' size={34} color='#e3e2e6'/>
-                        </View>
-                    </GestureDetector>
-
-                <ScrollView style={{flex: 1, marginTop: 44}}>
-                    {matchForms.map((matchForm, index) => (
-                        <GestureDetector key={matchForm.id} gesture={selectPage(selectedBox, matchForm.id)}>
-                            <View style={{
-                                flex: 1,
-                                height: 100,
-                                backgroundColor: '#312541',
-                                marginBottom: 10,
-                                marginLeft: 10,
-                                marginRight: 10,
-                                marginTop: 10,
-                                borderRadius: 10,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}>
-                                <Text style={{color: '#e3e2e6', fontSize: 50}}>
-                                    {matchForm.name}
-                                </Text>
+            <Animated.View style={mapScreenStyle}>
+                {homeMapScreen && 
+                    <>
+                        <GestureDetector gesture={closeMapScreen}>
+                            <View style={{width: 50, height: 50, position: 'absolute', top: 10, left: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                <MaterialIcons name='check' size={50} color='#312541'/>
                             </View>
                         </GestureDetector>
-                    ))}
-                </ScrollView>
+
+                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', top: 10, left: 70}}>Mapping</Text>
+
+                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', left: 10, top: 70}}>Page</Text>
+
+                        {selectedBox !== null && 
+                            <GestureDetector gesture={openPageMapping}>
+                                <View style={{width: '95%', height: 50, position: 'absolute', left: '2.5%', top: 120, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                    {getSelectedBox(selectedBox)?.page === '' ? 
+                                        <>
+                                            <MaterialIcons name='not-interested' size={50} style={{paddingLeft: 10, color: '#312541'}}/>
+
+                                            <Text style={{position: 'absolute', left: 70, top: 6.25, color: '#312541', fontSize: 25}}>Stay on current page</Text>
+                                        </>
+                                    : 
+                                        <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{matchForms.find(page => page.id === getSelectedBox(selectedBox)?.page) ? matchForms.find(page => page.id === getSelectedBox(selectedBox)?.page).name : 'Error'}</Text>
+                                    }
+                                </View>
+                            </GestureDetector>
+                        }
+
+                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', left: 10, top: 170}}>Function</Text>
+
+                        <GestureDetector gesture={addFunction}>
+                            <View style={{flexDirection: 'row', height: 34, backgroundColor: '#aa8dce', marginLeft: 170, marginTop: 178.5, marginRight: 10, borderRadius: 10}}>
+                                <MaterialIcons name='add' size={34} marginLeft={20}/>
+
+                                <Text style={{fontSize: 17, color: '#312541', marginTop: 4.25, marginLeft: 10, fontWeight: 'bold'}}>Add Function</Text>
+                            </View>
+                        </GestureDetector>
+
+                        {selectedBox === null && 
+                            <>
+                                <View style={{width: '95%', height: 50, position: 'absolute', left: '2.5%', top: 120, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                    <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>Error: No button is selected</Text>
+                                </View>
+
+                                <View style={{width: '95%', height: 50, position: 'absolute', left: '2.5%', top: 220, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                    <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>Error: No button is selected</Text>
+                                </View>
+                            </>
+                        }
+
+                        <ScrollView style={{width: '100%', height: 125, position: 'absolute', top: 220}}>
+                            {functions.map((func, index) => (
+                                <GestureDetector key={func.id} gesture={openFunctionMapping(func.id)}>
+                                    <View style={{width: '95%', height: 50, marginLeft: '2.5%', marginBottom: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                        {func.operation !== '' ? 
+                                            <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{`${func.operation === 'add' ? '+' : func.operation === 'subtract' ? '-' : ''}${func.varName === '' ? 'Function has no variable' : func.amount} ${func.varName}`}</Text>
+                                            :
+                                            <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{func.varName !== '' ? 'No operation selected' : 'Function has no variable'}</Text>
+                                        }
+                                    </View>
+                                </GestureDetector>
+                            ))}
+                        </ScrollView>
+                    </>
+                }
+
+                {pageMapping && 
+                    <>
+                        <GestureDetector gesture={openHomeMapScreen}>
+                            <View style={{width: 50, height: 50, position: 'absolute', left: 10, top: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                <MaterialIcons name='arrow-back' size={50} style={{color: '#312541'}}/>
+                            </View>
+                        </GestureDetector>
+
+                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', top: 10, left: 70}}>Pages</Text>
+
+                        <ScrollView style={{flex: 1, marginTop: 70}}>
+                            <GestureDetector gesture={selectPage(selectedBox, -1)}>
+                                <View style={{
+                                    flex: 1,
+                                    height: 50,
+                                    backgroundColor: '#aa8dce',
+                                    marginBottom: 10,
+                                    marginLeft: 10,
+                                    marginRight: 10,
+                                    borderRadius: 10,
+                                    justifyContent: 'center',
+                                }}>
+                                    <MaterialIcons name='not-interested' size={50} style={{paddingLeft: 10, color: '#312541'}}/>
+
+                                    <Text style={{position: 'absolute', left: 70, top: 6.25, color: '#312541', fontSize: 25}}>Stay on current page</Text>
+                                </View>
+                            </GestureDetector>
+
+                            {matchForms.map((matchForm, index) => (
+                                <GestureDetector key={matchForm.id} gesture={selectPage(selectedBox, matchForm.id)}>
+                                    <View style={{
+                                        flex: 1,
+                                        height: 50,
+                                        backgroundColor: '#aa8dce',
+                                        marginBottom: 10,
+                                        marginLeft: 10,
+                                        marginRight: 10,
+                                        borderRadius: 10,
+                                        justifyContent: 'center',
+                                    }}>
+                                        <Text style={{color: '#312541', fontSize: 25, marginLeft: 20}}>
+                                            {matchForm.name}
+                                        </Text>
+                                    </View>
+                                </GestureDetector>
+                            ))}
+                        </ScrollView>
+                    </>
+                }
+
+                {functionMapping && 
+                    <>
+                        <GestureDetector gesture={openHomeMapScreen}>
+                            <View style={{width: 50, height: 50, position: 'absolute', left: 10, top: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                <MaterialIcons name='arrow-back' size={50} style={{color: '#312541'}}/>
+                            </View>
+                        </GestureDetector>
+
+                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', top: 10, left: 70}}>Function</Text>
+
+                        <ScrollView style={{marginTop: 70, marginBottom: 20}}>
+                            <Text style={{fontSize: 34, color: '#e3e2e6', marginLeft: 10}}>Variable:     {functions.find(func => func.id === selectedFunctionId).varName}</Text>
+
+                            {variables.length !== 0 && <Text style={{fontSize: 17, color: '#aa8dce', marginLeft: 10}}>Existing Variables</Text>}
+
+                            {variables
+                                .filter(variable => {
+                                    const selectedFunction = functions.find(func => func.id === selectedFunctionId);
+                                    return selectedFunction ? variable.name !== selectedFunction.newVarName : true;
+                                })
+                                .map((variable, index) => (
+                                    <GestureDetector key={variable.id} gesture={selectVariable(variable)}>
+                                        <View style={{flex: 1, height: 50, marginLeft: 10, marginRight: 10, marginBottom: 20, justifyContent: 'center', backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                            <Text style={{fontSize: 34, marginLeft: 10}}>{variable.name}</Text>
+                                        </View>
+                                    </GestureDetector>                                
+                            ))}
+
+                            <Text style={{fontSize: 17, color: '#aa8dce', marginLeft: 10}}>New Variable</Text>
+
+                            <View style={{width: Dimensions.get('window').width - 20, height: 50, marginLeft: 10, justifyContent: 'center', borderRadius: 10, borderWidth: 2.5, borderColor: '#aa8dce'}}>
+                                <TextInput style={{color: '#aa8dce', fontSize: 34, marginLeft: 10}} defaultValue={[...functions].findIndex(func => func.id === selectedFunctionId) !== -1 ? [...functions][[...functions].findIndex(func => func.id === selectedFunctionId)].newVarName : ''} onChangeText={text => {
+                                    const variableExists = variables.some(variable => variable.name === text);
+                                    if (!variableExists) {
+                                        let updatedFunctions =[...functions];
+                                        const functionIndex = updatedFunctions.findIndex(func => func.id === selectedFunctionId);
+                                        if (functionIndex !== -1) {
+                                            updateVariables(updatedFunctions[functionIndex].newVarName, text);
+                                            updatedFunctions[functionIndex].varName = text;
+                                            updatedFunctions[functionIndex].newVarName = text;
+                                            setFunctions(updatedFunctions);
+                                        }
+                                    } else {
+                                        alert('Variable name already exists');
+                                    }
+                                }}/>
+                            </View>
+
+                            <Text style={{fontSize: 34, color: '#e3e2e6', marginLeft: 10}}>Operation:   {functions.find(func => func.id === selectedFunctionId).operation === 'add' ? '+' : functions.find(func => func.id === selectedFunctionId).operation === 'subtract' ? '-' : ''}</Text>
+
+                            <View style={{flexDirection: 'row', width: Dimensions.get('window').width - 20, height: 50, marginLeft: 10}}>
+                                <GestureDetector gesture={setFunctionOperation('add')}>
+                                    <View style={{width: Dimensions.get('window').width / 2 - 15, height: 50, backgroundColor: '#aa8dce', borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                                        <Text style={{fontSize: 34, color: '#312541'}}>Add</Text>
+
+                                        <MaterialIcons name='add' size={34} color={'#312541'}/>
+                                    </View>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={setFunctionOperation('subtract')}>
+                                    <View style={{width: Dimensions.get('window').width / 2 - 15, marginLeft: 10, height: 50, backgroundColor: '#aa8dce', borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                                        <Text style={{fontSize: 34, color: '#312541'}}>Subtract</Text>
+
+                                        <MaterialIcons name='remove' size={34} color={'#312541'}/>
+                                    </View>
+                                </GestureDetector>
+                            </View>
+                        </ScrollView>
+                    </>
+                }
             </Animated.View>
 
         {boxes.map((box, index) => {

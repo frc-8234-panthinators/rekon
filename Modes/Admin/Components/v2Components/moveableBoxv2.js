@@ -211,7 +211,7 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
 }
 
 import ToolBar from './editBar';
-import Strategy from '../../../Strategy/Pages/home';
+//import Strategy from '../../../Strategy/Pages/home';
 
 
 
