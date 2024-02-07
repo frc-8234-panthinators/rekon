@@ -619,6 +619,14 @@ export default function MatchFormLayout({route, navigation}){
         }).runOnJS(true);
     }
 
+    const options = (functionId) => {
+        return Gesture.Tap()
+            .maxDuration(250)
+            .onStart(() => {
+                console.log(`open options for ${functionId}`);
+        }).runOnJS(true);
+    }
+
     useEffect(() => {
         if (mapScreen === true) {
             mapScreenHeight.value = withTiming(Dimensions.get('window').height / 2);
@@ -710,15 +718,25 @@ export default function MatchFormLayout({route, navigation}){
 
                         <ScrollView style={{width: '100%', height: 125, position: 'absolute', top: 220}}>
                             {functions.map((func, index) => (
-                                <GestureDetector key={func.id} gesture={openFunctionMapping(func.id)}>
-                                    <View style={{width: '95%', height: 50, marginLeft: '2.5%', marginBottom: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
-                                        {func.operation !== '' ? 
-                                            <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{`${func.operation === 'add' ? '+' : func.operation === 'subtract' ? '-' : ''}${func.varName === '' ? 'Function has no variable' : func.amount} ${func.varName}`}</Text>
-                                            :
-                                            <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{func.varName !== '' ? 'No operation selected' : 'Function has no variable'}</Text>
-                                        }
-                                    </View>
-                                </GestureDetector>
+                                <View key={func.id}>
+                                    <GestureDetector gesture={options(func.id)}>
+                                        <View style={{width: 25, height: 50, position: 'absolute', top: 0, right: 20, zIndex: 1}}>
+                                            <View style={{position: 'absolute', right: -12.5, width: 50, height: 50, justifyContent: 'center', alignItems: 'center'}}>
+                                                <MaterialIcons name='more-vert' size={50} color={'#312541'}/>
+                                            </View>
+                                        </View>
+                                    </GestureDetector>
+
+                                    <GestureDetector gesture={openFunctionMapping(func.id)}>
+                                        <View style={{width: '95%', height: 50, marginLeft: '2.5%', marginBottom: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                            {func.operation !== '' ? 
+                                                <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{`${func.operation === 'add' ? '+' : func.operation === 'subtract' ? '-' : ''}${func.varName === '' ? 'Function has no variable' : func.amount} ${func.varName}`}</Text>
+                                                :
+                                                <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{func.varName !== '' ? 'No operation selected' : 'Function has no variable'}</Text>
+                                            }
+                                        </View>
+                                    </GestureDetector>
+                                </View>
                             ))}
                         </ScrollView>
                     </>
@@ -848,13 +866,19 @@ export default function MatchFormLayout({route, navigation}){
 
                             <View style={{width: Dimensions.get('window').width - 20, height: 50, marginLeft: 10, marginBottom: 5, justifyContent: 'center', borderRadius: 10, borderWidth: 2.5, borderColor: '#aa8dce'}}>
                                 <TextInput style={{color: '#aa8dce', fontSize: 34, marginLeft: 10}} inputMode='numeric' defaultValue={JSON.stringify(functions.find(func => func.id === selectedFunctionId).amount)} onChangeText={value => {
-                                    if (Number(value) === NaN) {
+                                    if (value === '') {
+                                        numberValue = 0;
+                                    } else {
+                                        numberValue = parseFloat(value);
+                                    }
+                                    console.log(numberValue);
+                                    if (isNaN(numberValue) || value.match(/[^0-9.]/)) {
                                         alert('Amount not a number');
                                     } else {
                                         let updatedFunctions = [...functions];
                                         const functionIndex = updatedFunctions.findIndex(func => func.id === selectedFunctionId);
                                         if (functionIndex !== -1) {
-                                            updatedFunctions[functionIndex].amount = Number(value);
+                                            updatedFunctions[functionIndex].amount = numberValue;
                                             setFunctions(updatedFunctions);
                                         }
                                     }
