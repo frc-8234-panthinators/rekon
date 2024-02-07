@@ -566,6 +566,16 @@ export default function MatchFormLayout({route, navigation}){
         if (prevNameIndex !== -1) {
             if (name !== '') {
                 updatedVariables[prevNameIndex].name = name;
+                boxes.forEach(box => {
+                    if (box.functions) {
+                        box.functions.forEach(func => {
+                            if (func.varName === prevName) {
+                                func.varName = name;
+                            }
+                        })
+                    }
+                })
+                setBoxes([...boxes])
             } else {
                 updatedVariables.splice(prevNameIndex, 1);
             }
@@ -830,6 +840,25 @@ export default function MatchFormLayout({route, navigation}){
                                         <MaterialIcons name='remove' size={34} color={'#312541'}/>
                                     </View>
                                 </GestureDetector>
+                            </View>
+
+                            <Text style={{fontSize: 34, color: '#e3e2e6', marginLeft: 10}}>Amount:   {functions.find(func => func.id === selectedFunctionId).amount}</Text>
+
+                            <Text style={{fontSize: 17, color: '#aa8dce', marginLeft: 10}}>Input Value</Text>
+
+                            <View style={{width: Dimensions.get('window').width - 20, height: 50, marginLeft: 10, marginBottom: 5, justifyContent: 'center', borderRadius: 10, borderWidth: 2.5, borderColor: '#aa8dce'}}>
+                                <TextInput style={{color: '#aa8dce', fontSize: 34, marginLeft: 10}} inputMode='numeric' defaultValue={JSON.stringify(functions.find(func => func.id === selectedFunctionId).amount)} onChangeText={value => {
+                                    if (Number(value) === NaN) {
+                                        alert('Amount not a number');
+                                    } else {
+                                        let updatedFunctions = [...functions];
+                                        const functionIndex = updatedFunctions.findIndex(func => func.id === selectedFunctionId);
+                                        if (functionIndex !== -1) {
+                                            updatedFunctions[functionIndex].amount = Number(value);
+                                            setFunctions(updatedFunctions);
+                                        }
+                                    }
+                                }}/>
                             </View>
                         </ScrollView>
                     </>
