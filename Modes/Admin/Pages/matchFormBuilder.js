@@ -21,6 +21,8 @@ export default function MatchFormLayout({route, navigation}){
 
     const [functions, setFunctions] = useState([]);
     const [variables, setVariables] = useState([]);
+    const [functionOptions, setFunctionOptions] = useState(false);
+    const [optionId, setOptionId] = useState(null);
     const [mapScreen, setMapScreen] = useState(false);
     const mapScreenHeight = useSharedValue(0);
     const [homeMapScreen, setHomeMapScreen] = useState(true);
@@ -327,7 +329,7 @@ export default function MatchFormLayout({route, navigation}){
 
     function addBox() {
         //let newBoxes = boxes.push({});
-        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#b58df1', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: '', iconColor: '#000000', iconSize: 50, page: '', functions: []}];
+        let newBoxes = [...boxes, {id: nextBoxId, x: 0, y: 0, width: gridSize * 2, height: gridSize * 2,  color: '#312541', text: '', fontSize: 15, fontColor: '#000000', bold: 'normal', italic: 'normal', icon: '', iconColor: '#000000', iconSize: 50, page: '', functions: []}];
         let nextBox = nextBoxId + 1
         setNextBoxId(nextBox)
         setBoxes(newBoxes);
@@ -549,6 +551,16 @@ export default function MatchFormLayout({route, navigation}){
             }
     }).runOnJS(true);
 
+    const deleteFunction = (id) => {
+        return Gesture.Tap()
+            .maxDuration(250)
+            .onStart(() => {
+                setFunctions(functions.filter(box => box.id !== id));
+                setOptionId(null);
+                setFunctionOptions(false);
+        }).runOnJS(true)
+    }
+
     const setFunctionOperation = (operation) => {
         return Gesture.Tap()
             .maxDuration(250)
@@ -623,7 +635,15 @@ export default function MatchFormLayout({route, navigation}){
         return Gesture.Tap()
             .maxDuration(250)
             .onStart(() => {
-                console.log(`open options for ${functionId}`);
+                if (functionId === optionId) {
+                    console.log(`Open options for ${functionId}`);
+                    setFunctionOptions(!functionOptions);
+                    setOptionId(functionId);
+                } else {
+                    console.log(`Close options for ${functionId}`);
+                    setFunctionOptions(true);
+                    setOptionId(functionId);
+                }
         }).runOnJS(true);
     }
 
@@ -652,6 +672,24 @@ export default function MatchFormLayout({route, navigation}){
         }
     }, [])
 
+    const back = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            navigation.goBack();
+    }).runOnJS(true);
+
+    const undo = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            undoLastAction();
+    }).runOnJS(true);
+
+    const redo = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            redoLastAction();
+    }).runOnJS(true);
+
     return(
         <View style={{width: '100%', height: '100%'}}>
 
@@ -664,6 +702,28 @@ export default function MatchFormLayout({route, navigation}){
                     </View>
                 </Modal>
             }
+
+            <View style={{position: 'absolute', left: 0, top: 0, width: '100%', height: 50, backgroundColor: '#000000', justifyContent: 'center'}}>
+                <GestureDetector gesture={back}>
+                    <View style={{position: 'absolute', left: 20, top: 5, width: 40, height: 40}}>
+                        <MaterialIcons name='arrow-back' size={40} color='#e2e3e6'/>
+                    </View>
+                </GestureDetector>
+                
+                <Text style={{marginLeft: 70, fontSize: 34, color: '#e3e2e6'}}>{!isLoading ? matchForms.find(page => page.id === matchFormId).name : 'Loading...'}</Text>
+
+                <GestureDetector gesture={undo}>
+                    <View style={{position: 'absolute', right: 90, top: 5, width: 40, height: 40}}>
+                        <MaterialIcons name='undo' size={40} color={history.length > 0 ? '#e2e3e6' : '#8e9099'}/>
+                    </View>
+                </GestureDetector>
+
+                <GestureDetector gesture={redo}>
+                    <View style={{position: 'absolute', right: 40, top: 5, width: 40, height: 40}}>
+                        <MaterialIcons name='redo' size={40} color={redoHistory.length > 0 ? '#e2e3e6' : '#8e9099'}/>
+                    </View>
+                </GestureDetector>
+            </View>
 
             <Animated.View style={mapScreenStyle}>
                 {homeMapScreen && 
@@ -718,7 +778,7 @@ export default function MatchFormLayout({route, navigation}){
 
                         <ScrollView style={{width: '100%', height: 125, position: 'absolute', top: 220}}>
                             {functions.map((func, index) => (
-                                <View key={func.id}>
+                                <View key={func.id} style={{flex: 1}}>
                                     <GestureDetector gesture={options(func.id)}>
                                         <View style={{width: 25, height: 50, position: 'absolute', top: 0, right: 20, zIndex: 1}}>
                                             <View style={{position: 'absolute', right: -12.5, width: 50, height: 50, justifyContent: 'center', alignItems: 'center'}}>
@@ -726,6 +786,16 @@ export default function MatchFormLayout({route, navigation}){
                                             </View>
                                         </View>
                                     </GestureDetector>
+
+                                    {functionOptions && optionId === func.id && 
+                                        <GestureDetector gesture={deleteFunction(func.id)}>
+                                            <View style={{width: 100, height: 35, position: 'absolute', right: 25, top: 25, zIndex: 3, backgroundColor: '#aa8dce', borderRadius: 10, borderWidth: 5, borderColor: '#312541', justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+                                                <Text style={{fontSize: 17.5, color: '#312541'}}>Delete</Text>
+
+                                                <MaterialIcons name='delete' size={17.5} color='#312541'/>
+                                            </View>
+                                        </GestureDetector>
+                                    }
 
                                     <GestureDetector gesture={openFunctionMapping(func.id)}>
                                         <View style={{width: '95%', height: 50, marginLeft: '2.5%', marginBottom: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>

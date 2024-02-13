@@ -514,7 +514,7 @@ const [tabActive, setTabActive] = useState(false);
                 cardStyle: { backgroundColor: (Colors.background) }  // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				        <Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
-                <Stack.Screen name="Test" component={MatchFormLayout} options={{cardStyle: {backgroundColor: 'white'}, 
+                <Stack.Screen name="Test" component={MatchFormLayout} options={{headerShown: false, cardStyle: {backgroundColor: '#000000'}, 
                 /* headerRight: () => (<Pressable style={{ marginRight: 30 }} onPress={editBarShow}>
                                       <MaterialIcons name="edit" size={24} color="black" />
                 </Pressable>) */ }} /> 

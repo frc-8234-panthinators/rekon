@@ -37,6 +37,7 @@ function AllToolBar(props){
         orange: '#FFA500',
         green: '#00FF00',
         purple: '#800080',
+        altPurple: '#312541',
     };
 
     const addBox = Gesture.Tap()
@@ -124,6 +125,7 @@ function AllToolBar(props){
     const orangeTextColor = changeTextColor('orange');
     const greenTextColor = changeTextColor('green');
     const purpleTextColor = changeTextColor('purple');
+    const altPurpleTextColor = changeTextColor('altPurple');
 
     const changeBoxColor = (colorName) => {
         return Gesture.Tap()
@@ -142,6 +144,7 @@ function AllToolBar(props){
     const orangeBoxColor = changeBoxColor('orange');
     const greenBoxColor = changeBoxColor('green');
     const purpleBoxColor = changeBoxColor('purple');
+    const altPurpleBoxColor = changeBoxColor('altPurple');
 
     const addIcon = Gesture.Tap()
         .maxDuration(250)
@@ -172,6 +175,7 @@ function AllToolBar(props){
     const orangeIconColor = changeIconColor('orange');
     const greenIconColor = changeIconColor('green');
     const purpleIconColor = changeIconColor('purple');
+    const altPurpleIconColor = changeIconColor('altPurple');
     
     const changeToSearch = Gesture.Tap()
         .maxDuration(250)
@@ -226,14 +230,6 @@ function AllToolBar(props){
                 <>
                     <GestureDetector gesture={addBox}> 
                         <MaterialIcons name="add" size={34} color="#e3e2e6" fontWeight="bold"/> 
-                    </GestureDetector>
-
-                    <GestureDetector gesture={undo}> 
-                        <MaterialIcons name="undo" size={34} color="#e3e2e6" />
-                    </GestureDetector>
-
-                    <GestureDetector gesture={redo}> 
-                        <MaterialIcons name="redo" size={34} color="#e3e2e6" />
                     </GestureDetector>
 
                     <GestureDetector gesture={resetStorage}>
@@ -355,6 +351,11 @@ function AllToolBar(props){
                         }}/>
                     </GestureDetector>
 
+                    <GestureDetector gesture={altPurpleTextColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#312541"
+                        }}/>
+                    </GestureDetector>
+
                 </>
             )}
             {props.isColorPressed && (
@@ -396,6 +397,11 @@ function AllToolBar(props){
 
                     <GestureDetector gesture={purpleBoxColor}>
                         <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#800080"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={altPurpleBoxColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#312541"
                         }}/>
                     </GestureDetector>
                 </>
@@ -494,6 +500,11 @@ function AllToolBar(props){
 
                     <GestureDetector gesture={purpleIconColor}>
                         <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#800080"
+                        }}/>
+                    </GestureDetector>
+
+                    <GestureDetector gesture={altPurpleIconColor}>
+                        <TouchableOpacity style={{...colorBoxStyle, backgroundColor: "#312541"
                         }}/>
                     </GestureDetector>
                 </>

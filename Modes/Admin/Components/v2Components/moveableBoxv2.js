@@ -165,7 +165,7 @@ export default function Box( { id, selectedBox, onSelect, onMove, onScale, boxHe
 
     transform: [
       { translateX: translatex.value + gridSizeForSpacing / 5 },
-      { translateY: translatey.value + gridSizeForSpacing / 5 },
+      { translateY: translatey.value + gridSizeForSpacing / 5 + 50 },
     ],
   }));
 
@@ -246,8 +246,8 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     borderRadius: 100,
-    color: 'black',
-    backgroundColor: 'black',
+    color: '#8d53d4',
+    backgroundColor: '#8d53d4',
     position: 'absolute',
     top: -12.5,
     left: -12.5,
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
 
 
 borderChange: {
-    borderColor: 'black',
+    borderColor: '#8d53d4',
     borderWidth: 5,
     
 },
