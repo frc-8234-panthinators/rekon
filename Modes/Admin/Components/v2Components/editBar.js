@@ -4,7 +4,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import colors from '../../../../colors';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { isColor } from 'react-native-reanimated';
+import Animated, { isColor } from 'react-native-reanimated';
 import Fuse from 'fuse.js';
 
 
@@ -192,12 +192,11 @@ function AllToolBar(props){
             props.remove(props.selectedBox);
     }).runOnJS(true);
 
-    const map = Gesture.Tap()
+    /*const map = Gesture.Tap()
         .maxDuration(250)
         .onStart(() => {
             console.log("Map");
-            props.map();
-    }).runOnJS(true);
+    }).runOnJS(true);*/
 
     const color = Gesture.Tap()
         .maxDuration(250)
@@ -214,6 +213,14 @@ function AllToolBar(props){
             props.resetStorage();
     }).runOnJS(true);
 
+    const back = Gesture.Tap()
+        .maxDuration(250)
+        .onStart(() => {
+            props.setIsAddTextPressed(false);
+            props.setIsColorPressed(false);
+            props.setIsIconPressed(false);
+    }).runOnJS(true);
+
     const colorBoxStyle = {
         height: 34,
         width: 34,
@@ -222,9 +229,592 @@ function AllToolBar(props){
         borderRadius: 17,
     };
 
+    const coloringCircleStyle = {
+        height: 55,
+        width: 55,
+        borderColor: '#aa8dce',
+        borderWidth: 2,
+        borderRadius: 28,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 10,
+    };
 
+    const buttonStyle = {
+        height: 55,
+        width: 55,
+        borderRadius: 10,
+        backgroundColor: '#aa8dce',
+        marginLeft: 10,
+        marginTop: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    };
+
+
+
+    useEffect(() => {
+        console.log(`props.tabBarType: ${props.tabBarType}`);
+    }, [props.tabBarType])
 
     return(
+        <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
+            <GestureDetector gesture={props.tabBarType === 0 ? props.changeTabBarType(1) : props.changeTabBarType(0)}>
+                <View style={{width: '100%', height: 30, marginBottom: 0, backgroundColor: '#8d53d4', zIndex: 5, alignItems:'center'}}>
+                    <MaterialIcons name={props.tabBarType === 0 ? 'expand-less' : 'expand-more'} color='#e3e2e6' size={30}/>
+                </View>
+            </GestureDetector>
+
+            <Animated.View style={props.tabBarStyle}>
+                {(props.tabBarType === 2 || props.tabBarType === 1 || props.tabBarType === 0) && 
+                    <ScrollView style={{flex: 1}}>
+                        <GestureDetector gesture={props.changeTabBarType(3)}>
+                            <View style={{width: 200, height: 200, margin: 10, borderRadius: 10, backgroundColor: '#aa8dce', alignItems: 'center'}}>
+                                <Text style={{fontSize: 34, color: '#312541', position: 'absolute', bottom: 10}}>Button</Text>
+                            </View>
+                        </GestureDetector>
+                    </ScrollView>
+                }
+                {props.tabBarType === 3 && 
+                    <View flex={1} flexDirection='row'>
+                        {(props.isAddTextPressed || props.isColorPressed || props.isIconPressed) && (
+                            <GestureDetector gesture={back}>
+                                <View style={buttonStyle}>
+                                    <MaterialIcons name='chevron-left' size={55} color='#312541'/>
+                                </View>
+                            </GestureDetector>
+                        )}
+
+                        <View style={{position: 'absolute', left: 75, top: 10, width: 5, height: 55, backgroundColor: '#aa8dce', borderRadius: 10}} />
+                        
+                        {!props.isAddTextPressed && !props.isColorPressed && !props.isIconPressed && (
+                            <>
+                                <GestureDetector gesture={props.changeTabBarType(2)}>
+                                    <View style={buttonStyle}>
+                                        <MaterialIcons name='check' size={55} color='#312541'/>
+                                    </View>
+                                </GestureDetector>
+
+                                <ScrollView style={{position: 'absolute', left: 95, width: Dimensions.get('window').width - 95}} horizontal={true}>
+                                    <GestureDetector gesture={addBox}>
+                                        <View style={{...buttonStyle, marginLeft: 0}}>
+                                            <MaterialIcons name='add' size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+
+                                    <GestureDetector gesture={resetStorage}>
+                                        <View style={buttonStyle}>
+                                            <MaterialIcons name='loop' size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+
+                                    <GestureDetector gesture={remove}>
+                                        <View style={buttonStyle}>
+                                            <MaterialIcons name='delete' size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+
+                                    <GestureDetector gesture={duplicate}>
+                                        <View style={buttonStyle}>
+                                            <MaterialIcons name='content-copy' size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+
+                                    <GestureDetector gesture={color}>
+                                        <View style={buttonStyle}>
+                                            <MaterialIcons name='color-lens' size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+
+                                    <GestureDetector gesture={addText}>
+                                        <View style={buttonStyle}>
+                                            <MaterialIcons name='text-fields' size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+
+                                    <GestureDetector gesture={addIcon}>
+                                        <View style={buttonStyle}>
+                                            <MaterialIcons name='add-reaction' size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+
+                                    <GestureDetector gesture={props.changeTabBarType(4)}>
+                                        <View style={{...buttonStyle, marginRight: 10}}>
+                                            <MaterialIcons name='map' size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+                                </ScrollView>
+                            </>)}
+                        {props.isAddTextPressed && (
+                            <ScrollView style={{marginLeft: 30, width: Dimensions.get('window').width - 95}} horizontal={true}>
+                                <TextInput
+                                    value={props.text ? props.text.toString() : ''}
+                                    onChangeText={(newText) => {
+                                        console.log('New text:', newText);
+                                        props.setFontSize(newText);
+                                        props.textAdder(props.selectedBox, newText);
+                                    }}
+                                    placeholder='Enter Text'
+                                    style={{
+                                        marginTop: 10,
+                                        height: 55,
+                                        width: 165,
+                                        borderColor: 'gray',
+                                        borderWidth: 1,
+                                        borderRadius: 5,
+                                        backgroundColor: '#ffffff',
+                                        textAlign: 'center',
+                                    }}
+                                />
+
+                                <TextInput
+                                    keyboardType='numeric'
+                                    value={props.fontSize ? props.fontSize.toString() : ''}
+                                    onChangeText={(newFontSize) => {
+                                        console.log('New font size:', newFontSize);
+                                        props.setFontSize(newFontSize);
+                                        props.changeFontSize(props.selectedBox, newFontSize);
+                                    }}
+                                    placeholder='px'
+                                    style={{
+                                        marginTop: 10,
+                                        marginLeft: 10,
+                                        height: 55,
+                                        width: 55,
+                                        borderColor: 'gray',
+                                        borderWidth: 1,
+                                        borderRadius: 5,
+                                        backgroundColor: '#ffffff',
+                                        textAlign: 'center',
+                                    }}
+                                />
+
+                                <GestureDetector gesture={bold}>
+                                    <View style={buttonStyle}>
+                                        <MaterialIcons name='format-bold' size={55} color={isBold ? '#8d53d4' : '#312541'}/>
+                                    </View>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={italic}>
+                                    <View style={buttonStyle}>
+                                        <MaterialIcons name='format-italic' size={55} color={isItalic ? '#8d53d4' : '#312541'}/>
+                                    </View>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={blackTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#000000'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={whiteTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#ffffff'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={redTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FF0000'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={orangeTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FFA500'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={yellowTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FFFF00'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={greenTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#00FF00'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={blueTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#0000FF'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={purpleTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#800080'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={altPurpleTextColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#312541'}}/>
+                                </GestureDetector>
+                            </ScrollView>)}
+                        {props.isColorPressed && (
+                            <ScrollView style={{marginLeft: 30, width: Dimensions.get('window').width - 95}} horizontal={true}>
+                                <GestureDetector gesture={blackBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, marginLeft: 0, backgroundColor: '#000000'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={whiteBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#ffffff'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={redBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FF0000'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={orangeBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FFA500'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={yellowBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FFFF00'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={greenBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#00FF00'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={blueBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#0000FF'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={purpleBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#800080'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={altPurpleBoxColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#312541'}}/>
+                                </GestureDetector>
+                            </ScrollView>
+                        )}
+                        {props.isIconPressed && !props.doesIconAlreadyExist && (
+                            <ScrollView style={{marginLeft: 30, width: Dimensions.get('window').width - 95}} horizontal={true}>
+                                <TextInput
+                                    value={search}
+                                    onChangeText={(search) => {
+                                        let results = searchEngine.search(search).map((match) => match.item.id);
+                                        results = results.slice(0, 5);
+                                        console.log(results);
+                                        setMatches(results);
+                                        setSearch(search);
+                                    }}
+                                    placeholder='Search Icons'
+                                    style={{
+                                        marginTop: 10,
+                                        height: 55,
+                                        width: 165,
+                                        borderColor: 'gray',
+                                        borderWidth: 1,
+                                        borderRadius: 5,
+                                        backgroundColor: '#ffffff',
+                                        textAlign: 'center',
+                                    }}
+                                />
+
+                                {search.length > 0 && matches.map((match, index) => (
+                                    <GestureDetector gesture={changeIcon(match)} key={index}>
+                                        <View style={buttonStyle}>
+                                            <MaterialIcons name={match} size={55} color='#312541'/>
+                                        </View>
+                                    </GestureDetector>
+                                ))}
+                            </ScrollView>)}
+                        {props.isIconPressed && props.doesIconAlreadyExist && (
+                            <ScrollView style={{marginLeft: 30, width: Dimensions.get('window').width - 95}} horizontal={true}>
+                                <GestureDetector gesture={changeToSearch}>
+                                    <View style={{...buttonStyle, marginLeft: 0}}>
+                                        <MaterialIcons name='search' size={55} color='#312541'/>
+                                        </View>
+                                </GestureDetector>
+
+                                <TextInput
+                                    keyboardType='numeric'
+                                    value={props.iconSize ? props.iconSize.toString() : ''}
+                                    onChangeText={(newIconSize) => {
+                                        console.log('New icon size:', newIconSize);
+                                        props.changeIconSize(props.selectedBox, newIconSize);
+                                    }}
+                                    placeholder='px'
+                                    style={{
+                                        marginTop: 10,
+                                        marginLeft: 10,
+                                        height: 55,
+                                        width: 55,
+                                        borderColor: 'gray',
+                                        borderWidth: 1,
+                                        borderRadius: 5,
+                                        backgroundColor: '#ffffff',
+                                        textAlign: 'center',
+                                    }}
+                                />
+
+                                <GestureDetector gesture={blackIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#000000'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={whiteIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#ffffff'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={redIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FF0000'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={orangeIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FFA500'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={yellowIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#FFFF00'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={greenIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#00FF00'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={blueIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#0000FF'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={purpleIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#800080'}}/>
+                                </GestureDetector>
+
+                                <GestureDetector gesture={altPurpleIconColor}>
+                                    <TouchableOpacity style={{...coloringCircleStyle, backgroundColor: '#312541'}}/>
+                                </GestureDetector>
+                            </ScrollView>)}
+                    </View>
+                }
+                {props.tabBarType === 4 && (
+                    <>
+                                {props.homeMapScreen && 
+                                    <>
+                                        <GestureDetector gesture={props.changeTabBarType(3)}>
+                                            <View style={{width: 50, height: 50, position: 'absolute', top: 10, left: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                                <MaterialIcons name='check' size={50} color='#312541'/>
+                                            </View>
+                                        </GestureDetector>
+                        
+                                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', top: 10, left: 70}}>Mapping</Text>
+                        
+                                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', left: 10, top: 70}}>Page</Text>
+                        
+                                        {props.selectedBox !== null && 
+                                            <GestureDetector gesture={props.openPageMapping}>
+                                                <View style={{width: '95%', height: 50, position: 'absolute', left: '2.5%', top: 120, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                                    {props.getSelectedBox(props.selectedBox)?.page === '' ? 
+                                                        <>
+                                                            <MaterialIcons name='not-interested' size={50} style={{paddingLeft: 10, color: '#312541'}}/>
+                        
+                                                            <Text style={{position: 'absolute', left: 70, top: 6.25, color: '#312541', fontSize: 25}}>Stay on current page</Text>
+                                                        </>
+                                                    : 
+                                                        <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{props.matchForms.find(page => page.id === props.getSelectedBox(props.selectedBox)?.page) ? props.matchForms.find(page => page.id === props.getSelectedBox(props.selectedBox)?.page).name : 'Error'}</Text>
+                                                    }
+                                                </View>
+                                            </GestureDetector>
+                                        }
+                        
+                                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', left: 10, top: 170}}>Function</Text>
+                
+                                        <GestureDetector gesture={props.addFunction}>
+                                            <View style={{flexDirection: 'row', height: 34, backgroundColor: '#aa8dce', marginLeft: 170, marginTop: 178.5, marginRight: 10, borderRadius: 10}}>
+                                                <MaterialIcons name='add' size={34} marginLeft={20}/>
+                        
+                                                <Text style={{fontSize: 17, color: '#312541', marginTop: 4.25, marginLeft: 10, fontWeight: 'bold'}}>Add Function</Text>
+                                            </View>
+                                        </GestureDetector>
+                        
+                                        {props.selectedBox === null && 
+                                            <>
+                                                <View style={{width: '95%', height: 50, position: 'absolute', left: '2.5%', top: 120, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                                    <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>Error: No button is selected</Text>
+                                                </View>
+                        
+                                                <View style={{width: '95%', height: 50, position: 'absolute', left: '2.5%', top: 220, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                                    <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>Error: No button is selected</Text>
+                                                </View>
+                                            </>
+                                        }
+                        
+                                        <ScrollView style={{width: '100%', height: 125, position: 'absolute', top: 220}}>
+                                            {props.functions.map((func, index) => (
+                                                <View key={func.id} style={{flex: 1}}>
+                                                    <GestureDetector gesture={props.options(func.id)}>
+                                                        <View style={{width: 25, height: 50, position: 'absolute', top: 0, right: 20, zIndex: 1}}>
+                                                            <View style={{position: 'absolute', right: -12.5, width: 50, height: 50, justifyContent: 'center', alignItems: 'center'}}>
+                                                                <MaterialIcons name='more-vert' size={50} color={'#312541'}/>
+                                                            </View>
+                                                        </View>
+                                                    </GestureDetector>
+                        
+                                                    {props.functionOptions && props.optionId === func.id && 
+                                                        <GestureDetector gesture={props.deleteFunction(func.id)}>
+                                                            <View style={{width: 100, height: 35, position: 'absolute', right: 25, top: 25, zIndex: 3, backgroundColor: '#aa8dce', borderRadius: 10, borderWidth: 5, borderColor: '#312541', justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+                                                                <Text style={{fontSize: 17.5, color: '#312541'}}>Delete</Text>
+                        
+                                                                <MaterialIcons name='delete' size={17.5} color='#312541'/>
+                                                            </View>
+                                                        </GestureDetector>
+                                                    }
+                        
+                                                    <GestureDetector gesture={props.openFunctionMapping(func.id)}>
+                                                        <View style={{width: '95%', height: 50, marginLeft: '2.5%', marginBottom: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                                            {func.operation !== '' ? 
+                                                                <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{`${func.operation === 'add' ? '+' : func.operation === 'subtract' ? '-' : ''}${func.varName === '' ? 'Function has no variable' : func.amount} ${func.varName}`}</Text>
+                                                            :
+                                                                <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{func.varName !== '' ? 'No operation selected' : 'Function has no variable'}</Text>
+                                                            }
+                                                        </View>
+                                                    </GestureDetector>
+                                                </View>
+                                            ))}
+                                        </ScrollView>
+                                    </>
+                                }
+                        
+                                {props.pageMapping && 
+                                    <>
+                                        <GestureDetector gesture={props.openHomeMapScreen}>
+                                            <View style={{width: 50, height: 50, position: 'absolute', left: 10, top: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                                <MaterialIcons name='arrow-back' size={50} style={{color: '#312541'}}/>
+                                            </View>
+                                        </GestureDetector>
+                        
+                                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', top: 10, left: 70}}>Pages</Text>
+                        
+                                        <ScrollView style={{flex: 1, marginTop: 70}}>
+                                            <GestureDetector gesture={props.selectPage(props.selectedBox, -1)}>
+                                                <View style={{
+                                                    flex: 1,
+                                                    height: 50,
+                                                    backgroundColor: '#aa8dce',
+                                                    marginBottom: 10,
+                                                    marginLeft: 10,
+                                                    marginRight: 10,
+                                                    borderRadius: 10,
+                                                    justifyContent: 'center',
+                                                }}>
+                                                    <MaterialIcons name='not-interested' size={50} style={{paddingLeft: 10, color: '#312541'}}/>
+                        
+                                                    <Text style={{position: 'absolute', left: 70, top: 6.25, color: '#312541', fontSize: 25}}>Stay on current page</Text>
+                                                </View>
+                                            </GestureDetector>
+                        
+                                            {props.matchForms.map((matchForm, index) => (
+                                                <GestureDetector key={matchForm.id} gesture={props.selectPage(props.selectedBox, matchForm.id)}>
+                                                    <View style={{
+                                                        flex: 1,
+                                                        height: 50,
+                                                        backgroundColor: '#aa8dce',
+                                                        marginBottom: 10,
+                                                        marginLeft: 10,
+                                                        marginRight: 10,
+                                                        borderRadius: 10,
+                                                        justifyContent: 'center',
+                                                    }}>
+                                                        <Text style={{color: '#312541', fontSize: 25, marginLeft: 20}}>
+                                                            {matchForm.name}
+                                                        </Text>
+                                                    </View>
+                                                </GestureDetector>
+                                            ))}
+                                        </ScrollView>
+                                    </>
+                                }
+                        
+                                {props.functionMapping && 
+                                    <>
+                                        <GestureDetector gesture={props.openHomeMapScreen}>
+                                            <View style={{width: 50, height: 50, position: 'absolute', left: 10, top: 10, backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                                <MaterialIcons name='arrow-back' size={50} style={{color: '#312541'}}/>
+                                            </View>
+                                        </GestureDetector>
+                        
+                                        <Text style={{fontSize: 34, color: '#e3e2e6', position: 'absolute', top: 10, left: 70}}>Function</Text>
+                        
+                                        <ScrollView style={{marginTop: 70, marginBottom: 20}}>
+                                            <Text style={{fontSize: 34, color: '#e3e2e6', marginLeft: 10}}>Variable:     {props.functions.find(func => func.id === props.selectedFunctionId).varName}</Text>
+                
+                                            {props.variables.length !== 0 && <Text style={{fontSize: 17, color: '#aa8dce', marginLeft: 10}}>Existing Variables</Text>}
+                        
+                                            {props.variables
+                                                .filter(variable => {
+                                                    const selectedFunction = props.functions.find(func => func.id === props.selectedFunctionId);
+                                                    return selectedFunction ? variable.name !== selectedFunction.newVarName : true;
+                                                })
+                                                .map((variable, index) => (
+                                                    <GestureDetector key={variable.id} gesture={props.selectVariable(variable)}>
+                                                        <View style={{flex: 1, height: 50, marginLeft: 10, marginRight: 10, marginBottom: 20, justifyContent: 'center', backgroundColor: '#aa8dce', borderRadius: 10}}>
+                                                            <Text style={{fontSize: 34, marginLeft: 10}}>{variable.name}</Text>
+                                                        </View>
+                                                    </GestureDetector>                                
+                                            ))}
+                        
+                                            <Text style={{fontSize: 17, color: '#aa8dce', marginLeft: 10}}>New Variable</Text>
+                        
+                                            <View style={{width: Dimensions.get('window').width - 20, height: 50, marginLeft: 10, justifyContent: 'center', borderRadius: 10, borderWidth: 2.5, borderColor: '#aa8dce'}}>
+                                                <TextInput style={{color: '#aa8dce', fontSize: 34, marginLeft: 10}} defaultValue={[...props.functions].findIndex(func => func.id === props.selectedFunctionId) !== -1 ? [...props.functions][[...props.functions].findIndex(func => func.id === props.selectedFunctionId)].newVarName : ''} onChangeText={text => {
+                                                    const variableExists = props.variables.some(variable => variable.name === text);
+                                                    if (!variableExists) {
+                                                        let updatedFunctions =[...props.functions];
+                                                        const functionIndex = updatedFunctions.findIndex(func => func.id === props.selectedFunctionId);
+                                                        if (functionIndex !== -1) {
+                                                            props.updateVariables(updatedFunctions[functionIndex].newVarName, text);
+                                                            updatedFunctions[functionIndex].varName = text;
+                                                            updatedFunctions[functionIndex].newVarName = text;
+                                                            props.setFunctions(updatedFunctions);
+                                                        }
+                                                    } else {
+                                                        alert('Variable name already exists');
+                                                    }
+                                                }}/>
+                                            </View>
+                        
+                                            <Text style={{fontSize: 34, color: '#e3e2e6', marginLeft: 10}}>Operation:   {props.functions.find(func => func.id === props.selectedFunctionId).operation === 'add' ? '+' : props.functions.find(func => func.id === props.selectedFunctionId).operation === 'subtract' ? '-' : ''}</Text>
+                        
+                                            <View style={{flexDirection: 'row', width: Dimensions.get('window').width - 20, height: 50, marginLeft: 10}}>
+                                                <GestureDetector gesture={props.setFunctionOperation('add')}>
+                                                    <View style={{width: Dimensions.get('window').width / 2 - 15, height: 50, backgroundColor: '#aa8dce', borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                                                        <Text style={{fontSize: 34, color: '#312541'}}>Add</Text>
+                    
+                                                        <MaterialIcons name='add' size={34} color={'#312541'}/>
+                                                    </View>
+                                                </GestureDetector>
+                        
+                                                <GestureDetector gesture={props.setFunctionOperation('subtract')}>
+                                                    <View style={{width: Dimensions.get('window').width / 2 - 15, marginLeft: 10, height: 50, backgroundColor: '#aa8dce', borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                                                        <Text style={{fontSize: 34, color: '#312541'}}>Subtract</Text>
+                        
+                                                        <MaterialIcons name='remove' size={34} color={'#312541'}/>
+                                                    </View>
+                                                </GestureDetector>
+                                            </View>
+                        
+                                            <Text style={{fontSize: 34, color: '#e3e2e6', marginLeft: 10}}>Amount:   {props.functions.find(func => func.id === props.selectedFunctionId).amount}</Text>
+                        
+                                            <Text style={{fontSize: 17, color: '#aa8dce', marginLeft: 10}}>Input Value</Text>
+                        
+                                            <View style={{width: Dimensions.get('window').width - 20, height: 50, marginLeft: 10, marginBottom: 5, justifyContent: 'center', borderRadius: 10, borderWidth: 2.5, borderColor: '#aa8dce'}}>
+                                                <TextInput style={{color: '#aa8dce', fontSize: 34, marginLeft: 10}} inputMode='numeric' defaultValue={JSON.stringify(props.functions.find(func => func.id === props.selectedFunctionId).amount)} onChangeText={value => {
+                                                    if (value === '') {
+                                                        numberValue = 0;
+                                                    } else {
+                                                        numberValue = parseFloat(value);
+                                                    }
+                                                    console.log(numberValue);
+                                                    if (isNaN(numberValue) || value.match(/[^0-9.]/)) {
+                                                        alert('Amount not a number');
+                                                    } else {
+                                                        let updatedFunctions = [...props.functions];
+                                                        const functionIndex = updatedFunctions.findIndex(func => func.id === props.selectedFunctionId);
+                                                        if (functionIndex !== -1) {
+                                                            updatedFunctions[functionIndex].amount = numberValue;
+                                                            props.setFunctions(updatedFunctions);
+                                                        }
+                                                    }
+                                                }}/>
+                                            </View>
+                                        </ScrollView>
+                                    </>
+                                }
+                    </>
+                )}
+            </Animated.View>
+        </View>
+    )
+
+    /*return(
         <ScrollView key={props.isAddTextPressed || props.isColorPressed || props.isIconPressed ? "otherBar" : "default"} style={styles.bar} horizontal={true} contentContainerStyle={styles.innerBar}> 
             {!props.isAddTextPressed && !props.isColorPressed && !props.isIconPressed && (
                 <>
@@ -512,7 +1102,7 @@ function AllToolBar(props){
             
 
         </ScrollView>
-    )
+    )*/
 }
 
 
@@ -540,7 +1130,7 @@ export default function ToolBar(props){
     return( 
 
             <View style={{height: '100%', width: '100%', zIndex: 3}}>
-                <Pressable style={{position: 'absolute', bottom: 20, left: 20, }} onPress={handlePress}>  
+                {/*<Pressable style={{position: 'absolute', bottom: 20, left: 20, }} onPress={handlePress}>  
                     <View style={[styles.showToolBar, tabActive && {borderTopRightRadius: 0, borderBottomRightRadius: 0, borderRightColor: "#e3e2e6", borderRightWidth: 5,}]}> 
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}> 
                             
@@ -549,8 +1139,8 @@ export default function ToolBar(props){
                     </View>
 
                     
-                </Pressable>
-                {tabActive && <AllToolBar
+                </Pressable>*/}
+                {<AllToolBar
                 
                     add={props.add}
                     remove={props.remove}
@@ -594,6 +1184,44 @@ export default function ToolBar(props){
                     setDoesIconAlreadyExist={props.setDoesIconAlreadyExist}
 
                     resetStorage={props.resetStorage}
+
+                    tabBarStyle={props.tabBarStyle}
+                    tabBarType={props.tabBarType}
+                    changeTabBarType={props.changeTabBarType}
+                    tabBarHeight={props.tabBarHeight}
+
+                    optionId={props.optionId}
+                    setOptionId={props.setOptionId}
+                    functionOptions={props.functionOptions}
+                    setFunctionOptions={props.setFunctionOptions}
+                    mapScreen={props.mapScreen}
+                    homeMapScreen={props.homeMapScreen}
+                    pageMapping={props.pageMapping}
+                    functionMapping={props.functionMapping}
+                    functions={props.functions}
+                    variables={props.variables}
+                    matchForms={props.matchForms}
+                    selectedFunctionId={props.selectedFunctionId}
+                    setFunctions={props.setFunctions}
+                    setVariables={props.setVariables}
+                    setMatchForms={props.setMatchForms}
+                    setHomeMapScreen={props.setHomeMapScreen}
+                    setPageMapping={props.setPageMapping}
+                    setFunctionMapping={props.setFunctionMapping}
+                    setMapScreen={props.setMapScreen}
+                    setSelectedFunctionId={props.setSelectedFunctionId}
+                    addFunction={props.addFunction}
+                    selectPage={props.selectPage}
+                    selectVariable={props.selectVariable}
+                    setFunctionOperation={props.setFunctionOperation}
+                    updateVariables={props.updateVariables}
+                    deleteFunction={props.deleteFunction}
+                    options={props.options}
+                    //closeMapScreen={props.closeMapScreen}
+                    openPageMapping={props.openPageMapping}
+                    openFunctionMapping={props.openFunctionMapping}
+                    openHomeMapScreen={props.openHomeMapScreen}
+
                 
                 />}
 
