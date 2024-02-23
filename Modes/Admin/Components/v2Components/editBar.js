@@ -599,7 +599,7 @@ function AllToolBar(props){
                                                             <Text style={{position: 'absolute', left: 70, top: 6.25, color: '#312541', fontSize: 25}}>Stay on current page</Text>
                                                         </>
                                                     : 
-                                                        <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{props.matchForms.find(page => page.id === props.getSelectedBox(props.selectedBox)?.page) ? props.matchForms.find(page => page.id === props.getSelectedBox(props.selectedBox)?.page).name : 'Error'}</Text>
+                                                        <Text style={{position: 'absolute', left: 10, top: 6.25, color: '#312541', fontSize: 25}}>{props.pages.find(page => page.id === props.getSelectedBox(props.selectedBox)?.page) ? props.pages.find(page => page.id === props.getSelectedBox(props.selectedBox)?.page).name : 'Error'}</Text>
                                                     }
                                                 </View>
                                             </GestureDetector>
@@ -691,8 +691,8 @@ function AllToolBar(props){
                                                 </View>
                                             </GestureDetector>
                         
-                                            {props.matchForms.map((matchForm, index) => (
-                                                <GestureDetector key={matchForm.id} gesture={props.selectPage(props.selectedBox, matchForm.id)}>
+                                            {props.pages.map((page, index) => (
+                                                <GestureDetector key={page.id} gesture={props.selectPage(props.selectedBox, page.id)}>
                                                     <View style={{
                                                         flex: 1,
                                                         height: 50,
@@ -704,7 +704,7 @@ function AllToolBar(props){
                                                         justifyContent: 'center',
                                                     }}>
                                                         <Text style={{color: '#312541', fontSize: 25, marginLeft: 20}}>
-                                                            {matchForm.name}
+                                                            {page.name}
                                                         </Text>
                                                     </View>
                                                 </GestureDetector>
@@ -1200,11 +1200,11 @@ export default function ToolBar(props){
                     functionMapping={props.functionMapping}
                     functions={props.functions}
                     variables={props.variables}
-                    matchForms={props.matchForms}
+                    pages={props.pages}
                     selectedFunctionId={props.selectedFunctionId}
                     setFunctions={props.setFunctions}
                     setVariables={props.setVariables}
-                    setMatchForms={props.setMatchForms}
+                    setPages={props.setPages}
                     setHomeMapScreen={props.setHomeMapScreen}
                     setPageMapping={props.setPageMapping}
                     setFunctionMapping={props.setFunctionMapping}

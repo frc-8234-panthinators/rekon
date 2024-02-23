@@ -12,6 +12,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 export default function MatchFormLayout({route, navigation}){
 
     const { matchFormId } = route.params;
+    const { pageId } = route.params;
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -45,7 +46,7 @@ export default function MatchFormLayout({route, navigation}){
 
     const [boxes, setBoxes] = useState([]);
     const [boxesLoaded, setBoxesLoaded] = useState(false);
-    const [matchForms, setMatchForms] = useState([]);
+    const [pages, setPages] = useState([]);
     const prevBoxesRef = useRef();
     const [history, setHistory] = useState([]);
     const [shouldRecordHistory, setShouldRecordHistory] = useState(true);
@@ -78,55 +79,55 @@ export default function MatchFormLayout({route, navigation}){
 
     useEffect(() => {
         // Fetch the boxes array from AsyncStorage when the component mounts
-        AsyncStorage.getItem(`matchForms_${matchFormId}`).then(jsonValue => {
+        AsyncStorage.getItem(`boxes_${pageId}_${matchFormId}`).then(jsonValue => {
           const boxes = jsonValue != null ? JSON.parse(jsonValue) : [];
           setBoxes(boxes); // Update the state with the fetched boxes array
           setBoxesLoaded(true);
         }).catch(error => {
           console.error('Failed to fetch boxes:', error);
         });
-        AsyncStorage.getItem(`nextBoxId_${matchFormId}`).then(jsonValue => {
+        AsyncStorage.getItem(`nextBoxId_${pageId}_${matchFormId}`).then(jsonValue => {
             const nextBoxId = jsonValue != null ? JSON.parse(jsonValue) : 0;
             setNextBoxId(nextBoxId);
         }).catch(error => {
             console.error('Failed to fetch nextBoxId: ', error);
         })
-        AsyncStorage.getItem(`nextFunctionId_${matchFormId}`).then(jsonValue => {
+        AsyncStorage.getItem(`nextFunctionId_${pageId}_${matchFormId}`).then(jsonValue => {
             const nextFunctionId = jsonValue != null ? JSON.parse(jsonValue) : 0;
             setNextFunctionId(nextFunctionId);
         }).catch(error => {
             console.error('Failed to fetch nextFunctionId: ', error);
         })
-        AsyncStorage.getItem(`nextVariableId`).then(jsonValue => {
+        AsyncStorage.getItem(`nextVariableId_${pageId}`).then(jsonValue => {
             const nextVariableId = jsonValue != null ? JSON.parse(jsonValue) : 0;
             setNextFunctionId(nextVariableId);
         }).catch(error => {
             console.error('Failed to fetch nextVariableId: ', error);
         })
-        AsyncStorage.getItem(`variables`).then(jsonValue => {
+        AsyncStorage.getItem(`variables_${pageId}`).then(jsonValue => {
             const variables = jsonValue != null ? JSON.parse(jsonValue) : [];
             setVariables(variables);
         }).catch(error => {
             console.error('Failed to fetch variables:', error);
         })
-        AsyncStorage.getItem('matchForms').then(jsonValue => {
-            const matchForms = jsonValue != null ? JSON.parse(jsonValue) : [];
-            setMatchForms(matchForms); // Update the state with the fetched matchForms array
+        AsyncStorage.getItem(`pages_${matchFormId}`).then(jsonValue => {
+            const pages = jsonValue != null ? JSON.parse(jsonValue) : [];
+            setPages(pages); // Update the state with the fetched pages array
         }).catch(error => {
-            console.error('Failed to fetch matchForms:', error);
+            console.error('Failed to fetch pages:', error);
         });
-    }, [matchFormId]);
+    }, [matchFormId, pageId]);
 
     useEffect(() => {
-        console.log(`matchForms: ${JSON.stringify(matchForms)}`);
-    }, [matchForms])
+        console.log(`pages: ${JSON.stringify(pages)}`);
+    }, [pages])
 
     useEffect(() => {
         // Convert the updated boxes array to a string
         const jsonValue = JSON.stringify(boxes);
       
         // Store the updated boxes array in AsyncStorage
-        AsyncStorage.setItem(`matchForms_${matchFormId}`, jsonValue).then(() => {
+        AsyncStorage.setItem(`boxes_${pageId}_${matchFormId}`, jsonValue).then(() => {
           console.log('Updated boxes stored successfully');
         }).catch(error => {
           console.error('Failed to store updated boxes:', error);
@@ -134,7 +135,7 @@ export default function MatchFormLayout({route, navigation}){
     }, [boxes]);
 
     useEffect(() => {
-        AsyncStorage.setItem(`nextBoxId_${matchFormId}`, JSON.stringify(nextBoxId)).then(() => {
+        AsyncStorage.setItem(`nextBoxId_${pageId}_${matchFormId}`, JSON.stringify(nextBoxId)).then(() => {
             console.log('Updated nextBoxId succesfully');
         }).catch(error => {
           console.error('Failed to save nextBoxId:', error);
@@ -142,7 +143,7 @@ export default function MatchFormLayout({route, navigation}){
     }, [nextBoxId]);
 
     useEffect(() => {
-        AsyncStorage.setItem(`nextFunctionId_${matchFormId}`, JSON.stringify(nextFunctionId)).then(() => {
+        AsyncStorage.setItem(`nextFunctionId_${pageId}_${matchFormId}`, JSON.stringify(nextFunctionId)).then(() => {
             console.log('Updated nextFunctionId succesfully');
         }).catch(error => {
           console.error('Failed to save nextFunctionId:', error);
@@ -150,7 +151,7 @@ export default function MatchFormLayout({route, navigation}){
     }, [nextFunctionId]);
 
     useEffect(() => {
-        AsyncStorage.setItem(`nextVariableId`, JSON.stringify(nextVariableId)).then(() => {
+        AsyncStorage.setItem(`nextVariableId_${pageId}`, JSON.stringify(nextVariableId)).then(() => {
             console.log('Updated nextVariableId succesfully');
         }).catch(error => {
             console.error('Failed to save nextVariableIdL', error);
@@ -158,7 +159,7 @@ export default function MatchFormLayout({route, navigation}){
     }, [nextVariableId]);
 
     useEffect(() => {
-        AsyncStorage.setItem(`variables`, JSON.stringify(variables)).then(() => {
+        AsyncStorage.setItem(`variables_${pageId}`, JSON.stringify(variables)).then(() => {
             console.log('Updated variables succesfully');
         }).catch(error => {
             console.error('Failed to save variables:', error);
@@ -759,7 +760,7 @@ export default function MatchFormLayout({route, navigation}){
                     </View>
                 </GestureDetector>
                 
-                <Text style={{marginLeft: 70, fontSize: 34, color: '#e3e2e6'}}>{!isLoading ? matchForms.find(page => page.id === matchFormId).name : 'Loading...'}</Text>
+                <Text style={{marginLeft: 70, fontSize: 34, color: '#e3e2e6'}}>{!isLoading ? pages.find(page => page.id === pageId).name : 'Loading...'}</Text>
 
                 <GestureDetector gesture={undo}>
                     <View style={{position: 'absolute', right: 90, top: 5, width: 40, height: 40}}>
@@ -830,7 +831,7 @@ export default function MatchFormLayout({route, navigation}){
             toggleItalic={toggleItalic}
             map={map}
 
-            matchForms={matchForms}
+            pages={pages}
             openPageMapping={openPageMapping}
             openFunctionMapping={openFunctionMapping}
             openHomeMapScreen={openHomeMapScreen}
