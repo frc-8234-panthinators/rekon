@@ -1,4 +1,105 @@
-import * as React from 'react';
+import React from 'react';
+import { View, Text, SafeAreaView } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
+
+function CustomDrawerContent(props) {
+  const { state, navigation } = props;
+
+  const handleCustomViewPress = () => {
+    navigation.navigate('Settings'); // Replace 'Profile' with the name of the screen you want to navigate to
+  };
+
+  const singleTap = Gesture.Tap()
+  .maxDuration(250)
+  .onStart(handleCustomViewPress).runOnJS(true);
+
+  return (
+    
+  
+    <DrawerContentScrollView {...props}>
+      {/* Render your first drawer item */}
+      <DrawerItem
+        label="Home"
+        onPress={() => navigation.navigate('Home')}
+        focused={state.routeNames[state.index] === 'Home'}
+      />
+
+      {/* Add your custom view here */}
+      <GestureDetector gesture={singleTap}>
+        <View style={{width: '100%', height: 100, backgroundColor: 'black', marginTop: 10}}>
+          <Text>Your Custom View</Text>
+        </View>
+      </GestureDetector>
+
+      <GestureDetector gesture={singleTap}>
+        <View style={{width: '100%', height: 100, backgroundColor: 'black', marginTop: 10}}>
+          <Text>Your Custom View</Text>
+        </View>
+      </GestureDetector>
+
+      <GestureDetector gesture={singleTap}>
+        <View style={{width: '100%', height: 100, backgroundColor: 'black', marginTop: 10}}>
+          <Text>Your Custom View</Text>
+        </View>
+      </GestureDetector>
+
+      <GestureDetector gesture={singleTap}>
+        <View style={{width: '100%', height: 100, backgroundColor: 'black', marginTop: 10}}>
+          <Text>Your Custom View</Text>
+        </View>
+      </GestureDetector>
+
+
+      
+      
+    </DrawerContentScrollView>
+   
+  );
+}
+
+
+function HomeScreen() {
+  return (
+    <View style={{ flex:  1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Home Screen</Text>
+    </View>
+  );
+}
+
+function SettingsScreen() {
+  return (
+    <View style={{ flex:  1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Settings Screen</Text>
+    </View>
+  );
+}
+
+const Drawer = createDrawerNavigator();
+
+function MyDrawer() {
+  return (
+    <Drawer.Navigator initialRouteName="Home"       screenOptions={{
+      drawerStyle: {
+        marginTop: 0,  
+      }, }} drawerContent={(props) => <CustomDrawerContent {...props} />} >
+      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Settings" component={SettingsScreen} />
+    </Drawer.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <MyDrawer />
+    </NavigationContainer>
+  );
+}
+
+/* import * as React from 'react';
 import { Text, View, Button, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -124,4 +225,4 @@ export default function App() {
       </NavigationContainer>
     </View>
 	);
-}
+} */
