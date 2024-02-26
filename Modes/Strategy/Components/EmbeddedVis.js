@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator, Pressable } from 'react-native';
-import Colors from '../../../colors';
+import {useColors} from '../../../colors';
 import { useState } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
@@ -9,6 +9,52 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function EmbeddedView(props) {
+    const { Colors } = useColors();
+    const styles = StyleSheet.create({
+        rootView: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+        },
+        visText: {
+            color: Colors.text,
+            fontSize: 25,
+        },
+        header: {
+            color: Colors.text,
+            fontSize: 25,
+        },
+        viewWrapper: {
+            width: "90%",
+            minHeight: 240,
+            backgroundColor: Colors.secondary,
+            display: 'flex',
+            alignItems: 'center',
+            borderRadius: 10,
+        },
+        editWrapper: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: '100%'
+        },
+        subRootView: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            marginTop: 20,
+            marginBottom: 20
+        },
+        editButton: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+        }
+    });
     if (props.data == null) {
         return (
             <View style={styles.rootView}></View>
@@ -91,50 +137,3 @@ export default function EmbeddedView(props) {
         );
     }
 }
-
-
-const styles = StyleSheet.create({
-    rootView: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-    },
-    visText: {
-        color: Colors.text,
-        fontSize: 25,
-    },
-    header: {
-        color: Colors.text,
-        fontSize: 25,
-    },
-    viewWrapper: {
-        width: "90%",
-        minHeight: 240,
-        backgroundColor: Colors.secondary,
-        display: 'flex',
-        alignItems: 'center',
-        borderRadius: 10,
-    },
-    editWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%'
-    },
-    subRootView: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        marginTop: 20,
-        marginBottom: 20
-    },
-    editButton: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    }
-});

@@ -36,14 +36,6 @@ export default function EventPicker({ route, navigation }) {
         fetchData();
     });
 
-    if (isLoading) {
-        return (
-            <View style={styles.center}>
-                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.text} />
-            </View>
-        ) 
-    }
-
     const styles = StyleSheet.create({
         rootView: {
             backgroundColor: Colors.primary,
@@ -96,6 +88,14 @@ export default function EventPicker({ route, navigation }) {
             paddingBottom: 10,
         },
     });
+
+    if (isLoading) {
+        return (
+            <View style={styles.center}>
+                <ActivityIndicator size={Dimensions.get('window').width*0.6} color={Colors.text} />
+            </View>
+        ) 
+    }
 
     return (
         <ScrollView vertical={true} contentContainerStyle={styles.rootView}>

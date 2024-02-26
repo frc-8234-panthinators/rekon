@@ -109,11 +109,14 @@ export default function DataVis({ route, navigation }) {
                                         id: widgetID,
                                         data: {
                                             sources: ['y', 'z'],
-                                            displayNames: ['Y', 'Z'],
+                                            outputSources: ['y', 'z'],
+                                            outputs: [{for: 'y', sources: ['y'], func: (values) => {return values}}, {for: 'z', sources: ['z'], func: (values) => {return values}}],
+                                            displayNames: ['T', 'G'],
                                             values: randomValues,
+                                            calculatedValues: randomValues,
                                             name: `New ${widgetType.charAt(0).toUpperCase() + widgetType.slice(1)} Widget`,
                                             colors: [Colors.graphPrimary, Colors.graphPrimary],
-                                            displayLegend: true
+                                            displayLegend: true,
                                         }
                                     }
                                     );
@@ -173,13 +176,6 @@ export default function DataVis({ route, navigation }) {
             setVisibleWidgets(visibleWidgets);
         }
     }
-
-
-    const DATA = Array.from({ length: 31 }, (_, i) => ({
-        day: i,
-        lowTmp: 20 + 10 * Math.random(),
-        highTmp: 40 + 30 * Math.random(),
-    }));
 
     const debouncedCalcVisible = debounce(calcVisibleWidgets, 500);
 
@@ -242,12 +238,15 @@ export default function DataVis({ route, navigation }) {
                 <Text style={{color: Colors.text, fontSize: 24}}>Data Visualization</Text>
             </View>
             {selectedWidget != null && <Modal visible={editModalVisible} animationType="fade" transparent={true} onRequestClose={() => setEditModalVisible(false)}>
+                {/*Header*/}
                 <View style={{backgroundColor: Colors.tabSelected, width: '100%', alignItems: 'center', paddingBottom: 10}}>
                     <Pressable hitSlop={30} style={{position: 'absolute', left: 10, top: 10, zIndex: 20}} onPress={() => setEditModalVisible(false)}><MaterialIcons name="close" size={30} color={Colors.tabIcons}></MaterialIcons></Pressable>
                     <Text numberOfLines={1} style={{color: Colors.text, fontSize: 24, textAlign: 'center', paddingTop: 10, maxWidth: '80%'}}>Editing {widgets[selectedWidget].data.name}</Text>
                 </View>
+                {/*Properties*/}
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
                     <ScrollView vertical={true} style={{backgroundColor: Colors.secondary, padding: 20, paddingTop: 10, width: '100%', height: '100%'}} contentContainerStyle={{alignItems: 'center'}}>
+                        {/*Global Properties*/}
                         <Text style={{color: Colors.text, fontSize: 30}}>Global Properties</Text>
                         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 30, gap: 20}}>
                             <Text style={{color: Colors.text, fontSize: 20}}>Name</Text>
@@ -264,11 +263,14 @@ export default function DataVis({ route, navigation }) {
                                 value={widgets[selectedWidget].data.displayLegend}
                             />
                         </View>
+                        {/*Inputs*/}
                         <Text style={{color: Colors.text, fontSize: 30, marginTop: 30}}>Inputs</Text>
                         {widgets[selectedWidget].data.sources.map((source, index) => {
                             return(
                                 <View style={[{flex: 1, flexDirection: 'column'}, index != 0 && {marginTop: 30}]}>
                                     <View style={{flexDirection: 'row', alignItems: 'center', width: '100%', marginTop: 20, gap: 20}}>
+                                        {/*Delete Button*/}
+                                        <Pressable hitSlop={30} onPress={() => {const newWidgets = [...widgets]; newWidgets[selectedWidget].data.sources.splice(index, 1); newWidgets[selectedWidget].data.displayNames.splice(index, 1); newWidgets[selectedWidget].data.colors.splice(index, 1); setWidgets(newWidgets)}}><MaterialIcons name="delete" size={30} color={Colors.errorBackground}></MaterialIcons></Pressable>
                                         <Text style={{color: Colors.text, fontSize: 26}}>Source {index+1}: {source}</Text>
                                     </View>
                                     <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 20, gap: 20}}>
@@ -279,10 +281,27 @@ export default function DataVis({ route, navigation }) {
                                         <Text style={{color: Colors.text, fontSize: 20}}>Color</Text>
                                         <ColorPickerPopup defaultColor={widgets[selectedWidget].data.colors[index]} handleChange={(color) => {updateWidgetConfig(selectedWidget, 'colors', [...widgets[selectedWidget].data.colors.slice(0, index), color, ...widgets[selectedWidget].data.colors.slice(index + 1)])}}></ColorPickerPopup>
                                     </View>
+                                    
                                 </View>
                             )
                         })}
-                        
+                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 20, gap: 20}}>
+                            <Pressable hitSlop={30} onPress={() => {const newWidgets = [...widgets]; newWidgets[selectedWidget].data.sources.push('new'); newWidgets[selectedWidget].data.displayNames.push('New Source'); newWidgets[selectedWidget].data.colors.push(Colors.graphPrimary); setWidgets(newWidgets)}}><MaterialIcons name="add" size={30} color={Colors.accent}></MaterialIcons></Pressable>
+                        </View>
+                        {/*Outputs*/}
+                        <Text style={{color: Colors.text, fontSize: 30, marginTop: 30}}>Outputs</Text>
+                        {widgets[selectedWidget].data.outputs.map((output, index) => {
+                            return(
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', marginTop: 40}}>
+                                    {/*Delete Button*/}
+                                    <Pressable hitSlop={30} onPress={() => {const newWidgets = [...widgets]; newWidgets[selectedWidget].data.outputs.splice(index, 1); setWidgets(newWidgets)}}><MaterialIcons name="delete" size={30} color={Colors.errorBackground}></MaterialIcons></Pressable>
+                                    <Text style={{color: Colors.text, fontSize: 26}}>Output {index+1}</Text>
+                                    <Pressable hitSlop={30} onPress={() => {setInfoPopupVisible(true); setInfoPopupText("This feature is not yet implemented.")}}><MaterialIcons name="settings" size={30} color={Colors.tabIcons}></MaterialIcons></Pressable>
+                                </View>
+                            )
+                        })}
+                        {/*Padding View*/}
+                        <View style={{height: 100}}></View>
                     </ScrollView>
                 </View>
             </Modal>}
@@ -317,26 +336,26 @@ export default function DataVis({ route, navigation }) {
                                     <View style={{flex: 1, height: '100%', width: '100%'}}>
                                         <Pressable style={{height: 220, width: '100%'}} onPress={() => showEditModal(index)}>
                                             <CartesianChart
-                                                data={widget.data.values}
+                                                data={widget.data.calculatedValues}
                                                 xKey="x"
-                                                yKeys={widget.data.sources}
+                                                yKeys={widget.data.outputSources}
                                                 axisOptions={{ font: graphFont, labelColor: Colors.graphPrimary, lineColor: Colors.secondaryDim }}
                                                 domainPadding={{ left: 20, right: 20, top: 10, bottom: 10}}
                                             >
                                                 {({ points }) => (
                                                     <>
-                                                        {widget.data.sources.map((source, i) => (
+                                                        {widget.data.outputs.map((output, i) => (
                                                             <>
-                                                                <Line points={points[source]} curveType='bumpX' color={widget.data.colors[i]} strokeWidth={3} key={`line-${i}`} />
-                                                                <Scatter radius={7} points={points[source]} color={widget.data.colors[i]} key={`scatter-${i}`} />
+                                                                <Line points={points[output.for]} curveType='bumpX' color={widget.data.colors[i]} strokeWidth={3} key={`line-${i}`} />
+                                                                <Scatter radius={7} points={points[output.for]} color={widget.data.colors[i]} key={`scatter-${i}`} />
                                                             </>
                                                         ))}
                                                     </>
                                                 )}
                                             </CartesianChart>
                                         </Pressable>
-                                        {widget.data.sources.length > 1 && widget.data.displayLegend && <View style={{flexDirection: 'row', paddingLeft: 40, paddingRight: 40, alignItems: 'center', justifyContent: 'space-between'}}>
-                                            {widget.data.sources.map((source, i) => {
+                                        {widget.data.outputs.length > 1 && widget.data.displayLegend && <View style={{flexDirection: 'row', paddingLeft: 40, paddingRight: 40, alignItems: 'center', justifyContent: 'space-between'}}>
+                                            {widget.data.outputs.map((source, i) => {
                                                 return <View style={{flexDirection: 'row', alignItems: 'center', gap: 5}}>
                                                     <View style={{backgroundColor: widget.data.colors[i], width: 20, height: 20, borderRadius: 10}}></View>
                                                     <Text numberOfLines={1} style={{color: Colors.text, fontSize: 20}}>{widget.data.displayNames[i]}</Text>

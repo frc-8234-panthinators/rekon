@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, Text, ActivityIndicator, View, ScrollView, Image, Pressable, Dimensions, Modal, StatusBar } from 'react-native';
-import Colors from '../../../colors';
+import {useColors} from '../../../colors';
 import { useState, useEffect } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
@@ -48,6 +48,7 @@ function getRandomHexColor() {
 }  
 
 export default function TemplateBuilder({ route, navigation }) {
+    const { Colors } = useColors();
     const [selectedSource, setSelectedSource] = useState("");
     const [selectedData, setSelectedData] = useState("");
     const [previewLoaded, setPreviewLoaded] = useState(false);
@@ -63,6 +64,71 @@ export default function TemplateBuilder({ route, navigation }) {
     const team = route.params.team;
     const event = route.params.event;
     const year = route.params.year;
+
+    const styles = StyleSheet.create({
+        rootView: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            padding: 10,
+            alignItems: 'center',
+            gap: 20,
+            paddingTop: StatusBar.currentHeight + 20,
+        },
+        flexHorizontal: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            paddingLeft: 25,
+            paddingRight: 25,
+            paddingBottom: 10
+        },
+        text: {
+            color: Colors.text,
+            fontSize: normalize(30),
+        },
+        picker: {
+            color: Colors.text,
+            backgroundColor: Colors.secondary,
+            width: '90%'
+        },
+        button: {
+            backgroundColor: Colors.secondary,
+            borderRadius: 10,
+            padding: 10,
+            width: '90%',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'absolute',
+            bottom: 20
+        },
+        modalPopup: {
+            backgroundColor: Colors.secondary,
+            width: '90%',
+            height: '90%',
+            borderRadius: 10,
+            display: 'flex',
+            alignItems: 'center',
+            padding: 10
+        },
+        dimBackground: {
+            backgroundColor: '#000000aa',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        divider: {
+            backgroundColor: Colors.text,
+            width: '100%',
+            height: 1,
+            margin: 10
+        }
+    });
 
     async function saveAndReturn() {
         if (selectedSource == "" || selectedData == "") {
@@ -276,68 +342,3 @@ export default function TemplateBuilder({ route, navigation }) {
         </View>
       )
 }
-
-const styles = StyleSheet.create({
-    rootView: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        padding: 10,
-        alignItems: 'center',
-        gap: 20,
-        paddingTop: StatusBar.currentHeight + 20,
-    },
-    flexHorizontal: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-        paddingLeft: 25,
-        paddingRight: 25,
-        paddingBottom: 10
-    },
-    text: {
-        color: Colors.text,
-        fontSize: normalize(30),
-    },
-    picker: {
-        color: Colors.text,
-        backgroundColor: Colors.secondary,
-        width: '90%'
-    },
-    button: {
-        backgroundColor: Colors.secondary,
-        borderRadius: 10,
-        padding: 10,
-        width: '90%',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 20
-    },
-    modalPopup: {
-        backgroundColor: Colors.secondary,
-        width: '90%',
-        height: '90%',
-        borderRadius: 10,
-        display: 'flex',
-        alignItems: 'center',
-        padding: 10
-    },
-    dimBackground: {
-        backgroundColor: '#000000aa',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    divider: {
-        backgroundColor: Colors.text,
-        width: '100%',
-        height: 1,
-        margin: 10
-    }
-});

@@ -10,6 +10,7 @@ import { StatusBar } from 'expo-status-bar';
 import { LogBox } from 'react-native';
 import { useEffect } from 'react';
 import { ColorProvider } from './colors';
+import { MenuProvider } from 'react-native-popup-menu';
 
 
 const Stack = createStackNavigator();
@@ -33,8 +34,10 @@ export default function App() {
   return(
     <NavigationContainer>
       <ColorProvider>
-        <ModeStack />
-        <StatusBar style="light" translucent={true}/>
+       <MenuProvider>
+          <ModeStack />
+          <StatusBar style="light" translucent={true}/>
+        </MenuProvider>
       </ColorProvider>
     </NavigationContainer>
   )

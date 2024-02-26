@@ -21,10 +21,10 @@ export default function Search(props) {
     }
     
     function navigateToYearPick(text) {
-        if (text == '') {
+        /*if (text == '') {
             text = searchResults[0].item.team_number;
-        }
-        props.navigation.navigate('YearPicker', {teamId: text});
+        }*/
+        props.navigation.navigate('YearPicker', {teamId: 8234});
     }
 
     const styles = StyleSheet.create({

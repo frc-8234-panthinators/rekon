@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StatusBar, StyleSheet, Text, View, ScrollView, Dimensions, ActivityIndicator, Pressable, Modal } from 'react-native';
-import Colors from '../../../colors';
+import {useColors} from '../../../colors';
 import { useState } from 'react';
 import ky from 'ky';
 import Constants from '../../../constants'
@@ -46,6 +46,7 @@ function getRandomHexColor() {
 }  
 
 export default function VisualView({ route, navigation }) {
+    const { Colors } = useColors();
     let [tbaData, setTbaData] = useState({});
     let [isLoading, setIsLoading] = useState(true);
     let [noData, setNoData] = useState(false);
@@ -63,6 +64,103 @@ export default function VisualView({ route, navigation }) {
     const team = route.params.teamId;
     const event = route.params.event;
     const year = route.params.year;
+
+    const styles = StyleSheet.create({
+        flexFooter: {
+            flex: 1,
+            backgroundColor: Colors.primary,
+            height: Dimensions.get('window').height
+        },
+        rootView: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            flexGrow: 1,
+            display: 'flex',
+            alignItems: 'center',
+            paddingTop: StatusBar.currentHeight,
+        },
+        center: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        subRootView: {
+            backgroundColor: Colors.primary,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            marginTop: 20,
+            marginBottom: 20
+        },
+        visText: {
+            color: Colors.text,
+            fontSize: 20,
+        },
+        errorText: {
+            color: Colors.text,
+            padding: 5,
+            fontSize: normalize(30),
+        },
+        viewWrapper: {
+            width: "90%",
+            minHeight: 240,
+            backgroundColor: Colors.secondary,
+            display: 'flex',
+            alignItems: 'center',
+            borderRadius: 10,
+        },
+        button: {
+            backgroundColor: Colors.accent,
+            borderRadius: 10,
+            padding: 10,
+            width: '90%',
+            display: 'flex',
+            alignItems: 'center',
+        },
+        text: {
+            color: Colors.text,
+            fontSize: normalize(18),
+            padding: 10,
+        },
+        modalPopup: {
+            backgroundColor: Colors.secondary,
+            width: '90%',
+            height: '90%',
+            borderRadius: 10,
+            display: 'flex',
+            alignItems: 'center',
+            padding: 10
+        },
+        dimBackground: {
+            backgroundColor: '#000000aa',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        flexHorizontal: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            paddingLeft: 25,
+            paddingRight: 25,
+            paddingBottom: 10
+        },
+        divider: {
+            backgroundColor: Colors.text,
+            width: '100%',
+            height: 1,
+            margin: 10
+        }
+      });
 
     function resetTemplate() {
         storeData(`visTemplate${year}`, []);
@@ -339,100 +437,3 @@ export default function VisualView({ route, navigation }) {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    flexFooter: {
-        flex: 1,
-        backgroundColor: Colors.primary,
-        height: Dimensions.get('window').height
-    },
-    rootView: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        flexGrow: 1,
-        display: 'flex',
-        alignItems: 'center',
-        paddingTop: StatusBar.currentHeight,
-    },
-    center: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    subRootView: {
-        backgroundColor: Colors.primary,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        marginTop: 20,
-        marginBottom: 20
-    },
-    visText: {
-        color: Colors.text,
-        fontSize: 20,
-    },
-    errorText: {
-        color: Colors.text,
-        padding: 5,
-        fontSize: normalize(30),
-    },
-    viewWrapper: {
-        width: "90%",
-        minHeight: 240,
-        backgroundColor: Colors.secondary,
-        display: 'flex',
-        alignItems: 'center',
-        borderRadius: 10,
-    },
-    button: {
-        backgroundColor: Colors.accent,
-        borderRadius: 10,
-        padding: 10,
-        width: '90%',
-        display: 'flex',
-        alignItems: 'center',
-    },
-    text: {
-        color: Colors.text,
-        fontSize: normalize(18),
-        padding: 10,
-    },
-    modalPopup: {
-        backgroundColor: Colors.secondary,
-        width: '90%',
-        height: '90%',
-        borderRadius: 10,
-        display: 'flex',
-        alignItems: 'center',
-        padding: 10
-    },
-    dimBackground: {
-        backgroundColor: '#000000aa',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    flexHorizontal: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-        paddingLeft: 25,
-        paddingRight: 25,
-        paddingBottom: 10
-    },
-    divider: {
-        backgroundColor: Colors.text,
-        width: '100%',
-        height: 1,
-        margin: 10
-    }
-  });
