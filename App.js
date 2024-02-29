@@ -2,6 +2,8 @@ import Strategy from './Modes/Strategy/Pages/home';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { StatusBar } from 'expo-status-bar';
+import { MenuProvider } from 'react-native-popup-menu';
 
 
 const Stack = createStackNavigator();
@@ -18,9 +20,15 @@ function ModeStack()  {
 
 export default function App(){
   return(
-    <NavigationContainer>
-      <ModeStack />
-    </NavigationContainer>
+    <>
+      <StatusBar translucent={false} style='light'/>
+
+      <NavigationContainer>
+        <MenuProvider>
+          <ModeStack />
+        </MenuProvider>
+      </NavigationContainer>
+    </>
   )
 }
 

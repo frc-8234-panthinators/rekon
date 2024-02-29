@@ -1,5 +1,5 @@
 //import * as React from 'react';
-import { Text, View, Button, TouchableOpacity, Pressable, Dimensions, TextInput, Modal} from 'react-native';
+import { Text, View, Button, TouchableOpacity, Pressable, Dimensions, TextInput, Modal, useWindowDimensions} from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -268,22 +268,22 @@ function HomeScreen(props) {
   }, [pitForms, matchForms, data, compare]);
 
   const goToPitFormBuilder = (pitFormId) => {
-    return Gesture.Tap()
-      .maxDuration(250)
-      .onStart(() => {
-        console.log(`Going to pit form with id of ${pitFormId}`);
-    }).runOnJS(true);
+    console.log(`Going to pit form with id of ${pitFormId}`);
+  }
+
+  const goToData = (dataId) => {
+    console.log(`Going to pit form with id of ${dataId}`);
+  }
+
+  const goToCompare = (compareId) => {
+    console.log(`Going to pit form with id of ${compareId}`);
   }
 
   const goToMatchFormPages = (matchFormId) => {
-    return Gesture.Tap()
-      .maxDuration(250)
-      .onStart(() => {
-        console.log(`Going to match form page editor with id of ${matchFormId}`);
-        props.navigation.navigate('Pages', {
-          matchFormId: matchFormId,
-        });
-      }).runOnJS(true);
+    console.log(`Going to match form page editor with id of ${matchFormId}`);
+    props.navigation.navigate('Pages', {
+      matchFormId: matchFormId,
+    });
   };
 
   const openAdder = Gesture.Tap()
@@ -449,16 +449,20 @@ function HomeScreen(props) {
     console.log(`optionYs: ${JSON.stringify(optionsYs)}`);
   }, [optionsYs])
   
+  const {height, width} = useWindowDimensions();
+
 
   return (
     <View style={{flex: 1, backgroundColor: '#000000'}}>
       {adderOpen && 
         <Modal transparent={true}>
-          <View style={{flex: 1, backgroundColor: 'black', opacity: 0.5}}/>
+          <View style={{flex: 1, backgroundColor: '#000000', opacity: 0.5}}/>
 
           {dropdownOpen && 
             <>
-              <View style={{position: 'absolute', top: Dimensions.get('window').height / 2, right: 10, width: 200, height: 240, backgroundColor: '#aa8dce', borderRadius: 10, zIndex: 11}}>
+              <Pressable style={{height: height, width: width, backgroundColor: '#000000', opacity: 0.5}} onPress={() => {setDropdownOpen(false);}} />
+
+              <View style={{position: 'absolute', top: height / 2 - 100, right: 10, width: 200, height: 240, backgroundColor: '#aa8dce', borderRadius: 10, zIndex: 11}}>
                 <TouchableOpacity onPress={() => {setType('Pit'); setDropdownOpen(false);}}>
                   <View style={{marginTop: 0, height: 65}}>
                     <MaterialIcons name='event-note' size={25} color='#312541' style={{position: 'absolute', top: 10, left: 10}}/>
@@ -510,7 +514,7 @@ function HomeScreen(props) {
             </>
           }
 
-          <View style={{position: 'absolute', top: Dimensions.get('window').height / 2, left: 10, width: Dimensions.get('window').width - 20, height: 100, backgroundColor: '#312541', borderRadius: 10, zIndex: 10}}>
+          <View style={{position: 'absolute', top: height / 2 - 100, left: 10, width: Dimensions.get('window').width - 20, height: 100, backgroundColor: '#312541', borderRadius: 10, zIndex: 10}}>
             <View style={{marginLeft: 10, marginTop: 10, height: 50, width: Dimensions.get('window').width - 150, borderRadius: 10, borderWidth: 2, borderColor: '#aa8dce', justifyContent: 'center'}}>
               <TextInput
                 style={{color: '#aa8dce', fontSize: 24, marginLeft: 10}}
@@ -547,7 +551,7 @@ function HomeScreen(props) {
         <Modal transparent={true}>
           <View style={{flex: 1, backgroundColor: '#000000', opacity: 0.5}} />
 
-          <View style={{position: 'absolute', top: Dimensions.get('window').height / 2, left: 10, width: Dimensions.get('window').width - 20, height: 100, backgroundColor: '#312541', borderRadius: 10, zIndex: 10}}>
+          <View style={{position: 'absolute', top: height / 2 - 100, left: 10, width: Dimensions.get('window').width - 20, height: 100, backgroundColor: '#312541', borderRadius: 10, zIndex: 10}}>
             <View style={{marginLeft: 10, marginRight: 10, marginTop: 10, height: 50, borderRadius: 10, borderWidth: 2, borderColor: '#aa8dce', justifyContent: 'center'}}>
               <TextInput
                 style={{color: '#aa8dce', fontSize: 24, marginLeft: 10}}
@@ -575,11 +579,11 @@ function HomeScreen(props) {
 
       <Text style={{position: 'absolute', left: 70, fontSize: 34, color: '#e3e2e6'}}>Templates</Text>
 
-      <ScrollView style={{marginTop: 50}} onScroll={(event) => {
+      <ScrollView vertical={true} style={{marginTop: 50}} onScroll={(event) => {
         scrollY.current = event.nativeEvent.contentOffset.y;
         console.log(scrollY.current);
       }}>
-        <View style={{height: Dimensions.get('window').height - 50}}>
+        <View>
           <Text style={{marginLeft: 10, fontSize: 34, color: '#e3e2e6'}}>Pit</Text>
 
           {pitForms.map((pitForm, index) => (
@@ -589,17 +593,41 @@ function HomeScreen(props) {
               setOptionsYs(prevOptionsYs => [...prevOptionsYs, {id: pitForm.id, y: y}]);
               console.log(`y: ${y}`);
             }}>
-              <GestureDetector gesture={openOptions(pitForm.id)}>
-                <View style={{width: 50, height: 50, position: 'absolute', top: 10, right: 0, zIndex: 2}}>
-                  <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
-                </View>
-              </GestureDetector>
+              <View style={{flexDirection: 'row', height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
+                <Pressable style={{flexGrow: 1}} onPress={() => goToPitFormBuilder(pitForm.id)}>
+                  <View style={{flexGrow: 1, flexShrink: 0, zIndex: 2}}>
+                    <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{pitForm.name}</Text>
+                  </View>
+                </Pressable>
+                
+                <Menu renderer={renderers.NotAnimatedContextMenu}>
+                  <MenuTrigger>
+                    <View style={{flexShrink: 1, marginRight: -10, zIndex: 9}}>
+                      <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
+                    </View>
+                  </MenuTrigger>
 
-              <GestureDetector gesture={goToPitFormBuilder(pitForm.id)}>
-                <View style={{height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10}}>
-                  <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{pitForm.name}</Text>
-                </View>
-              </GestureDetector>
+                  <MenuOptions customStyles={{optionsContainer: {width: 140}}} style={{backgroundColor: 'rgba(0,0,0,1)'}}>
+                    <MenuOption style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Rename')}>
+                      <MaterialIcons name='edit' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Rename</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Preview')}>
+                      <MaterialIcons name='remove-red-eye' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Preview</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{borderBottomLeftRadius: 10, borderBottomRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Delete')}>
+                      <MaterialIcons name='delete' size={20} color='#a30018' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#a30018'}}>Delete</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+              </View>
             </View>
           ))}
 
@@ -612,17 +640,41 @@ function HomeScreen(props) {
               setOptionsYs(prevOptionsYs => [...prevOptionsYs, {id: matchForm.id, y: y}]);
               console.log(`y: ${y}`);
             }}>
-              <GestureDetector gesture={openOptions(matchForm.id)}>
-                <View style={{width: 50, height: 50, position: 'absolute', top: 10, right: 0, zIndex: 2}}>
-                  <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
-                </View>
-              </GestureDetector>
+              <View style={{flexDirection: 'row', height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
+                <Pressable style={{flexGrow: 1}} onPress={() => goToMatchFormPages(matchForm.id)}>
+                  <View style={{flexGrow: 1, flexShrink: 0, zIndex: 2}}>
+                    <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{matchForm.name}</Text>
+                  </View>
+                </Pressable>
+                
+                <Menu renderer={renderers.NotAnimatedContextMenu}>
+                  <MenuTrigger>
+                    <View style={{flexShrink: 1, marginRight: -10, zIndex: 9}}>
+                      <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
+                    </View>
+                  </MenuTrigger>
 
-              <GestureDetector gesture={goToMatchFormPages(matchForm.id)}>
-                <View style={{height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
-                  <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{matchForm.name}</Text>
-                </View>
-              </GestureDetector>
+                  <MenuOptions customStyles={{optionsContainer: {width: 140}}} style={{backgroundColor: 'rgba(0,0,0,1)'}}>
+                    <MenuOption style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Rename')}>
+                      <MaterialIcons name='edit' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Rename</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Preview')}>
+                      <MaterialIcons name='remove-red-eye' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Preview</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{borderBottomLeftRadius: 10, borderBottomRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Delete')}>
+                      <MaterialIcons name='delete' size={20} color='#a30018' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#a30018'}}>Delete</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+              </View>
             </View>
           ))}
 
@@ -635,14 +687,40 @@ function HomeScreen(props) {
               setOptionsYs(prevOptionsYs => [...prevOptionsYs, {id: datum.id, y: y}]);
               console.log(`y: ${y}`);
             }}>
-              <GestureDetector gesture={openOptions(datum.id)}>
-                <View style={{width: 50, height: 50, position: 'absolute', top: 10, right: 0, zIndex: 2}}>
-                  <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
-                </View>
-              </GestureDetector>
+              <View style={{flexDirection: 'row', height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
+                <Pressable style={{flexGrow: 1}} onPress={() => goToData(datum.id)}>
+                  <View style={{flexGrow: 1, flexShrink: 0, zIndex: 2}}>
+                    <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{datum.name}</Text>
+                  </View>
+                </Pressable>
+                
+                <Menu renderer={renderers.NotAnimatedContextMenu}>
+                  <MenuTrigger>
+                    <View style={{flexShrink: 1, marginRight: -10, zIndex: 9}}>
+                      <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
+                    </View>
+                  </MenuTrigger>
 
-              <View style={{height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
-                <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{datum.name}</Text>
+                  <MenuOptions customStyles={{optionsContainer: {width: 140}}} style={{backgroundColor: 'rgba(0,0,0,1)'}}>
+                    <MenuOption style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Rename')}>
+                      <MaterialIcons name='edit' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Rename</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Preview')}>
+                      <MaterialIcons name='remove-red-eye' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Preview</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{borderBottomLeftRadius: 10, borderBottomRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Delete')}>
+                      <MaterialIcons name='delete' size={20} color='#a30018' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#a30018'}}>Delete</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
               </View>
             </View>
           ))}
@@ -656,23 +734,49 @@ function HomeScreen(props) {
               setOptionsYs(prevOptionsYs => [...prevOptionsYs, {id: comp.id, y: y}]);
               console.log(`y: ${y}`);
             }}>
-              <GestureDetector gesture={openOptions(comp.id)}>
-                <View style={{width: 50, height: 50, position: 'absolute', top: 10, right: 0, zIndex: 2}}>
-                  <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
-                </View>
-              </GestureDetector>
+              <View style={{flexDirection: 'row', height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
+                <Pressable style={{flexGrow: 1}} onPress={() => goToCompare(comp.id)}>
+                  <View style={{flexGrow: 1, flexShrink: 0, zIndex: 2}}>
+                    <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{comp.name}</Text>
+                  </View>
+                </Pressable>
+                
+                <Menu renderer={renderers.NotAnimatedContextMenu}>
+                  <MenuTrigger>
+                    <View style={{flexShrink: 1, marginRight: -10, zIndex: 9}}>
+                      <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
+                    </View>
+                  </MenuTrigger>
 
-              <View style={{height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
-                <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{comp.name}</Text>
+                  <MenuOptions customStyles={{optionsContainer: {width: 140}}} style={{backgroundColor: 'rgba(0,0,0,1)'}}>
+                    <MenuOption style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Rename')}>
+                      <MaterialIcons name='edit' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Rename</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Preview')}>
+                      <MaterialIcons name='remove-red-eye' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Preview</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{borderBottomLeftRadius: 10, borderBottomRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Delete')}>
+                      <MaterialIcons name='delete' size={20} color='#a30018' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#a30018'}}>Delete</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
               </View>
             </View>
           ))}
 
-          {optionsVisible && 
+          {/*optionsVisible && 
             <Modal transparent={true}>
               <TouchableOpacity onPress={() => {setOptionsVisible(false);}} style={{flex: 1}}/>
 
-              <View style={{position: 'absolute', top: selectedOptionY + 60, right: 10, width: 110, height: 80, backgroundColor: '#aa8dce', borderRadius: 10, zIndex: 10}}>
+              <View style={{position: 'absolute', top: selectedOptionY + 37.5, right: 10, width: 110, height: 80, backgroundColor: '#aa8dce', borderRadius: 10, zIndex: 10}}>
                 {options.map((option, index) => (
                   <TouchableOpacity key={index} onPress={() => {handleOptionSelect(option.name);}}>
                     <View style={{height: 25, marginRight: 10, flexDirection: 'row', alignItems: 'center'}}>
@@ -684,17 +788,15 @@ function HomeScreen(props) {
                 ))}
               </View>
             </Modal>
-          }
+                */}
         </View>
       </ScrollView>
 
-      {!adderOpen && 
-        <GestureDetector gesture={openAdder}>
-          <View style={{width: 65, height: 65, backgroundColor: '#8d53d4', position: 'absolute', bottom: 10, right: 10, borderRadius: 33}}>
-            <MaterialIcons name='add' size={65} color='#e3e2e6'/>
-          </View>
-        </GestureDetector>
-      }
+      <GestureDetector gesture={openAdder}>
+        <View style={{width: 65, height: 65, backgroundColor: '#8d53d4', position: 'absolute', bottom: 10, right: 10, borderRadius: 33}}>
+          <MaterialIcons name='add' size={65} color='#e3e2e6'/>
+        </View>
+      </GestureDetector>
     </View>
   )
 }
@@ -835,15 +937,11 @@ function MatchFormPages(props) {
   }).runOnJS(true);*/
   
   const goToPageBuilder = (pageId) => {
-    return Gesture.Tap()
-      .maxDuration(250)
-      .onStart(() => {
-        props.navigation.navigate('Test', {
-          pageId: pageId,
-          matchFormId: matchFormId,
-        });
-        setSelectedPage(pageId);
-    }).runOnJS(true);
+    props.navigation.navigate('Test', {
+      pageId: pageId,
+      matchFormId: matchFormId,
+    });
+    setSelectedPage(pageId);
   }
   
   const doubleTap = (id) => {
@@ -940,6 +1038,8 @@ function MatchFormPages(props) {
     setOptionsVisible(false);
   }
 
+  const { height, width } = useWindowDimensions();
+
   return (
     <View style={{flex: 1, backgroundColor: '#000000'}}>
       <GestureDetector gesture={back}>
@@ -954,7 +1054,7 @@ function MatchFormPages(props) {
         <Modal transparent={true}>
           <View style={{flex: 1, backgroundColor: '#000000', opacity: 0.5}} />
 
-          <View style={{position: 'absolute', top: Dimensions.get('window').height / 2, left: 10, width: Dimensions.get('window').width - 20, height: 100, backgroundColor: '#312541', borderRadius: 10, zIndex: 10}}>
+          <View style={{position: 'absolute', top: height / 2 - 100, left: 10, width: Dimensions.get('window').width - 20, height: 100, backgroundColor: '#312541', borderRadius: 10, zIndex: 10}}>
             <View style={{marginLeft: 10, marginRight: 10, marginTop: 10, height: 50, borderRadius: 10, borderWidth: 2, borderColor: '#aa8dce', justifyContent: 'center'}}>
               <TextInput
                 style={{color: '#aa8dce', fontSize: 24, marginLeft: 10}}
@@ -984,7 +1084,7 @@ function MatchFormPages(props) {
         <Modal transparent={true}>
           <View style={{flex: 1, backgroundColor: 'black', opacity: 0.5}} />
 
-          <View style={{position: 'absolute', top: Dimensions.get('window').height / 2, left: 10, width: Dimensions.get('window').width - 20, height: 100, backgroundColor: '#312541', borderRadius: 10, zIndex: 10}}>
+          <View style={{position: 'absolute', top: height / 2 - 100, left: 10, width: Dimensions.get('window').width - 20, height: 100, backgroundColor: '#312541', borderRadius: 10, zIndex: 10}}>
             <View style={{marginLeft: 10, marginRight: 10, marginTop: 10, height: 50, borderRadius: 10, borderWidth: 2, borderColor: '#aa8dce', justifyContent: 'center'}}>
               <TextInput
                 style={{color: '#aa8dce', fontSize: 24, marginLeft: 10}}
@@ -1022,17 +1122,41 @@ function MatchFormPages(props) {
               setOptionsYs(prevOptionsYs => [...prevOptionsYs, {id: page.id, y: y}]);
               console.log(`y: ${y}`);
             }}>
-              <GestureDetector gesture={openOptions(page.id)}>
-                <View style={{width: 50, height: 50, position: 'absolute', top: 10, right: 0, zIndex: 2}}>
-                  <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
-                </View>
-              </GestureDetector>
+              <View style={{flexDirection: 'row', height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
+                <Pressable style={{flexGrow: 1}} onPress={() => goToPageBuilder(page.id)}>
+                  <View style={{flexGrow: 1, flexShrink: 0, zIndex: 2}}>
+                    <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{page.name}</Text>
+                  </View>
+                </Pressable>
+                
+                <Menu renderer={renderers.NotAnimatedContextMenu}>
+                  <MenuTrigger>
+                    <View style={{flexShrink: 1, marginRight: -10, zIndex: 9}}>
+                      <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
+                    </View>
+                  </MenuTrigger>
 
-              <GestureDetector gesture={goToPageBuilder(page.id)}>
-                <View style={{height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
-                  <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{page.name}</Text>
-                </View>
-              </GestureDetector>
+                  <MenuOptions customStyles={{optionsContainer: {width: 140}}} style={{backgroundColor: 'rgba(0,0,0,1)'}}>
+                    <MenuOption style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Rename')}>
+                      <MaterialIcons name='edit' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Rename</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Preview')}>
+                      <MaterialIcons name='remove-red-eye' size={20} color='#312541' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#312541'}}>Preview</Text>
+                    </MenuOption>
+
+                    <MenuOption style={{borderBottomLeftRadius: 10, borderBottomRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Delete')}>
+                      <MaterialIcons name='delete' size={20} color='#a30018' style={{marginLeft: 5}}/>
+                        
+                      <Text style={{marginLeft: 10, fontSize: 20, color: '#a30018'}}>Delete</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+              </View>
             </View>
           ))}
 
@@ -1266,6 +1390,7 @@ import EditBar from '../../Admin/Components/v2Components/editBar';
 import React, { useState, useEffect, useRef } from 'react';
 import { Gesture, GestureDetector, ScrollView } from 'react-native-gesture-handler';
 import { closestMatch } from 'closest-match';
+import { Menu, MenuOption, MenuOptions, MenuTrigger, renderers } from 'react-native-popup-menu';
 
 
 
