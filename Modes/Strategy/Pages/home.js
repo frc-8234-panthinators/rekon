@@ -8,10 +8,11 @@ import * as NavigationBar from 'expo-navigation-bar';
 
 //import Home from './Modes/Strategy/Pages/home';
 
-import MatchForm from '../../Admin/Components/matchForm';
+import PitForm from '../../Admin/Components/pitForm';
 import PreviewForm from '../../Admin/Components/previewForm';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const background = '#1a1b1e'
@@ -40,11 +41,22 @@ function HomeScreen(props) {
 	const gotoTestStackScreen = () => {
 		props.navigation.navigate('Pit Form');
 	};
+
+  function resetStorage() {
+    AsyncStorage.clear().then(() => {
+      console.log('Cleared AsyncStorage')
+    }).catch(error => {
+      console.error('Failed to clear AsyncStorage:', error);
+    });
+  };
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (Colors.background)}}>
 			<Text style={{ color: 'white' }}>Home!</Text>
-      <Pressable style={{ backgroundColor: '#4F5062', borderRadius: 5, padding: 10,}} onPress={gotoTestStackScreen}>
+      <Pressable style={{ backgroundColor: '#4F5062', borderRadius: 10, padding: 10,}} onPress={gotoTestStackScreen}>
         <Text style={{ color: 'white' }}>Go to Pit Form Builder</Text>
+      </Pressable>
+      <Pressable style={{ backgroundColor: 'red', borderRadius: 10, padding: 10, marginTop: 10 }} onPress={resetStorage}>
+        <Text style={{ color: 'white', fontWeight: 'bold' }}>Clear async storage</Text>
       </Pressable>
 		</View>
 	);
@@ -148,7 +160,7 @@ function MyTabs() {
 			<Tab.Screen name="Home" component={HomeScreen}  options={{ headerStyle: {
               backgroundColor: (Colors.tab)
            }}}/>
-            <Tab.Screen name="Search" component={MatchForm} />
+            <Tab.Screen name="Search" component={PitForm} />
 		</Tab.Navigator>
 	);
 }
@@ -162,7 +174,7 @@ export default function Strategy() {
                 cardStyle: { backgroundColor: (Colors.background) } // Set the background color to blue
               }}/*screenOptions={{headerShown: false}}*/>
 				<Stack.Screen name="Tabs" component={MyTabs} options={{headerShown:false}} />
-        <Stack.Screen name="Pit Form" component={MatchForm}  />
+        <Stack.Screen name="Pit Form" component={PitForm}  />
         <Stack.Screen name="Preview Form" component={PreviewForm} />
                 
 

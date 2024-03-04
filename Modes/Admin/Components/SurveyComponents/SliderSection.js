@@ -57,7 +57,10 @@ export default function SliderSection(props) {
                     style={styles.sliderQuestion}
                 />
 
-                <Text style={{color: 'white'}}>Set min and max values</Text>
+                <Text style={{color: 'white'}}>
+                    <Text>Set min and max values - </Text>
+                    <Text style={{color: 'red', fontWeight: 'bold'}}>Required</Text>
+                </Text>
                 <View style={styles.limitsContainer}>
                     <TextInput //set minimum value
                         placeholder="min"

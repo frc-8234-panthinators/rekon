@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Pressable, Text, Modal, View, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, Pressable, Text, Modal, View, StyleSheet, Dimensions, TextInput } from 'react-native';
 
 import TextSection from './SurveyComponents/TextSection';
 import NumberSection from './SurveyComponents/NumberSection';
@@ -11,7 +11,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export default function MatchForm({ navigation }){
+export default function PitForm({ navigation }){
 
   const [sections, setSections] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -20,7 +20,8 @@ export default function MatchForm({ navigation }){
     const loadData = async () => {
       try {
         const sectionsString = await AsyncStorage.getItem('sections');
-        const sectionsArray = JSON.parse(sectionsString);
+        const parsedSections = JSON.parse(sectionsString);
+        const sectionsArray = parsedSections ? parsedSections : [];
         setSections(sectionsArray);
       } catch (error) {
         console.error(error);
@@ -59,6 +60,37 @@ export default function MatchForm({ navigation }){
     setSections(newSections);
   };
 
+  const validateSections = () => {
+    return sections.every(section => {
+      if (!section.question || section.question.trim() === '') {
+        console.log('1')
+        return false;
+      }
+
+      if (section.type === 'slider') {
+        if (section.minimum !== undefined && section.maximum !== undefined) {
+          if (isNaN(section.minimum) || isNaN(section.maximum)) {
+            console.log('2')
+            return false;
+          }
+        } else {
+          console.log('3')
+          return false;
+        }
+      }
+
+      return true;
+    });
+  };
+
+  const navigateToPreview = () => {
+    if (validateSections()) {
+      navigation.navigate('Preview Form', { sections });
+    } else {
+      alert('Please fill all in all questions and required fields before previewing.');
+    }
+  };
+
   //logs the question types and its properties in the console
   /*sections.forEach((section, index) => {
     console.log('   New Update')
@@ -86,8 +118,8 @@ export default function MatchForm({ navigation }){
   
   return(
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', margin: 10, }}>
-        <MaterialIcons name="visibility" size={30} color="white" backgroundColor="#3E4758CC" onPress={() => navigation.navigate('Preview Form', {sections} )} /> 
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', margin: 10 }}>
+        <MaterialIcons name="visibility" size={30} color="white" backgroundColor="#3E4758CC" style={{ borderRadius: 10, padding: 2, }} onPress={navigateToPreview} /> 
       </View>    
       <ScrollView>
 
@@ -253,7 +285,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
   },
   modalView: {
     margin: 20,

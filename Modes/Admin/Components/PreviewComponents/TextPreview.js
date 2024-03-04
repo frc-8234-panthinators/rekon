@@ -7,7 +7,7 @@ export default function TextPreview(props) {
   return (
     <View style={styles.textSectionContainer}>
         <Text style={styles.header}>{props.question}</Text>
-        <View style={{flexDirection: 'row', flex: 1, marginTop: 15, marginBottom: 10}}>
+        <View style={{flexDirection: 'row', flex: 1, marginBottom: 10}}>
             <TextInput
               style={styles.textAnswer}
               placeholder='Answer'

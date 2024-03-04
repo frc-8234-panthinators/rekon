@@ -15,7 +15,6 @@ export default function PreviewForm({ route }) {
     return(
         <View style={styles.container}>
             <View style={{ backgroundColor: 'white', height: 'auto', height: 'auto', }}></View>
-            <Pressable style={{backgroundColor: 'white', margin: 10, padding: 5, borderRadius: 10}} onPress={() => [console.log("Preview Form Array"), console.log(sections)]}><Text>Show Sections Array in Console</Text></Pressable>
             <ScrollView>
             {sections.map((section, index) => (
           <View key={index} style={styles.sections}>

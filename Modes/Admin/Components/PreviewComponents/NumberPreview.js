@@ -14,7 +14,7 @@ export default function NumberPreview(props) {
   return (
     <View style={styles.numberSectionContainer}>
         <Text style={styles.header}>{props.question}</Text>
-        <View style={{ flexDirection: 'row', flex: 1, marginTop: 15, marginBottom: 10, }}>
+        <View style={{ flexDirection: 'row', flex: 1, marginBottom: 10, }}>
             <TextInput
               value={answer}
               style={styles.numberAnswer}
