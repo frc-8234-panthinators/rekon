@@ -21,10 +21,12 @@ import AHH from '../../Admin/Components/ahhh'; //delete after
 import AnotherTest from '../../Admin/Components/anotherTest';
 import Resize from '../../Admin/Components/moveableBox';
 import TEST from '../../Admin/Components/v2Components/moveableBoxv2';
+import Teamates from '../../Admin/Pages/scoutAdder';
 
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MatchFormLayout from '../../Admin/Pages/matchFormBuilder';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 const background = '#1a1b1e'
@@ -384,6 +386,7 @@ function HomeScreen(props) {
         setOptionsYs([]);
         if (getSelectedOptionType() === 'Pit') {
           setPitForms(pitForms.filter(pitForm => pitForm.id !== selectedOption));
+          console.log(JSON.stringify(pitForms))
         } else if (getSelectedOptionType() === 'Match') {
           setMatchForms(matchForms.filter(matchForm => matchForm.id !== selectedOption));
         } else if (getSelectedOptionType() === 'Data') {
@@ -577,14 +580,14 @@ function HomeScreen(props) {
         </Modal>
       }
 
-      <Text style={{position: 'absolute', left: 70, fontSize: 34, color: '#e3e2e6'}}>Templates</Text>
+      <Text style={{position: 'absolute', left: 10, fontWeight: '500', fontSize: 34, color: '#e3e2e6'}}>Templates</Text>
 
-      <ScrollView vertical={true} style={{marginTop: 50}} onScroll={(event) => {
+      <ScrollView vertical={true} style={{marginTop: 60}} onScroll={(event) => {
         scrollY.current = event.nativeEvent.contentOffset.y;
         console.log(scrollY.current);
       }}>
         <View>
-          <Text style={{marginLeft: 10, fontSize: 34, color: '#e3e2e6'}}>Pit</Text>
+          <Text style={{marginLeft: 10, fontSize: 30, color: '#e3e2e6', fontWeight: '500'}}>Pit</Text>
 
           {pitForms.map((pitForm, index) => (
             <View key={`${pitForm.id}_${totalForms.length}`} onLayout={(event) => {
@@ -593,21 +596,21 @@ function HomeScreen(props) {
               setOptionsYs(prevOptionsYs => [...prevOptionsYs, {id: pitForm.id, y: y}]);
               console.log(`y: ${y}`);
             }}>
-              <View style={{flexDirection: 'row', height: 50, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1}}>
+              <View style={{flexDirection: 'row', height: 60, marginLeft: 10, marginRight: 10, marginTop: 10, backgroundColor: '#312541', borderRadius: 10, zIndex: 1, alignItems: 'center'}}>
                 <Pressable style={{flexGrow: 1}} onPress={() => goToPitFormBuilder(pitForm.id)}>
-                  <View style={{flexGrow: 1, flexShrink: 0, zIndex: 2}}>
-                    <Text style={{marginLeft: 10, fontSize: 34, color: '#aa8dce'}}>{pitForm.name}</Text>
+                  <View style={{flexGrow: 1, flexShrink: 0, zIndex: 2, justifyContent: 'center'}}>
+                    <Text style={{marginLeft: 10, fontSize: 25, color: '#aa8dce'}}>{pitForm.name}</Text>
                   </View>
                 </Pressable>
                 
                 <Menu renderer={renderers.NotAnimatedContextMenu}>
-                  <MenuTrigger>
-                    <View style={{flexShrink: 1, marginRight: -10, zIndex: 9}}>
-                      <MaterialIcons name='more-vert' size={50} color='#aa8dce'/>
+                  <MenuTrigger onPress={() => setSelectedOption(pitForm.id)}>
+                    <View style={{flexShrink: 1, height: '100%', marginRight: -0, zIndex: 9, justifyContent: 'center'}}>
+                      <MaterialIcons name='more-vert' size={40} color='#aa8dce'/>
                     </View>
                   </MenuTrigger>
 
-                  <MenuOptions customStyles={{optionsContainer: {width: 140}}} style={{backgroundColor: 'rgba(0,0,0,1)'}}>
+                  <MenuOptions customStyles={{optionsContainer: {width: 140, backgroundColor: 'transparent'}}}>
                     <MenuOption style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, marginRight: 10, flexDirection: 'row', alignItems: 'center', backgroundColor: '#aa8dce'}} onSelect={() => handleOptionSelect('Rename')}>
                       <MaterialIcons name='edit' size={20} color='#312541' style={{marginLeft: 5}}/>
                         
@@ -1294,7 +1297,7 @@ function MyTabBar({ state, descriptors, navigation }) {
   NavigationBar.setBehaviorAsync('overlay-swipe').then(() => {}).catch(() => {});
   NavigationBar.setBackgroundColorAsync(Colors.background).then(() => {}).catch(() => {});
   return (
-    <View style={{ flexDirection: 'row',backgroundColor: (Colors.tab) ,height:65,borderRadius:10, margin: 12, justifyContent:"center",alignItems:"center", }}>
+    <View style={{ flexDirection: 'row',backgroundColor: (Colors.tab) ,height:55,borderRadius:0, margin: 0, justifyContent:"center",alignItems:"center", }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -1328,16 +1331,19 @@ function MyTabBar({ state, descriptors, navigation }) {
 
         let iconName;
         if (route.name === "Home") {
-          iconName = isFocused ? "home" : "home";
+          iconName = isFocused ? "home" : "home-outline";
         } else if (route.name === "Settings") {
-          iconName = isFocused ? "settings" : "settings";
-        } else if (route.name === "Search") {
-          iconName = isFocused ? "search" : "search";
-        }
-
+          iconName = isFocused ? "dots-horizontal-circle" : "dots-horizontal-circle-outline";
+        } else if (route.name === "Templates") {
+          iconName = isFocused ? "text-box-plus" : "text-box-plus-outline";
+        } else if (route.name === "Teamates") {
+          iconName = isFocused ? "account-plus" : "account-plus-outline";
+        } else if (route.name === "AHH") {
+          iconName = isFocused ? "magnify" : "magnify";
+        } 
 
         return (
-          <TouchableOpacity
+          <Pressable
             accessibilityRole="button"
             accessibilityStates={isFocused ? ['selected'] : []}
             accessibilityLabel={options.tabBarAccessibilityLabel}
@@ -1349,22 +1355,21 @@ function MyTabBar({ state, descriptors, navigation }) {
               flex: 1, 
               alignItems:"center",
 
-              backgroundColor: isFocused ? '#1a1b1e' : 'transparent',
-              borderRadius: 100, 
-              padding: 5, 
-              margin: 20 }}
+
+              padding: 0, 
+              margin: 10 }}
           >
 
-           <MaterialIcons
+           <MaterialCommunityIcons
               name={iconName}
-              size={35} // Adjust the icon size as needed
-              color={isFocused ? '#e3e2e6' : '#e3e2e6'}
-              style={{ height: 35 }}
+              size={36} // Adjust the icon size as needed
+              color={isFocused ? '#e3e2e6' : '#b2b0ba'}
+              style={{ height: 36 }}
             />
 
-
+            <Text style={{color: isFocused ? '#e3e2e6' : '#b2b0ba', fontSize: 10}}>{route.name}</Text>
             
-          </TouchableOpacity>
+          </Pressable>
         );
       })}
     </View>
@@ -1376,10 +1381,12 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 	return (
 		<Tab.Navigator /*screenOptions={{headerShown: false}}*/   tabBar={props => <MyTabBar {...props} />}>
-			<Tab.Screen name="Home" component={HomeScreen}  options={{headerShown: false /*headerStyle: {
+			<Tab.Screen name="Home" component={Search}  options={{headerShown: false /*headerStyle: {
               backgroundColor: (Colors.tab)
            }*/}}/>
-            <Tab.Screen name="Search" component={Search} />
+            <Tab.Screen name="Templates" component={HomeScreen} options={{headerShown:false}}/>
+            <Tab.Screen name="Teamates" component={Teamates} options={{headerShown:false}}/>
+            
 			<Tab.Screen name="Settings" component={Resize}  options={{headerShown:false}} />
 		</Tab.Navigator>
 	);
